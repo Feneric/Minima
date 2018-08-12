@@ -3,6 +3,8 @@ Minima
 
 *My homage to the 8-bit Ultima games.*
 
+|logo|
+
 Origins (yes, I know it's a pun)
 --------------------------------
 
@@ -12,8 +14,8 @@ Time of Legends. Then there was `Ultima III`_ with its smaller space but better
 graphics and gameplay, and its mystery around Exodus. Then came `Ultima IV`_, with a
 much bigger space and much better story, and an early prominent use of the word "avatar".
 Then was the somewhat belated release of `Ultima I`_ for those who wanted more details
-on the backstory. Then came Ultima V, which not only improved upon the storytelling
-in `Ultima IV`_, but also took great advantage of the C128 hardware and provided what
+on the backstory. Then came `Ultima V`_, which not only improved upon the storytelling
+in Ultima IV, but also took great advantage of the C128 hardware and provided what
 I'd argue to be one of the best gaming experiences on the system. Then came `Ultima VI`_,
 which was a disappointment on the C128 and essentially unplayable. The less
 said about that one, the better.
@@ -92,3 +94,6 @@ a dungeon map and turn it into something the game can use.
 .. _xu4: http://xu4.sourceforge.net/
 .. _PocketInstaller: https://github.com/Feneric/PocketInstaller
 .. _Lua: https://www.lua.org/docs.html
+.. |logo| image:: MinimaLogo.png
+   :alt: Minima Logo
+   :align: right

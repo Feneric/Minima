@@ -89,6 +89,30 @@ merchant={
 }
 setmetatable(merchant,{__index=human})
 
+grocer={
+  name="grocer",
+  merch='food'
+}
+setmetatable(grocer,{__index=merchant})
+
+armorer={
+  name="armorer",
+  merch='armor'
+}
+setmetatable(armorer,{__index=merchant})
+
+smith={
+  name="smith",
+  merch='weapons'
+}
+setmetatable(smith,{__index=merchant})
+
+medic={
+  name="medic",
+  merch='hospital'
+}
+setmetatable(medic,{__index=merchant})
+
 lady={
   flipimg=true,
   colorsubs={{},{{2,9},{4,15},{13,14}},{{2,10},{4,15},{13,9}},{{2,11},{13,3}}},
@@ -96,6 +120,12 @@ lady={
   talk={"pardon me.","well i never."}
 }
 setmetatable(lady,{__index=human})
+
+barkeep={
+  name="barkeep",
+  merch='bar'
+}
+setmetatable(barkeep,{__index=lady})
 
 shepherd={
   img=76,
@@ -463,6 +493,25 @@ shiptype={
 }
 setmetatable(shiptype,{__index=anyobj})
 
+shop={
+  food=function()
+    logit("foodie")
+    return {"$15 for 25 food; a\80\80\82\79\86\69? "}
+  end,
+  armor=function()
+    return {"buy \131cloth $20, \139leather $99,","\145chain $230, or \148plate $750: "}
+  end,
+  weapons=function()
+    return {"buy d\65\71\71\69\82 ($10), s\84\65\70\70 ($20),","a\88\69 ($55), or s\87\79\82\68 ($120): "}
+  end,
+  hospital=function()
+    return {"choose m\69\68\73\67 ($8), c\85\82\69 ($10),","or s\65\86\73\79\82 ($15): "}
+  end,
+  bar=function()
+    return {"$5 per drink; a\65\80\80\82\79\86\69? "}
+  end
+}
+
 -- the types of terrain that exist in the game. each is
 -- given a name and a list of allowed monster types.
 terrains={
@@ -601,7 +650,7 @@ signs={
 -- armor definitions
 armor={
   {name='cloth',ap=5,price=20},
-  {name='leather',ap=12,price=100},
+  {name='leather',ap=12,price=99},
   {name='chain',ap=23,price=230},
   {name='plate',ap=40,price=750}
 }
@@ -610,8 +659,8 @@ armor={
 weapons={
   {name='dagger',dmg=8,price=10},
   {name='staff',dmg=12,price=20},
-  {name='mace',dmg=18,price=45},
-  {name='sword',dmg=30,price=100}
+  {name='axe',dmg=18,price=55},
+  {name='sword',dmg=30,price=120}
 }
 
 -- spell definitions
@@ -712,57 +761,57 @@ function _init()
   _draw=world_draw
   definemonster(1,guard,73,21)
   definemonster(2,guard,102,22)
-  definemonster(1,merchant,68,8)
-  definemonster(2,merchant,90,1)
-  definemonster(1,merchant,79,3)
-  definemonster(2,lady,102,2)
-  definemonster(1,merchant,81,13)
-  definemonster(2,merchant,91,9)
+  definemonster(1,medic,68,8)
+  definemonster(2,smith,90,1)
+  definemonster(1,armorer,79,3)
+  definemonster(2,barkeep,102,2)
+  definemonster(1,grocer,81,13)
+  definemonster(2,grocer,91,9)
   definemonster(2,jester,90,16)
   definemonster(1,shepherd,66,21)
-  definemonster(2,merchant,106,12)
+  definemonster(2,medic,106,12)
   definemonster(1,guard,79,21)
   definemonster(2,guard,98,22)
 end
 
 function listcommands()
-  update_lines({"sorry, not implemented yet"}) 
+  update_lines{"sorry, not implemented yet"}
 end
 
 function savegame()
-  update_lines({"sorry, not implemented yet"}) 
+  update_lines{"sorry, not implemented yet"}
 end
 
 function loadgame()
-  update_lines({"sorry, not implemented yet"}) 
+  update_lines{"sorry, not implemented yet"}
 end
 
 function getbutton(btnpress)
-  if band(btnpress,1)!=0 then
+  if btnpress==1 then
     return 'west'
-  elseif band(btnpress,2)!=0 then
+  elseif btnpress==2 then
     return 'east'
-  elseif band(btnpress,4)!=0 then
+  elseif btnpress==4 then
     return 'north'
-  elseif band(btnpress,8)!=0 then
+  elseif btnpress==8 then
     return 'south'
-  elseif band(btnpress,16)!=0 then
+  elseif btnpress==16 then
     return 'c'
-  elseif band(btnpress,32)!=0 then
+  elseif btnpress==32 then
     return 'x'
-  elseif band(btnpress,64)!=0 then
+  elseif btnpress==64 then
     return 'p'
-  elseif band(btnpress,256)!=0 then
+  elseif btnpress==256 then
     return 's'
-  elseif band(btnpress,512)!=0 then
+  elseif btnpress==512 then
     return 'f'
-  elseif band(btnpress,1024)!=0 then
+  elseif btnpress==1024 then
     return 'e'
-  elseif band(btnpress,2048)!=0 then
+  elseif btnpress==2048 then
     return 'd'
-  elseif band(btnpress,4096)!=0 then
+  elseif btnpress==4096 then
     return 'tab'
-  elseif band(btnpress,8192)!=0 then
+  elseif btnpress==8192 then
     return 'a'
   else
     return 'none'
@@ -778,7 +827,7 @@ function inputprocessor(cmd,mapnum,curmap)
         if hero.facing<1 then
           hero.facing=4
         end
-        update_lines({"turn left"})
+        update_lines{"turn left"}
         turnmade=true
       else
         hero.x,hero.y=checkmove(spots[2],hero.y,"west")
@@ -790,7 +839,7 @@ function inputprocessor(cmd,mapnum,curmap)
         if hero.facing>4 then
           hero.facing=1
         end
-        update_lines({"turn right."})
+        update_lines{"turn right."}
         turnmade=true
       else
         hero.x,hero.y=checkmove(spots[4],hero.y,"east")
@@ -811,29 +860,29 @@ function inputprocessor(cmd,mapnum,curmap)
       end
       logit('hero '..hero.x..','..hero.y..','..hero.z)
     elseif cmd=='c' then
-      update_lines({"choose a\84\84\65\67\75, m\69\68\73\67, c\85\82\69,","w\79\85\78\68, s\65\86\73\79\82: "})
+      update_lines{"choose a\84\84\65\67\75, m\69\68\73\67, c\85\82\69,","w\79\85\78\68, s\65\86\73\79\82: "}
       cmd,mapnum,curmap=yield()
       if cmd=='c' then
         -- cast cure
-        update_lines({"4 (cast cure)"})
+        update_lines{"4 (cast cure)"}
       elseif cmd=='x' or cmd=='s' then
         -- cast healing
         if hero.mp>=spells[cmd].mp then
           hero.mp-=spells[cmd].mp
           hero.hp+=spells[cmd].amount
-          update_lines({spells[cmd].name.." is cast!"})
+          update_lines{spells[cmd].name.." is cast!"}
         end
       elseif cmd=='tab' then
         -- cast wound
-        update_lines({"4 (cast wound)"})
+        update_lines{"4 (cast wound)"}
       elseif cmd=='a' then
         -- cast attack
-        update_lines({"4 (cast attack)"})
+        update_lines{"4 (cast attack)"}
       else
-        update_lines({"4 (cast "..cmd..")"})
+        update_lines{"4 (cast "..cmd..")"}
       end
     elseif cmd=='x' then
-      update_lines({"examine dir:"})
+      update_lines{"examine dir:"}
       cmd,mapnum,curmap=yield()
       if cmd=='east' then
         look_results("east",spots[4],hero.y,mapnum)
@@ -861,17 +910,17 @@ function inputprocessor(cmd,mapnum,curmap)
         end
         update_lines(response)
       else
-        update_lines({"examine: huh?"})
+        update_lines{"examine: huh?"}
       end
       turnmade=true
     elseif cmd=='p' then
-      update_lines({"pause / game menu"})
+      update_lines{"pause / game menu"}
     elseif cmd=='s' then
       turnmade=true
-      update_lines({"0,1"})
+      update_lines{"0,1"}
     elseif cmd=='f' then
       turnmade=true
-      update_lines({"1,1"})
+      update_lines{"1,1"}
     elseif cmd=='e' then
       turnmade=true
       local msg="nothing to enter."
@@ -915,9 +964,9 @@ function inputprocessor(cmd,mapnum,curmap)
           end
         end
       end
-      update_lines({msg})
+      update_lines{msg}
     elseif cmd=='d' then
-      update_lines({"dialog dir:"})
+      update_lines{"dialog dir:"}
       cmd,mapnum,curmap=yield()
       if cmd=='east' then
         dialog_results("east",spots[4],hero.y,mapnum)
@@ -928,20 +977,20 @@ function inputprocessor(cmd,mapnum,curmap)
       elseif cmd=='south' then
         dialog_results("south",hero.x,spots[3],mapnum)
       else
-        update_lines({"dialog: huh?"})
+        update_lines{"dialog: huh?"}
       end
       turnmade=true
     elseif cmd=='tab' then
-      update_lines({
+      update_lines{
         "status: hp"..hero.hp.." mp"..hero.mp.." xp"..hero.exp.." $"..hero.gold,
         "l"..flr(hero.exp/100).." dex"..hero.dex.." int"..hero.int.." str"..hero.str.." "..hero.health
-      })
+      }
     elseif cmd=='a' then
       if not curmap.dungeon then
         if checkifinship() then
-          update_lines({"fire dir:"})
+          update_lines{"fire dir:"}
         else
-          update_lines({"attack dir:"})
+          update_lines{"attack dir:"}
         end
         cmd,mapnum,curmap=yield()
         turnmade=true
@@ -955,14 +1004,10 @@ function inputprocessor(cmd,mapnum,curmap)
       elseif cmd=='south' or hero.facing==3 then
         attack_results("south",hero.x,spots[3],hero.z,mapnum)
       else
-        update_lines({"attack: huh?"})
+        update_lines{"attack: huh?"}
       end
       turnmade=true
     end
-    --elseif(hero.cmdmode=="attack")then
-    --elseif(hero.cmdmode=="interact")then
-    --elseif(hero.cmdmode=="cast")then
-    --elseif(hero.cmdmode=="use")then
     cmd,mapnum,curmap=yield()
   end
 end
@@ -1033,7 +1078,7 @@ end
 function deducthp(damage)
   hero.hp-=damage
   if hero.hp<=0 then
-    update_lines({"you've been killed!"})
+    update_lines{"you've been killed!"}
   end
 end
 
@@ -1042,7 +1087,7 @@ function deductfood(amount)
   if hero.food<=0 then
     sfx(1,0,8)
     hero.food=0
-    update_lines({"starving!"})
+    update_lines{"starving!"}
     deducthp(1)
   end
 end
@@ -1051,7 +1096,7 @@ function increasexp(amount)
   hero.exp=min(hero.exp+amount,32767)
   if hero.exp>=hero.lvl^2*10 then
     hero.lvl+=1
-    update_lines({"you went up a level!"})
+    update_lines{"you went up a level!"}
   end
 end
 
@@ -1100,18 +1145,18 @@ function checkdungeonmove(direction)
     iscreature=true
   end
   if result==3 or iscreature then
-    update_lines({cmd,"blocked!"}) 
+    update_lines{cmd,"blocked!"}
   else
     xeno=newx
     yako=newy
     if result==2 then
       zabo+=1
       sfx(1)
-      update_lines({cmd,"fell in pit!"})  
+      update_lines{cmd,"fell in pit!"}
       deducthp(flr(rnd(10)))
     else
       sfx(0)
-      update_lines({cmd})
+      update_lines{cmd}
     end
   end
   turnmade=true
@@ -1141,50 +1186,50 @@ function checkmove(xeno,yako,cmd)
     local terraintype=mget(xeno,yako)
     if not curmap.wrap and((xeno>=curmap.maxx or xeno<curmap.minx)or(yako>=curmap.maxy or yako<curmap.miny)) then
       xeno,yako=curmap.enterx,curmap.entery
-      update_lines({cmd,"exiting "..curmap.name.."."})
+      update_lines{cmd,"exiting "..curmap.name.."."}
       hero.mapnum=0
     elseif content then
       if content.name=='maelstrom' then
-        update_lines({cmd,"maelstrom! yikes!"})
+        update_lines{cmd,"maelstrom! yikes!"}
         deducthp(flr(rnd(15)))
       else
         movesuccess=false
-        update_lines({cmd,"blocked!"}) 
+        update_lines{cmd,"blocked!"}
       end
     elseif terraintype<12 or terraintype>15 then
-      update_lines({cmd,"must exit ship first."})
+      update_lines{cmd,"must exit ship first."}
       movesuccess=false
     end
   else
     if content and (content.z==0 or content.z==nil) then
       if content.name!='ship' then
         movesuccess=false
-        update_lines({cmd,"blocked!"})  
+        update_lines{cmd,"blocked!"}
       end
     elseif newloc==28 then
-      update_lines({cmd,"open door."})
+      update_lines{cmd,"open door."}
       movesuccess=false
       mset(xeno,yako,30)
     elseif newloc==29 then
-      update_lines({cmd,"the door is locked."})
+      update_lines{cmd,"the door is locked."}
       movesuccess=false
     elseif impassable then
       movesuccess=false
-      update_lines({cmd,"blocked!"})
+      update_lines{cmd,"blocked!"}
     elseif water then
       movesuccess=false
-      update_lines({cmd,"not without a boat."})
+      update_lines{cmd,"not without a boat."}
     elseif not curmap.wrap and((xeno>=curmap.maxx or xeno<curmap.minx)or(yako>=curmap.maxy or yako<curmap.miny)) then
       xeno,yako=curmap.enterx,curmap.entery
-      update_lines({cmd,"exiting "..curmap.name.."."})
+      update_lines{cmd,"exiting "..curmap.name.."."}
       hero.mapnum=0
     elseif movecost>hero.movepayment then
       hero.movepayment+=1
       movesuccess=false
-      update_lines({cmd,"slow progress."})
+      update_lines{cmd,"slow progress."}
     else
       hero.movepayment=0
-      update_lines({cmd})
+      update_lines{cmd}
     end
   end
   if movesuccess then
@@ -1192,7 +1237,7 @@ function checkmove(xeno,yako,cmd)
       sfx(0)
     end
     if newloc==5 and rnd(10)>8 then
-      update_lines({cmd,"poisoned!"})
+      update_lines{cmd,"poisoned!"}
       hero.health='p'
     end
   else
@@ -1221,11 +1266,11 @@ function look_results(dir,x,y,mapnum)
   local content=contents[x][y] or nil
   local signcontents=check_sign(x,y,mapnum)
   if signcontents then
-    update_lines({cmd.." (read sign)",signcontents})
+    update_lines{cmd.." (read sign)",signcontents}
   elseif content and (content.z==0 or content.z==nil) then
-    update_lines({cmd,content.name})
+    update_lines{cmd,content.name}
   else
-    update_lines({cmd,terrains[mget(x,y)]})
+    update_lines{cmd,terrains[mget(x,y)]}
   end
 end
 
@@ -1244,13 +1289,15 @@ function dialog_results(dir,x,y,mapnum)
     end
   end
   if contents[x][y] then
-    if contents[x][y].talk then
-      update_lines({cmd,'"'..contents[x][y].talk[flr(rnd(#contents[x][y].talk))+1]..'"'})
+    if contents[x][y].merch then
+      update_lines(shop[contents[x][y].merch]())
+    elseif contents[x][y].talk then
+      update_lines{cmd,'"'..contents[x][y].talk[flr(rnd(#contents[x][y].talk))+1]..'"'}
     else
-      update_lines({cmd,'no response!'})
+      update_lines{cmd,'no response!'}
     end
   else
-    update_lines({cmd,'no one to talk with.'})
+    update_lines{cmd,'no one to talk with.'}
   end
 end
 
@@ -1278,12 +1325,12 @@ function attack_results(dir,x,y,z,mapnum)
           }
           setmetatable(contents[x][y],{__index=shiptype})
         else
-          update_lines({cmd,'killed; exp+'..creature.exp..' gold+'..creature.gold})
+          update_lines{cmd,'killed; exp+'..creature.exp..' gold+'..creature.gold}
           contents[x][y]=nil
         end
         del(creatures[mapnum],creature)
       else
-        update_lines({cmd,'you hit the '..creature.name..'!'})
+        update_lines{cmd,'you hit the '..creature.name..'!'}
         creature.hostile=true
         if maps[mapnum].friendly then
           for townie in all(creatures[mapnum]) do
@@ -1297,20 +1344,20 @@ function attack_results(dir,x,y,z,mapnum)
         end
       end
     else
-      update_lines({cmd,'you miss the '..creature.name..'!'})
+      update_lines{cmd,'you miss the '..creature.name..'!'}
     end
   elseif mget(x,y)==29 then
     -- bash locked door
     sfx(1)
     deducthp(1)
     if rnd(hero.str+hero.lvl)>8 then
-      update_lines({cmd,'you break open the door!'})
+      update_lines{cmd,'you break open the door!'}
       mset(x,y,30)
     else
-      update_lines({cmd,'the door is still locked.'})
+      update_lines{cmd,'the door is still locked.'}
     end
   else
-    update_lines({cmd,'nothing to attack.'})
+    update_lines{cmd,'nothing to attack.'}
   end
 end
 
@@ -1425,7 +1472,7 @@ function movecreatures(mapnum,curmap,hero)
         if creature.z==hero.z and (creature.hostile and actualdistance<=1 or (desiredx==hero.x and desiredy==hero.y and creature.hostile==nil and creaturenum!=0)) then
           if creature.eat and hero.food>0 and rnd(creature.dex*32)>rnd(hero.dex+hero.lvl) then
             sfx(2)
-            update_lines({"the "..creature.name.." eats!"})
+            update_lines{"the "..creature.name.." eats!"}
             deductfood(flr(rnd(6)))
             gothit=true
             delay(9)
@@ -1434,13 +1481,13 @@ function movecreatures(mapnum,curmap,hero)
             local amountstolen=min(flr(rnd(5))+1,hero.gold)
             hero.gold-=amountstolen
             creature.gold+=amountstolen
-            update_lines({"the "..creature.name.." steals!"})
+            update_lines{"the "..creature.name.." steals!"}
             gothit=true
             delay(9)
           elseif creature.poison and rnd(creature.dex*25)>rnd(hero.dex+hero.lvl) then
             sfx(1)
             hero.health='p'
-            update_lines({"poisoned by the "..creature.name.."!"})
+            update_lines{"poisoned by the "..creature.name.."!"}
             gothit=true
             delay(3)
           elseif rnd(creature.dex*64)>rnd(hero.dex+hero.lvl+hero.armor) then
@@ -1448,12 +1495,12 @@ function movecreatures(mapnum,curmap,hero)
             sfx(1)
             local damage=flr(rnd(creature.str+creature.dmg)-rnd(hero.armor))+1
             deducthp(damage)
-            update_lines({"the "..creature.name.." hits!"})
+            update_lines{"the "..creature.name.." hits!"}
             gothit=true
             delay(3)
             hero.hitdisplay=3
           else
-            update_lines({"the "..creature.name.." misses."})
+            update_lines{"the "..creature.name.." misses."}
           end
         elseif canmove then
           local movecost=band(fget(newloc),3)
@@ -1493,7 +1540,7 @@ function world_update()
     if turn%5==0 and hero.health=='p' then
       deducthp(1)
       sfx(1,0,8)
-      update_lines({"feeling sick!"})
+      update_lines{"feeling sick!"}
     end
     if turn%10==0 then
       increasemp(1)
@@ -1571,11 +1618,11 @@ function itemdrawprep(item)
       item.imgseq=23
       if item.imgalt then
         item.imgalt=false
-        if(item.img==nil)update_lines({"item.img nil"})
+        if(item.img==nil)update_lines{"item.img nil"}
         if(item.flipimg==nil)item.img-=1
       else
         item.imgalt=true
-        if(item.img==nil)update_lines({"item.img nil"})
+        if(item.img==nil)update_lines{"item.img nil"}
         if(item.flipimg==nil)item.img+=1
       end
     end
@@ -1893,7 +1940,7 @@ function world_draw()
     end
   end
   draw_map(left,top,scrtx,scrty,mainwidth,mainheight)
-  --update_lines({"lt"..left..","..top.." h("..hero.x..","..hero.y..") x("..xtrawidth..","..xtraheight..") m("..fullwidth-xtrawidth..","..fullheight-xtraheight..")"})
+  --update_lines{"lt"..left..","..top.." h("..hero.x..","..hero.y..") x("..xtrawidth..","..xtraheight..") m("..fullwidth-xtrawidth..","..fullheight-xtraheight..")"}
   palt(0,false)
   spr(hero.img+hero.facing,48,40)
   palt()
