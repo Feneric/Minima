@@ -3,7 +3,9 @@ Minima
 
 *My homage to the 8-bit Ultima games.*
 
-|logo|
+.. image:: MinimaLogo.png
+  :alt: Minima Logo
+  :align: right
 
 Origins (yes, I know it's a pun)
 --------------------------------
@@ -94,6 +96,3 @@ a dungeon map and turn it into something the game can use.
 .. _xu4: http://xu4.sourceforge.net/
 .. _PocketInstaller: https://github.com/Feneric/PocketInstaller
 .. _Lua: https://www.lua.org/docs.html
-.. |logo| image:: MinimaLogo.png
-   :alt: Minima Logo
-   :align: right
