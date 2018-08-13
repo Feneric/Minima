@@ -63,7 +63,6 @@ fighter={
   int=6,
   str=10,
   dex=9,
-  exp=2,
   talk={"check out these pecs!","i'm jacked!"}
 }
 setmetatable(fighter,{__index=human})
@@ -75,7 +74,6 @@ guard={
   moveallowance=0,
   hp=18,
   armor=3,
-  exp=3,
   talk={"behave yourself.","i protect good citizens."}
 }
 setmetatable(guard,{__index=fighter})
@@ -167,7 +165,7 @@ undead={
   int=7,
   dmg=6,
   dex=6,
-  gold=12
+  gold=5
 }
 setmetatable(undead,{__index=creature})
 
@@ -199,6 +197,7 @@ setmetatable(bestiary[1],{__index=orc})
 bestiary[2]={
   img=98,
   name="skeleton",
+  gold=12,
   chance=5
 }
 setmetatable(bestiary[2],{__index=undead})
@@ -208,7 +207,6 @@ bestiary[3]={
   names={"zombie","wight","ghoul"},
   hp=10,
   dmg=4,
-  gold=5,
   chance=3
 }
 setmetatable(bestiary[3],{__index=undead})
@@ -309,7 +307,6 @@ bestiary[12]={
   hp=15,
   dmg=3,
   terrain={1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35},
-  gold=5,
   exp=7,
   chance=3,
   talk={'boooo!','feeear me!'}
@@ -335,7 +332,6 @@ bestiary[14]={
   colorsubs={{},{{2,8},{15,4}}},
   names={"warlock","necromancer","sorceror"},
   int=10,
-  gold=15,
   exp=10,
   chance=1,
   talk={"i hex you!","a curse on you!"}
@@ -350,7 +346,6 @@ bestiary[15]={
   dex=10,
   dmg=6,
   thief=true,
-  gold=12,
   chance=2
 }
 setmetatable(bestiary[15],{__index=villain})
@@ -435,7 +430,6 @@ bestiary[22]={
   name="pirate ship",
   facingmatters=true,
   facing=1,
-  gold=0,
   terrain={12,13,14,15},
   exp=8,
   chance=1
@@ -493,16 +487,36 @@ shiptype={
 }
 setmetatable(shiptype,{__index=anyobj})
 
+function purchase(itemtype,attribute)
+  cmd,mapnum,curmap=yield()
+  if itemtype[cmd] then
+    desireditem=itemtype[cmd]
+    logit("attr "..hero[attribute].." num "..desireditem.num)
+    if hero[attribute]>=desireditem.num then
+      return {"that is not an upgrade."}
+    elseif hero.gold>=desireditem.price then
+      hero.gold-=desireditem.price
+      hero[attribute]=desireditem.num
+      return {desireditem.name.." is yours."}
+    else
+      return {"you cannot afford that."}
+    end
+  else
+    return {"no sale."}
+  end
+end
+
 shop={
   food=function()
-    logit("foodie")
     return {"$15 for 25 food; a\80\80\82\79\86\69? "}
   end,
   armor=function()
-    return {"buy \131cloth $20, \139leather $99,","\145chain $230, or \148plate $750: "}
+    update_lines{"buy \131cloth $20, \139leather $99,","\145chain $230, or \148plate $750: "}
+    return purchase(armors,'armor')
   end,
   weapons=function()
-    return {"buy d\65\71\71\69\82 ($10), s\84\65\70\70 ($20),","a\88\69 ($55), or s\87\79\82\68 ($120): "}
+    update_lines{"buy d\65\71\71\69\82 $10, c\76\85\66 $20,","a\88\69 $55, or s\87\79\82\68 $120: "}
+    return purchase(weapons,'dmg')
   end,
   hospital=function()
     return {"choose m\69\68\73\67 ($8), c\85\82\69 ($10),","or s\65\86\73\79\82 ($15): "}
@@ -648,19 +662,19 @@ signs={
 }
 
 -- armor definitions
-armor={
-  {name='cloth',ap=5,price=20},
-  {name='leather',ap=12,price=99},
-  {name='chain',ap=23,price=230},
-  {name='plate',ap=40,price=750}
+armors={
+  south={name='cloth',num=5,price=20},
+  west={name='leather',num=12,price=99},
+  east={name='chain',num=23,price=230},
+  north={name='plate',num=40,price=750}
 }
 
 -- weapon definitions
 weapons={
-  {name='dagger',dmg=8,price=10},
-  {name='staff',dmg=12,price=20},
-  {name='axe',dmg=18,price=55},
-  {name='sword',dmg=30,price=120}
+  d={name='dagger',num=8,price=10},
+  c={name='club',num=12,price=20},
+  a={name='axe',num=18,price=55},
+  s={name='sword',num=30,price=120}
 }
 
 -- spell definitions
@@ -786,35 +800,40 @@ function loadgame()
   update_lines{"sorry, not implemented yet"}
 end
 
+buttons={
+  "west",
+  "east",
+  "north",
+  "south",
+  "c",
+  "x",
+  "p",
+  "?",
+  "s",
+  "f",
+  "e",
+  "d",
+  "tab",
+  "a"
+}
+
 function getbutton(btnpress)
-  if btnpress==1 then
-    return 'west'
-  elseif btnpress==2 then
-    return 'east'
-  elseif btnpress==4 then
-    return 'north'
-  elseif btnpress==8 then
-    return 'south'
-  elseif btnpress==16 then
-    return 'c'
-  elseif btnpress==32 then
-    return 'x'
-  elseif btnpress==64 then
-    return 'p'
-  elseif btnpress==256 then
-    return 's'
-  elseif btnpress==512 then
-    return 'f'
-  elseif btnpress==1024 then
-    return 'e'
-  elseif btnpress==2048 then
-    return 'd'
-  elseif btnpress==4096 then
-    return 'tab'
-  elseif btnpress==8192 then
-    return 'a'
+  local bitcount=1
+  while btnpress>1 do
+    btnpress=lshr(btnpress,1)
+    bitcount+=1
+  end
+  return buttons[bitcount] or 'none'
+end
+
+function checkspell(cmd)
+  if hero.mp>=spells[cmd].mp then
+    hero.mp-=spells[cmd].mp
+    update_lines{spells[cmd].name.." is cast!"}
+    return true
   else
-    return 'none'
+    update_lines{"not enough mp."}
+    return false
   end
 end
 
@@ -864,14 +883,10 @@ function inputprocessor(cmd,mapnum,curmap)
       cmd,mapnum,curmap=yield()
       if cmd=='c' then
         -- cast cure
-        update_lines{"4 (cast cure)"}
+        if(checkspell(cmd))hero.health='g'
       elseif cmd=='x' or cmd=='s' then
         -- cast healing
-        if hero.mp>=spells[cmd].mp then
-          hero.mp-=spells[cmd].mp
-          hero.hp+=spells[cmd].amount
-          update_lines{spells[cmd].name.." is cast!"}
-        end
+        if(checkspell(cmd))hero.hp+=spells[cmd].amount
       elseif cmd=='tab' then
         -- cast wound
         update_lines{"4 (cast wound)"}
