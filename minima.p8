@@ -269,7 +269,7 @@ setmetatable(bestiary[8],{__index=creature})
 
 bestiary[9]={
   img=112,
-  names={"giant snake","python","anaconda"},
+  names={"giant snake","giant asp","serpent"},
   hp=20,
   poison=true,
   terrain={4,5,6,7},
@@ -497,7 +497,7 @@ function purchase(itemtype,attribute)
     elseif hero.gold>=desireditem.price then
       hero.gold-=desireditem.price
       hero[attribute]=desireditem.num
-      return {desireditem.name.." is yours."}
+      return {"the "..desireditem.name.." is yours."}
     else
       return {"you cannot afford that."}
     end
@@ -508,7 +508,19 @@ end
 
 shop={
   food=function()
-    return {"$15 for 25 food; a\80\80\82\79\86\69? "}
+    update_lines{"$15 for 25 food; a\80\80\82\79\86\69? "}
+    cmd,mapnum,curmap=yield()
+    if cmd=='a' then
+      if hero.gold>=15 then
+        hero.gold-=15
+        hero.food=min(hero.food+25,32767)
+        return {"you got more food."}
+      else
+        return {"you cannot afford that."}
+      end
+    else
+      return {"no sale."}
+    end
   end,
   armor=function()
     update_lines{"buy \131cloth $20, \139leather $99,","\145chain $230, or \148plate $750: "}
@@ -663,18 +675,18 @@ signs={
 
 -- armor definitions
 armors={
-  south={name='cloth',num=5,price=20},
-  west={name='leather',num=12,price=99},
-  east={name='chain',num=23,price=230},
-  north={name='plate',num=40,price=750}
+  south={name='cloth',num=8,price=12},
+  west={name='leather',num=23,price=99},
+  east={name='chain',num=40,price=300},
+  north={name='plate',num=90,price=950}
 }
 
 -- weapon definitions
 weapons={
-  d={name='dagger',num=8,price=10},
-  c={name='club',num=12,price=20},
-  a={name='axe',num=18,price=55},
-  s={name='sword',num=30,price=120}
+  d={name='dagger',num=8,price=8},
+  c={name='club',num=12,price=40},
+  a={name='axe',num=18,price=75},
+  s={name='sword',num=30,price=150}
 }
 
 -- spell definitions
@@ -886,7 +898,7 @@ function inputprocessor(cmd,mapnum,curmap)
         if(checkspell(cmd))hero.health='g'
       elseif cmd=='x' or cmd=='s' then
         -- cast healing
-        if(checkspell(cmd))hero.hp+=spells[cmd].amount
+        if(checkspell(cmd))increasehp(spells[cmd].amount)
       elseif cmd=='tab' then
         -- cast wound
         update_lines{"4 (cast wound)"}
@@ -932,7 +944,7 @@ function inputprocessor(cmd,mapnum,curmap)
       update_lines{"pause / game menu"}
     elseif cmd=='s' then
       turnmade=true
-      update_lines{"0,1"}
+      update_lines{"sit and wait."}
     elseif cmd=='f' then
       turnmade=true
       update_lines{"1,1"}
@@ -945,6 +957,7 @@ function inputprocessor(cmd,mapnum,curmap)
         hero.x,hero.y,hero.z=curmap.enterx,curmap.entery,0
         hero.mapnum=curmap.mapnum
         hero.facing=0
+        hero.hitdisplay=0
         _draw=world_draw
       elseif shipindex then
         msg="exiting ship."
@@ -1131,11 +1144,8 @@ end
 
 function checkdungeonmove(direction)
   local curmap=maps[hero.mapnum]
-  local newx=hero.x
-  local newy=hero.y
-  local xeno=hero.x
-  local yako=hero.y
-  local zabo=hero.z
+  local newx,newy=hero.x,hero.y
+  local xeno,yako,zabo=hero.x,hero.y,hero.z
   local cmd=direction>0 and 'advance' or 'retreat'
   local item
   local iscreature=false
@@ -1162,8 +1172,7 @@ function checkdungeonmove(direction)
   if result==3 or iscreature then
     update_lines{cmd,"blocked!"}
   else
-    xeno=newx
-    yako=newy
+    xeno,yako=newx,newy
     if result==2 then
       zabo+=1
       sfx(1)
@@ -1206,7 +1215,7 @@ function checkmove(xeno,yako,cmd)
     elseif content then
       if content.name=='maelstrom' then
         update_lines{cmd,"maelstrom! yikes!"}
-        deducthp(flr(rnd(15)))
+        deducthp(flr(rnd(25)))
       else
         movesuccess=false
         update_lines{cmd,"blocked!"}
@@ -1234,7 +1243,7 @@ function checkmove(xeno,yako,cmd)
     elseif water then
       movesuccess=false
       update_lines{cmd,"not without a boat."}
-    elseif not curmap.wrap and((xeno>=curmap.maxx or xeno<curmap.minx)or(yako>=curmap.maxy or yako<curmap.miny)) then
+    elseif not curmap.wrap and(xeno>=curmap.maxx or xeno<curmap.minx or yako>=curmap.maxy or yako<curmap.miny) then
       xeno,yako=curmap.enterx,curmap.entery
       update_lines{cmd,"exiting "..curmap.name.."."}
       hero.mapnum=0
@@ -1304,10 +1313,11 @@ function dialog_results(dir,x,y,mapnum)
     end
   end
   if contents[x][y] then
-    if contents[x][y].merch then
-      update_lines(shop[contents[x][y].merch]())
+    local dialog_target=contents[x][y]
+    if dialog_target.merch then
+      update_lines(shop[dialog_target.merch]())
     elseif contents[x][y].talk then
-      update_lines{cmd,'"'..contents[x][y].talk[flr(rnd(#contents[x][y].talk))+1]..'"'}
+      update_lines{cmd,'"'..dialog_target.talk[flr(rnd(#dialog_target.talk))+1]..'"'}
     else
       update_lines{cmd,'no response!'}
     end
@@ -1416,8 +1426,7 @@ function movecreatures(mapnum,curmap,hero)
   local actualdistance=500
   for creaturenum,creature in pairs(creatures[mapnum]) do
     if creature.z==hero.z then
-      local desiredx=creature.x
-      local desiredy=creature.y
+      local desiredx,desiredy=creature.x,creature.y
       while creature.moveallowance>creature.nummoves do
         local spots=calculatemoves(mapnum,curmap,creature)
         --foreach(spots,logit)
@@ -1478,20 +1487,21 @@ function movecreatures(mapnum,curmap,hero)
             break
           end
         end
-        if curmap.dungeon then
-          logit(creature.name..' newloc '..newloc..' '..desiredx..','..desiredy..' '..creature.x..','..creature.y..','..creature.z..' can move '..(canmove and 'true' or 'false'))
-        end
+        --if curmap.dungeon then
+        --  logit(creature.name..' newloc '..newloc..' '..desiredx..','..desiredy..' '..creature.x..','..creature.y..','..creature.z..' can move '..(canmove and 'true' or 'false'))
+        --end
         --logit(creature.name..' bestfacing '..bestfacing..': '..spots[bestfacing]..' '..(canmove and 'true' or 'false')..' t '..mget(desiredx,desiredy)..' mp '..creature.movepayment)
         creature.nummoves+=1
         --logit(creature.name..': actualdistance '..actualdistance..' x '..desiredx..' '..hero.x..' y '..desiredy..' '..hero.y)
         if creature.z==hero.z and (creature.hostile and actualdistance<=1 or (desiredx==hero.x and desiredy==hero.y and creature.hostile==nil and creaturenum!=0)) then
-          if creature.eat and hero.food>0 and rnd(creature.dex*32)>rnd(hero.dex+hero.lvl) then
+          local hero_dodge=hero.dex+2*hero.lvl
+          if creature.eat and hero.food>0 and rnd(creature.dex*32)>rnd(hero_dodge) then
             sfx(2)
             update_lines{"the "..creature.name.." eats!"}
             deductfood(flr(rnd(6)))
             gothit=true
             delay(9)
-          elseif creature.thief and hero.gold>0 and rnd(creature.dex*23)>rnd(hero.dex+hero.lvl) then
+          elseif creature.thief and hero.gold>0 and rnd(creature.dex*23)>rnd(hero_dodge) then
             sfx(2)
             local amountstolen=min(flr(rnd(5))+1,hero.gold)
             hero.gold-=amountstolen
@@ -1499,13 +1509,13 @@ function movecreatures(mapnum,curmap,hero)
             update_lines{"the "..creature.name.." steals!"}
             gothit=true
             delay(9)
-          elseif creature.poison and rnd(creature.dex*25)>rnd(hero.dex+hero.lvl) then
+          elseif creature.poison and rnd(creature.dex*25)>rnd(hero_dodge) then
             sfx(1)
             hero.health='p'
             update_lines{"poisoned by the "..creature.name.."!"}
             gothit=true
             delay(3)
-          elseif rnd(creature.dex*64)>rnd(hero.dex+hero.lvl+hero.armor) then
+          elseif rnd(creature.dex*64)>rnd(hero_dodge+hero.armor) then
             hero.gothit=true
             sfx(1)
             local damage=flr(rnd(creature.str+creature.dmg)-rnd(hero.armor))+1
@@ -1731,8 +1741,7 @@ end
 
 function getdungeonview(curmap,mapx,mapy,mapz,facing)
   local blocks={}
-  local viewx=mapx
-  local viewy=mapy
+  local viewx,viewy=mapx,mapy
   if facing%2==0 then
     for viewx=mapx+4-facing,mapx+2-facing,-1 do
       add(blocks,getdungeonblocks(curmap,viewx,viewy,mapz,facing))
