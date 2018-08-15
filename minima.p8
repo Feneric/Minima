@@ -6,10 +6,8 @@ __lua__
 
 -- initialization data
 
-fullheight=11
-fullwidth=13
-halfheight=5
-halfwidth=6
+fullheight,fullwidth=11,13
+halfheight,halfwidth=5,6
 
 -- anyobj is our root objects. all others inherit from it to
 -- save space and reduce redundancy.
@@ -427,7 +425,7 @@ bestiary[22]={
   img=69,
   colorsubs={{{6,5},{7,6}}},
   flipimg=false,
-  name="pirate ship",
+  name="pirates",
   facingmatters=true,
   facing=1,
   terrain={12,13,14,15},
@@ -522,12 +520,13 @@ shop={
       return {"no sale."}
     end
   end,
+
   armor=function()
-    update_lines{"buy \131cloth $20, \139leather $99,","\145chain $230, or \148plate $750: "}
+    update_lines{"buy \131cloth $12, \139leather $99,","\145chain $300, or \148plate $950: "}
     return purchase(armors,'armor')
   end,
   weapons=function()
-    update_lines{"buy d\65\71\71\69\82 $10, c\76\85\66 $20,","a\88\69 $55, or s\87\79\82\68 $120: "}
+    update_lines{"buy d\65\71\71\69\82 $8, c\76\85\66 $40,","a\88\69 $75, or s\87\79\82\68 $150: "}
     return purchase(weapons,'dmg')
   end,
   hospital=function()
@@ -838,10 +837,10 @@ function getbutton(btnpress)
   return buttons[bitcount] or 'none'
 end
 
-function checkspell(cmd)
+function checkspell(cmd,extra)
   if hero.mp>=spells[cmd].mp then
     hero.mp-=spells[cmd].mp
-    update_lines{spells[cmd].name.." is cast!"}
+    update_lines{spells[cmd].name.." is cast! "..(extra or '')}
     return true
   else
     update_lines{"not enough mp."}
@@ -899,15 +898,16 @@ function inputprocessor(cmd,mapnum,curmap)
       elseif cmd=='x' or cmd=='s' then
         -- cast healing
         if(checkspell(cmd))increasehp(spells[cmd].amount)
-      elseif cmd=='tab' then
-        -- cast wound
-        update_lines{"4 (cast wound)"}
-      elseif cmd=='a' then
-        -- cast attack
-        update_lines{"4 (cast attack)"}
+      elseif cmd=='tab' or cmd=='a' then
+        -- cast offensive spell
+        if checkspell(cmd,'dir:') then
+          local spelldamage=spells[cmd].amount
+          attack_results(spots,mapnum,curmap,spelldamage)
+        end
       else
         update_lines{"4 (cast "..cmd..")"}
       end
+      turnmade=true
     elseif cmd=='x' then
       update_lines{"examine dir:"}
       cmd,mapnum,curmap=yield()
@@ -1014,26 +1014,12 @@ function inputprocessor(cmd,mapnum,curmap)
         "l"..flr(hero.exp/100).." dex"..hero.dex.." int"..hero.int.." str"..hero.str.." "..hero.health
       }
     elseif cmd=='a' then
-      if not curmap.dungeon then
-        if checkifinship() then
-          update_lines{"fire dir:"}
-        else
-          update_lines{"attack dir:"}
-        end
-        cmd,mapnum,curmap=yield()
-        turnmade=true
-      end
-      if cmd=='east' or hero.facing==2 then
-        attack_results("east",spots[4],hero.y,hero.z,mapnum)
-      elseif cmd=='west' or hero.facing==4 then
-        attack_results("west",spots[2],hero.y,hero.z,mapnum)
-      elseif cmd=='north' or hero.facing==1 then
-        attack_results("north",hero.x,spots[1],hero.z,mapnum)
-      elseif cmd=='south' or hero.facing==3 then
-        attack_results("south",hero.x,spots[3],hero.z,mapnum)
+      if checkifinship() then
+        update_lines{"fire dir:"}
       else
-        update_lines{"attack: huh?"}
+        update_lines{"attack dir:"}
       end
+      attack_results(spots,mapnum,curmap)
       turnmade=true
     end
     cmd,mapnum,curmap=yield()
@@ -1124,6 +1110,7 @@ function increasexp(amount)
   hero.exp=min(hero.exp+amount,32767)
   if hero.exp>=hero.lvl^2*10 then
     hero.lvl+=1
+    increasehp(25)
     update_lines{"you went up a level!"}
   end
 end
@@ -1223,10 +1210,12 @@ function checkmove(xeno,yako,cmd)
     elseif terraintype<12 or terraintype>15 then
       update_lines{cmd,"must exit ship first."}
       movesuccess=false
+    else
+      update_lines{cmd}
     end
   else
     if content and (content.z==0 or content.z==nil) then
-      if content.name!='ship' then
+      if content.name~='ship' then
         movesuccess=false
         update_lines{cmd,"blocked!"}
       end
@@ -1276,8 +1265,9 @@ function check_sign(x,y,mapnum)
   if mget(x,y)==31 then
     -- read the sign
     for objnum=1,#signs[mapnum] do
-      if x==signs[mapnum][objnum].x and y==signs[mapnum][objnum].y then
-        response=signs[mapnum][objnum].msg
+      local sign=signs[mapnum][objnum]
+      if x==sign.x and y==sign.y then
+        response=sign.msg
         break
       end
     end
@@ -1291,7 +1281,7 @@ function look_results(dir,x,y,mapnum)
   local signcontents=check_sign(x,y,mapnum)
   if signcontents then
     update_lines{cmd.." (read sign)",signcontents}
-  elseif content and (content.z==0 or content.z==nil) then
+  elseif content and content.z==0 then
     update_lines{cmd,content.name}
   else
     update_lines{cmd,terrains[mget(x,y)]}
@@ -1326,33 +1316,57 @@ function dialog_results(dir,x,y,mapnum)
   end
 end
 
-function attack_results(dir,x,y,z,mapnum)
-  local cmd="attack: "..dir
+function attack_results(spots,mapnum,curmap,magic)
+  adir='ahead'
+  if not curmap.dungeon then
+    adir,mapnum,curmap=yield()
+  end
+  x,y,z=hero.x,hero.y,hero.z
+  logit('attacking '..x..','..y..','..z.. ' '..adir)
+  if adir=='east' or hero.facing==2 then
+    logit(spots[4])
+    x=spots[4]
+  elseif adir=='west' or hero.facing==4 then
+    logit(spots[2])
+    x=spots[2]
+  elseif adir=='north' or hero.facing==1 then
+    logit(spots[1])
+    y=spots[1]
+  elseif adir=='south' or hero.facing==3 then
+    logit(spots[3])
+    y=spots[3]
+  else
+    update_lines{"attack: huh?"}
+    return
+  end
+  local cmd="attack: "..adir
   local creature=contents[x][y]
-  logit('attacking '..x..','..y..','..z)
+  local damage=flr(rnd(hero.str+hero.lvl+hero.dmg))
+  if magic then
+    damage+=magic
+  elseif checkifinship() then
+    cmd="fire: "..adir
+    damage+=rnd(50)
+  end
   if creature and creature.hp and creature.z==z then
-    if rnd(hero.dex+hero.lvl*8)>rnd(creature.dex+creature.armor) then
+    if magic or rnd(hero.dex+hero.lvl*8)>rnd(creature.dex+creature.armor) then
+      damage-=rnd(creature.armor)
       creature.hitdisplay=3
       sfx(1)
-      local damage=flr(rnd(hero.str+hero.lvl+hero.dmg)-rnd(creature.armor))+1
-      if checkifinship() then
-        damage+=rnd(50)
-        cmd="fire: "..dir
-      end
       creature.hp-=damage
       logit(creature.name.." hp: "..creature.hp)
       if creature.hp<=0 then
         increasegold(creature.gold)
         increasexp(creature.exp)
-        if creature.name=='pirate ship' then
+        if creature.name=='pirates' then
           contents[x][y]={
             facing=creature.facing
           }
           setmetatable(contents[x][y],{__index=shiptype})
         else
-          update_lines{cmd,'killed; exp+'..creature.exp..' gold+'..creature.gold}
           contents[x][y]=nil
         end
+        update_lines{cmd,creature.name..' killed; xp+'..creature.exp..' gp+'..creature.gold}
         del(creatures[mapnum],creature)
       else
         update_lines{cmd,'you hit the '..creature.name..'!'}
@@ -1374,7 +1388,7 @@ function attack_results(dir,x,y,z,mapnum)
   elseif mget(x,y)==29 then
     -- bash locked door
     sfx(1)
-    deducthp(1)
+    if(not magic)deducthp(1)
     if rnd(hero.str+hero.lvl)>8 then
       update_lines{cmd,'you break open the door!'}
       mset(x,y,30)
@@ -1409,10 +1423,8 @@ function calculatemoves(mapnum,curmap,creature)
   local northspot=(creature.y+curmap.height-1)%maxy
   local southspot=(creature.y+1)%maxy
   if not curmap.wrap then
-    eastspot=creature.x-1
-    westspot=creature.x+1
-    northspot=creature.y-1
-    southspot=creature.y+1
+    eastspot,westspot=creature.x-1,creature.x+1
+    northspot,southspot=creature.y-1,creature.y+1
   end
   --logit('northspot '..northspot)
   --logit('eastspot '..eastspot)
@@ -1444,8 +1456,7 @@ function movecreatures(mapnum,curmap,hero)
             end
             if currentdistance<bestdistance then
               --logit(creature.name..' best distance (cur): '..currentdistance..' (old): '..bestdistance..' facing: '..facing)
-              bestdistance=currentdistance
-              bestfacing=facing
+              bestdistance,bestfacing=currentdistance,facing
             else
              --logit(creature.name..' worse distance (cur): '..currentdistance..' (old): '..bestdistance..' facing: '..facing)
             end
@@ -1493,7 +1504,7 @@ function movecreatures(mapnum,curmap,hero)
         --logit(creature.name..' bestfacing '..bestfacing..': '..spots[bestfacing]..' '..(canmove and 'true' or 'false')..' t '..mget(desiredx,desiredy)..' mp '..creature.movepayment)
         creature.nummoves+=1
         --logit(creature.name..': actualdistance '..actualdistance..' x '..desiredx..' '..hero.x..' y '..desiredy..' '..hero.y)
-        if creature.z==hero.z and (creature.hostile and actualdistance<=1 or (desiredx==hero.x and desiredy==hero.y and creature.hostile==nil and creaturenum!=0)) then
+        if creature.z==hero.z and (creature.hostile and actualdistance<=1 or (desiredx==hero.x and desiredy==hero.y and creature.hostile==nil and creaturenum~=0)) then
           local hero_dodge=hero.dex+2*hero.lvl
           if creature.eat and hero.food>0 and rnd(creature.dex*32)>rnd(hero_dodge) then
             sfx(2)
@@ -1535,8 +1546,7 @@ function movecreatures(mapnum,curmap,hero)
           if creature.movepayment>=movecost and not contents[desiredx][desiredy] and not (desiredx==hero.x and desiredy==hero.y and creature.z==hero.z) then
             contents[creature.x][creature.y]=nil
             contents[desiredx][desiredy]=creature
-            creature.x=desiredx
-            creature.y=desiredy
+            creature.x,creature.y=desiredx,desiredy
             creature.movepayment=0
           end
         end
@@ -1551,7 +1561,7 @@ function world_update()
   local mapnum=hero.mapnum
   local curmap=maps[mapnum]
   local btnpress=btnp()
-  if btnpress!=0 then
+  if btnpress~=0 then
     coresume(processinput,getbutton(btnpress),mapnum,curmap)
   end
   if turnmade then
@@ -1559,19 +1569,19 @@ function world_update()
     curmap=maps[mapnum]
     turnmade=false
     turn+=1
+    if turn%500==0 then
+      increasehp(1)
+    end
     if turn%50==0 then
       deductfood(1)
+    end
+    if turn%10==0 then
+      increasemp(1)
     end
     if turn%5==0 and hero.health=='p' then
       deducthp(1)
       sfx(1,0,8)
       update_lines{"feeling sick!"}
-    end
-    if turn%10==0 then
-      increasemp(1)
-    end
-    if turn%500==0 then
-      increasehp(1)
     end
     if gothit then
       delay(3)
@@ -1643,11 +1653,11 @@ function itemdrawprep(item)
       item.imgseq=23
       if item.imgalt then
         item.imgalt=false
-        if(item.img==nil)update_lines{"item.img nil"}
+        --if(item.img==nil)update_lines{"item.img nil"}
         if(item.flipimg==nil)item.img-=1
       else
         item.imgalt=true
-        if(item.img==nil)update_lines{"item.img nil"}
+        --if(item.img==nil)update_lines{"item.img nil"}
         if(item.flipimg==nil)item.img+=1
       end
     end
@@ -1670,13 +1680,10 @@ function draw_map(x,y,scrtx,scrty,width,height)
     for contentsy=y,y+height-1 do
       local item=contents[contentsx][contentsy]
       if item and (item.z==0 or item.z==nil) then
-        local flipped=itemdrawprep(contents[contentsx][contentsy])
-        local facing=item.facingmatters and contents[contentsx][contentsy].facing or 0
-        --logit('facingmatters '..(item.facingmatters and 1 or 0)..' facing '..(item.facing and 1 or 0))
+        local flipped=itemdrawprep(item)
+        local facing=item.facingmatters and item.facing or 0
         spr(item.img+facing,(contentsx-x+scrtx)*8,(contentsy-y+scrty)*8,1,1,flipped)
-        --logit('item.img '..item.img..' x '..contentsx..' '..x.." y "..contentsy..' '..y)
         pal()
-        --logit('item.name '..item.name..' hitdisplay '..(not item.hitdisplay and 'nil' or item.hitdisplay))
         if item.hitdisplay>0 then
           spr(127,(contentsx-x+scrtx)*8,(contentsy-y+scrty)*8)
           item.hitdisplay-=1
@@ -1795,17 +1802,17 @@ function dungeon_draw()
       local centeroneback=view[depthindex-1][2].block
       local rightoneback=view[depthindex-1][3].block
       if (row[1].block==centeroneback and row[1].block==3) or
-        (row[1].block!=leftoneback) then
+        (row[1].block~=leftoneback) then
         line(topinner,topinner,topinner,bottominner,5)
       end
       if (row[3].block==centeroneback and row[3].block==3) or
-        (row[3].block!=rightoneback) then
+        (row[3].block~=rightoneback) then
         line(bottominner,topinner,bottominner,bottominner,5)
       end
-      if centeroneback==3 and leftoneback==3 and row[1].block!=3 then
+      if centeroneback==3 and leftoneback==3 and row[1].block~=3 then
         line(topinner,lowerase,topinner,higherase,0)
       end
-      if centeroneback==3 and rightoneback==3 and row[3].block!=3 then
+      if centeroneback==3 and rightoneback==3 and row[3].block~=3 then
         line(bottominner,lowerase,bottominner,higherase,0)
       end
     end
@@ -1878,7 +1885,7 @@ function dungeondrawmonster(xeno,yako,zabo,distance)
   --logit('drawmonster ('..(xeno or 'nil')..','..(yako or 'nil')..','..(zabo or 'nil')..') '..(distance or 'nil'))
   if xeno>0 and yako>0 then
     local item=contents[xeno][yako]
-    if item and item['z']==zabo then
+    if item and item.z==zabo then
       local flipped=itemdrawprep(item)
       local distancemod=distance*4
       sspr(item.img%16*8,flr(item.img/16)*8,8,8,20+distancemod,35,60-distancemod*4,60-distancemod*4,flipped)
