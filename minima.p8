@@ -902,7 +902,9 @@ function inputprocessor(cmd,mapnum,curmap)
         -- cast offensive spell
         if checkspell(cmd,'dir:') then
           local spelldamage=spells[cmd].amount
-          attack_results(spots,mapnum,curmap,spelldamage)
+          if not getdirection(spots,mapnum,curmap,attack_results,spelldamage) then
+            update_lines{'cast at what?'}
+          end
         end
       else
         update_lines{"4 (cast "..cmd..")"}
@@ -910,34 +912,27 @@ function inputprocessor(cmd,mapnum,curmap)
       turnmade=true
     elseif cmd=='x' then
       update_lines{"examine dir:"}
-      cmd,mapnum,curmap=yield()
-      if cmd=='east' then
-        look_results("east",spots[4],hero.y,mapnum)
-      elseif cmd=='west' then
-        look_results("west",spots[2],hero.y,mapnum)
-      elseif cmd=='north' then
-        look_results("north",hero.x,spots[1],mapnum)
-      elseif cmd=='south' then
-        look_results("south",hero.x,spots[3],mapnum)
-      elseif cmd=='x' then
-        local response={"search","you find nothing."}
-        signcontents=check_sign(hero.x,hero.y,mapnum)
-        if signcontents then
-          response={"read sign",signcontents}
-        else
-          local mapitems=items[mapnum]
-          for objnum=1,#mapitems do
-            if hero.x==mapitems[objnum].x and hero.y==mapitems[objnum].y then
-              response[2]=mapitems[objnum].msg
-              add(hero.items,mapitems[objnum])
-              mapitems[objnum].x=nil
-              mapitems[objnum].y=nil
+      if not getdirection(spots,mapnum,curmap,look_results) then
+        if cmd=='x' then
+          local response={"search","you find nothing."}
+          signcontents=check_sign(hero.x,hero.y,mapnum)
+          if signcontents then
+            response={"read sign",signcontents}
+          else
+            local mapitems=items[mapnum]
+            for objnum=1,#mapitems do
+              if hero.x==mapitems[objnum].x and hero.y==mapitems[objnum].y then
+                response[2]=mapitems[objnum].msg
+                add(hero.items,mapitems[objnum])
+                mapitems[objnum].x=nil
+                mapitems[objnum].y=nil
+              end
             end
           end
+          update_lines(response)
+        else
+          update_lines{"examine: huh?"}
         end
-        update_lines(response)
-      else
-        update_lines{"examine: huh?"}
       end
       turnmade=true
     elseif cmd=='p' then
@@ -995,16 +990,7 @@ function inputprocessor(cmd,mapnum,curmap)
       update_lines{msg}
     elseif cmd=='d' then
       update_lines{"dialog dir:"}
-      cmd,mapnum,curmap=yield()
-      if cmd=='east' then
-        dialog_results("east",spots[4],hero.y,mapnum)
-      elseif cmd=='west' then
-        dialog_results("west",spots[2],hero.y,mapnum)
-      elseif cmd=='north' then
-        dialog_results("north",hero.x,spots[1],mapnum)
-      elseif cmd=='south' then
-        dialog_results("south",hero.x,spots[3],mapnum)
-      else
+      if not getdirection(spots,mapnum,curmap,dialog_results) then
         update_lines{"dialog: huh?"}
       end
       turnmade=true
@@ -1019,11 +1005,33 @@ function inputprocessor(cmd,mapnum,curmap)
       else
         update_lines{"attack dir:"}
       end
-      attack_results(spots,mapnum,curmap)
+      if not getdirection(spots,mapnum,curmap,attack_results) then
+        update_lines{"attack: huh?"}
+      end
       turnmade=true
     end
     cmd,mapnum,curmap=yield()
   end
+end
+
+function getdirection(spots,mapnum,curmap,resultfunc,magic,adir)
+  if curmap.dungeon then
+    adir='ahead'
+  elseif not adir then
+    adir,mapnum,curmap=yield()
+  end
+  if adir=='east' or hero.facing==2 then
+    resultfunc(adir,spots[4],hero.y,mapnum)
+  elseif adir=='west' or hero.facing==4 then
+    resultfunc(adir,spots[2],hero.y,mapnum)
+  elseif adir=='north' or hero.facing==1 then
+    resultfunc(adir,hero.x,spots[1],mapnum)
+  elseif adir=='south' or hero.facing==3 then
+    resultfunc(adir,hero.x,spots[3],mapnum)
+  else
+    return false
+  end
+  return true
 end
 
 function update_lines(msg)
@@ -1275,32 +1283,25 @@ function check_sign(x,y,mapnum)
   return response
 end
 
-function look_results(dir,x,y,mapnum)
-  local cmd="examine: "..dir
+function look_results(ldir,x,y,mapnum)
+  local cmd="examine: "..ldir
   local content=contents[x][y] or nil
   local signcontents=check_sign(x,y,mapnum)
   if signcontents then
     update_lines{cmd.." (read sign)",signcontents}
-  elseif content and content.z==0 then
+  elseif content and content.z==hero.z then
     update_lines{cmd,content.name}
+  elseif maps[hero.mapnum].dungeon then
+    update_lines{cmd,"dungeon"}
   else
     update_lines{cmd,terrains[mget(x,y)]}
   end
 end
 
-function dialog_results(dir,x,y,mapnum)
-  local cmd="dialog: "..dir
+function dialog_results(ddir,x,y,mapnum)
+  local cmd="dialog: "..ddir
   if terrains[mget(x,y)]=='counter' then
-    local spots=calculatemoves(mapnum,maps[mapnum],{x=x,y=y})
-    if dir=="north" then
-      y=spots[1]
-    elseif dir=="south" then
-      y=spots[3]
-    elseif dir=="east" then
-      x=spots[2]
-    elseif dir=="west" then
-      x=spots[4]
-    end
+    return getdirection(calculatemoves(mapnum,maps[mapnum],{x=x,y=y}),mapnum,maps[mapnum],dialog_results,nil,ddir)
   end
   if contents[x][y] then
     local dialog_target=contents[x][y]
@@ -1316,31 +1317,9 @@ function dialog_results(dir,x,y,mapnum)
   end
 end
 
-function attack_results(spots,mapnum,curmap,magic)
-  adir='ahead'
-  if not curmap.dungeon then
-    adir,mapnum,curmap=yield()
-  end
-  x,y,z=hero.x,hero.y,hero.z
-  logit('attacking '..x..','..y..','..z.. ' '..adir)
-  if adir=='east' or hero.facing==2 then
-    logit(spots[4])
-    x=spots[4]
-  elseif adir=='west' or hero.facing==4 then
-    logit(spots[2])
-    x=spots[2]
-  elseif adir=='north' or hero.facing==1 then
-    logit(spots[1])
-    y=spots[1]
-  elseif adir=='south' or hero.facing==3 then
-    logit(spots[3])
-    y=spots[3]
-  else
-    update_lines{"attack: huh?"}
-    return
-  end
+function attack_results(adir,x,y,mapnum,magic)
   local cmd="attack: "..adir
-  local creature=contents[x][y]
+  local z,creature=hero.z,contents[x][y]
   local damage=flr(rnd(hero.str+hero.lvl+hero.dmg))
   if magic then
     damage+=magic
@@ -1418,10 +1397,8 @@ end
 
 function calculatemoves(mapnum,curmap,creature)
   local maxx,maxy=curmap.maxx,curmap.maxy
-  local eastspot=(creature.x+curmap.width-1)%maxx
-  local westspot=(creature.x+1)%maxx
-  local northspot=(creature.y+curmap.height-1)%maxy
-  local southspot=(creature.y+1)%maxy
+  local eastspot,westspot=(creature.x+curmap.width-1)%maxx,(creature.x+1)%maxx
+  local northspot,southspot=(creature.y+curmap.height-1)%maxy,(creature.y+1)%maxy
   if not curmap.wrap then
     eastspot,westspot=creature.x-1,creature.x+1
     northspot,southspot=creature.y-1,creature.y+1
