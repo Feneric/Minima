@@ -9,6 +9,13 @@ __lua__
 fullheight,fullwidth=11,13
 halfheight,halfwidth=5,6
 
+-- set up the various messages
+
+winmsg="\n\n\n\n\n\n  congratulations, you've won!\n\n\n\n\n\n\n\n\n\n    press p to get game menu,\n anything else to continue and\n      explore a bit more."
+losemsg="\n\n\n\n\n\n      you've been killed!\n          you lose!\n\n\n\n\n\n\n\n\n\n\n\n    press p to get game menu"
+helpmsg="minima commands:\n\na: attack\nc: cast spell\nd: dialog, talk, buy\ne: enter, board, mount, climb,\n   descend\np: pause, save, load, help\ns: sit & wait\nw: wearing, wielding, status\nx: examine, look (repeat to\n   search)\n\nfor commands with options (like\ncasting or buying) use the first\ncharacter from the list, or\nanything else to cancel."
+msg=helpmsg
+
 -- anyobj is our root objects. all others inherit from it to
 -- save space and reduce redundancy.
 anyobj={
@@ -183,290 +190,229 @@ setmetatable(animal,{__index=creature})
 -- already defined so most do not need many changes. actual
 -- monsters in the game are instances of creatures found in the
 -- bestiary.
-bestiary={}
-
-bestiary[1]={
-  img=96,
-  names={"orc","hobgoblin"},
-  chance=5
+bestiary={
+  {
+    img=96,
+    names={"orc","hobgoblin"},
+    chance=5
+  },{
+    img=102,
+    name="troll",
+    hp=15,
+    gold=10,
+    exp=4,
+    chance=4
+  },{
+    img=104,
+    names={"hobgoblin","bugbear"},
+    hp=15,
+    gold=8,
+    exp=3,
+    chance=4
+  },{
+    img=114,
+    names={"goblin","kobold"},
+    hp=8,
+    dmg=3,
+    gold=5,
+    exp=1,
+    chance=5
+  },{
+    img=118,
+    flipimg=true,
+    name="ettin",
+    hp=20,
+    dmg=8,
+    exp=6,
+    chance=1
+  },{
+    img=98,
+    name="skeleton",
+    gold=12,
+    chance=5
+  },{
+    img=100,
+    names={"zombie","wight","ghoul"},
+    hp=10,
+    dmg=4,
+    chance=3
+  },{
+    img=123,
+    flipimg=true,
+    names={"phantom","ghost","wraith"},
+    hp=15,
+    dmg=3,
+    terrain={1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35},
+    exp=7,
+    chance=3,
+    talk={'boooo!','feeear me!'}
+  },{
+    img=84,
+    colorsubs={{},{{2,8},{15,4}}},
+    names={"warlock","necromancer","sorceror"},
+    int=10,
+    exp=10,
+    chance=1,
+    talk={"i hex you!","a curse on you!"}
+  },{
+    img=88,
+    colorsubs={{},{{1,5},{8,2},{4,1},{2,12},{15,4}}},
+    names={"rogue","bandit","cutpurse"},
+    dex=10,
+    dmg=6,
+    thief=true,
+    chance=2
+  },{
+    img=86,
+    colorsubs={{},{{1,5},{15,4}}},
+    names={"ninja","assassin"},
+    poison=true,
+    gold=10,
+    exp=8,
+    chance=1,
+    talk={"you shall die at my hands.","you are no match for me."}
+  },{
+    img=106,
+    name="giant spider",
+    hp=18,
+    poison=true,
+    hostile=true,
+    gold=8,
+    exp=5,
+    chance=3
+  },{
+    img=108,
+    name="giant rat",
+    hp=5,
+    dmg=4,
+    poison=true,
+    eat=true,
+    exp=2,
+    chance=3
+  },{
+    img=112,
+    names={"giant snake","giant asp","serpent"},
+    hp=20,
+    poison=true,
+    terrain={4,5,6,7},
+    exp=6,
+    chance=1
+  },{
+    img=116,
+    name="sea serpent",
+    hp=45,
+    hostile=true,
+    terrain={5,12,13,14,15,25},
+    exp=10,
+    chance=5
+  },{
+    img=125,
+    flipimg=true,
+    name="megascorpion",
+    hp=12,
+    dmg=4,
+    poison=true,
+    hostile=true,
+    exp=5,
+    chance=1
+  },{
+    img=122,
+    colorsubs={{},{{3,9},{11,10}},{{3,14},{11,15}}},
+    flipimg=true,
+    names={"slime","jelly","blob"},
+    gold=5,
+    terrain={17,22,23},
+    eat=true,
+    exp=2,
+    chance=3
+  },{
+    img=94,
+    names={"kraken","giant squid"},
+    hp=50,
+    hostile=true,
+    terrain={12,13,14,15},
+    exp=8,
+    chance=2
+  },{
+    img=110,
+    names={"daemon","devil"},
+    hp=50,
+    dmg=10,
+    terrain={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35},
+    gold=25,
+    exp=15,
+    chance=1
+  },{
+    img=120,
+    flipimg=true,
+    name="wisp",
+    terrain={4,5,6},
+    exp=3,
+    chance=1
+  },{
+    img=121,
+    flipimg=true,
+    names={"dragon","drake","wyvern"},
+    terrain={1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35},
+    hp=50,
+    dmg=10,
+    gold=20,
+    exp=17,
+    chance=1
+  },{
+    img=92,
+    name="mimic",
+    moveallowance=0,
+    thief=true,
+    gold=12,
+    terrain={17,22},
+    exp=4,
+    chance=1
+  },{
+    img=124,
+    flipimg=true,
+    name="reaper",
+    moveallowance=0,
+    gold=8,
+    terrain={17,22},
+    exp=5,
+    chance=2
+  },{
+    img=69,
+    colorsubs={{{6,5},{7,6}}},
+    flipimg=false,
+    name="pirates",
+    facingmatters=true,
+    facing=1,
+    terrain={12,13,14,15},
+    exp=8,
+    chance=1
+  },{
+    img=119,
+    colorsubs={{},{{2,14},{1,4}}},
+    flipimg=true,
+    names={"gazer","beholder"},
+    hp=12,
+    terrain={17,22},
+    exp=4,
+    chance=1
+  }
 }
-setmetatable(bestiary[1],{__index=orc})
-
-bestiary[2]={
-  img=98,
-  name="skeleton",
-  gold=12,
-  chance=5
-}
-setmetatable(bestiary[2],{__index=undead})
-
-bestiary[3]={
-  img=100,
-  names={"zombie","wight","ghoul"},
-  hp=10,
-  dmg=4,
-  chance=3
-}
-setmetatable(bestiary[3],{__index=undead})
-
-bestiary[4]={
-  img=102,
-  name="troll",
-  hp=15,
-  gold=10,
-  exp=4,
-  chance=4
-}
-setmetatable(bestiary[4],{__index=orc})
-
-bestiary[5]={
-  img=104,
-  names={"hobgoblin","bugbear"},
-  hp=15,
-  gold=8,
-  exp=3,
-  chance=4
-}
-setmetatable(bestiary[5],{__index=orc})
-
-bestiary[6]={
-  img=106,
-  name="giant spider",
-  hp=18,
-  poison=true,
-  hostile=true,
-  gold=8,
-  exp=5,
-  chance=3
-}
-setmetatable(bestiary[6],{__index=animal})
-
-bestiary[7]={
-  img=108,
-  name="giant rat",
-  hp=5,
-  dmg=4,
-  poison=true,
-  eat=true,
-  exp=2,
-  chance=3
-}
-setmetatable(bestiary[7],{__index=animal})
-
-bestiary[8]={
-  img=110,
-  names={"daemon","devil"},
-  hp=50,
-  dmg=10,
-  terrain={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35},
-  gold=25,
-  exp=15,
-  chance=1
-}
-setmetatable(bestiary[8],{__index=creature})
-
-bestiary[9]={
-  img=112,
-  names={"giant snake","giant asp","serpent"},
-  hp=20,
-  poison=true,
-  terrain={4,5,6,7},
-  exp=6,
-  chance=1
-}
-setmetatable(bestiary[9],{__index=animal})
-
-bestiary[10]={
-  img=114,
-  names={"goblin","kobold"},
-  hp=8,
-  dmg=3,
-  gold=5,
-  exp=1,
-  chance=5
-}
-setmetatable(bestiary[10],{__index=orc})
-
-bestiary[11]={
-  img=116,
-  name="sea serpent",
-  hp=45,
-  hostile=true,
-  terrain={5,12,13,14,15,25},
-  exp=10,
-  chance=5
-}
-setmetatable(bestiary[11],{__index=animal})
-
-bestiary[12]={
-  img=123,
-  flipimg=true,
-  names={"phantom","ghost","wraith"},
-  hp=15,
-  dmg=3,
-  terrain={1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35},
-  exp=7,
-  chance=3,
-  talk={'boooo!','feeear me!'}
-}
-setmetatable(bestiary[12],{__index=undead})
-
-bestiary[13]={
-  img=125,
-  flipimg=true,
-  name="megascorpion",
-  hp=12,
-  dmg=4,
-  poison=true,
-  hostile=true,
-  exp=5,
-  chance=1
-}
-setmetatable(bestiary[13],{__index=animal})
-
-bestiary[14]={
-  --imgs={76,78},
-  img=84,
-  colorsubs={{},{{2,8},{15,4}}},
-  names={"warlock","necromancer","sorceror"},
-  int=10,
-  exp=10,
-  chance=1,
-  talk={"i hex you!","a curse on you!"}
-}
-setmetatable(bestiary[14],{__index=villain})
-
-bestiary[15]={
-  --imgs={84,86},
-  img=88,
-  colorsubs={{},{{1,5},{8,2},{4,1},{2,12},{15,4}}},
-  names={"rogue","bandit","cutpurse"},
-  dex=10,
-  dmg=6,
-  thief=true,
-  chance=2
-}
-setmetatable(bestiary[15],{__index=villain})
-
-bestiary[16]={
-  --imgs={80,82},
-  img=86,
-  colorsubs={{},{{1,5},{15,4}}},
-  names={"ninja","assassin"},
-  poison=true,
-  gold=10,
-  exp=8,
-  chance=1,
-  talk={"you shall die at my hands.","you are no match for me."}
-}
-setmetatable(bestiary[16],{__index=villain})
-
-bestiary[17]={
-  img=120,
-  flipimg=true,
-  name="wisp",
-  terrain={4,5,6},
-  exp=3,
-  chance=1
-}
-setmetatable(bestiary[17],{__index=creature})
-
-bestiary[18]={
-  img=121,
-  flipimg=true,
-  names={"dragon","drake","wyvern"},
-  terrain={1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35},
-  hp=50,
-  dmg=10,
-  gold=20,
-  exp=17,
-  chance=1
-}
-setmetatable(bestiary[18],{__index=creature})
-
-bestiary[19]={
-  img=122,
-  colorsubs={{},{{3,9},{11,10}},{{3,14},{11,15}}},
-  flipimg=true,
-  names={"slime","jelly","blob"},
-  gold=5,
-  terrain={17,22,23},
-  eat=true,
-  exp=2,
-  chance=3
-}
-setmetatable(bestiary[19],{__index=animal})
-
-bestiary[20]={
-  img=92,
-  name="mimic",
-  moveallowance=0,
-  thief=true,
-  gold=12,
-  terrain={17,22},
-  exp=4,
-  chance=1
-}
-setmetatable(bestiary[20],{__index=creature})
-
-bestiary[21]={
-  img=124,
-  flipimg=true,
-  name="reaper",
-  moveallowance=0,
-  gold=8,
-  terrain={17,22},
-  exp=5,
-  chance=2
-}
-setmetatable(bestiary[21],{__index=creature})
-
-bestiary[22]={
-  img=69,
-  colorsubs={{{6,5},{7,6}}},
-  flipimg=false,
-  name="pirates",
-  facingmatters=true,
-  facing=1,
-  terrain={12,13,14,15},
-  exp=8,
-  chance=1
-}
-setmetatable(bestiary[22],{__index=creature})
-
-bestiary[23]={
-  img=94,
-  names={"kraken","giant squid"},
-  hp=50,
-  hostile=true,
-  terrain={12,13,14,15},
-  exp=8,
-  chance=2
-}
-setmetatable(bestiary[23],{__index=animal})
-
-bestiary[24]={
-  img=118,
-  flipimg=true,
-  name="ettin",
-  hp=20,
-  dmg=8,
-  exp=6,
-  chance=1
-}
-setmetatable(bestiary[24],{__index=orc})
-
-bestiary[25]={
-  img=119,
-  colorsubs={{},{{2,14},{1,4}}},
-  flipimg=true,
-  names={"gazer","beholder"},
-  hp=12,
-  terrain={17,22},
-  exp=4,
-  chance=1
-}
-setmetatable(bestiary[25],{__index=creature})
+for beastnum=1,#bestiary do
+  local beasttype
+  if beastnum<6 then
+    beasttype=orc
+  elseif beastnum<9 then
+    beasttype=undead
+  elseif beastnum<12 then
+    beasttype=villain
+  elseif beastnum<19 then
+    beasttype=animal
+  else
+    beasttype=creature
+  end
+  setmetatable(bestiary[beastnum],{__index=beasttype})
+end
 
 ankhtype={
   img=38,
@@ -485,55 +431,112 @@ shiptype={
 }
 setmetatable(shiptype,{__index=anyobj})
 
-function purchase(itemtype,attribute)
+function checkpurchase(prompt,checkfunc,purchasefunc)
+  update_lines(prompt)
   cmd,mapnum,curmap=yield()
-  if itemtype[cmd] then
-    desireditem=itemtype[cmd]
-    logit("attr "..hero[attribute].." num "..desireditem.num)
-    if hero[attribute]>=desireditem.num then
-      return {"that is not an upgrade."}
-    elseif hero.gold>=desireditem.price then
-      hero.gold-=desireditem.price
-      hero[attribute]=desireditem.num
-      return {"the "..desireditem.name.." is yours."}
-    else
-      return {"you cannot afford that."}
-    end
+  desireditem=checkfunc(cmd)
+  if desireditem then
+    return purchasefunc(desireditem)
+  elseif desireditem==false then
+    return "you cannot afford that."
   else
-    return {"no sale."}
+    return "no sale."
   end
+end
+
+function purchase(prompt,itemtype,attribute)
+  return checkpurchase(prompt,
+    function(cmd)
+      desireditem=itemtype[cmd]
+      if desireditem then
+        logit("attr "..hero[attribute].." num "..desireditem.num)
+        return hero.gold>=desireditem.price and desireditem
+      else
+        return nil
+      end
+    end,
+    function(desireditem)
+      if hero[attribute]>=desireditem.num then
+        return "that is not an upgrade."
+      else
+        hero.gold-=desireditem.price
+        hero[attribute]=desireditem.num
+        return "the "..desireditem.name.." is yours."
+      end
+    end
+  )
 end
 
 shop={
   food=function()
-    update_lines{"$15 for 25 food; a\80\80\82\79\86\69? "}
-    cmd,mapnum,curmap=yield()
-    if cmd=='a' then
-      if hero.gold>=15 then
+    return checkpurchase({"$15 for 25 food; a\80\80\82\79\86\69? "},
+      function(cmd)
+        if cmd=='a' then
+          return hero.gold>=15
+        else
+          return nil
+        end
+      end,
+      function()
         hero.gold-=15
         hero.food=min(hero.food+25,32767)
-        return {"you got more food."}
-      else
-        return {"you cannot afford that."}
+        return "you got more food."
       end
-    else
-      return {"no sale."}
-    end
+    )
   end,
-
   armor=function()
-    update_lines{"buy \131cloth $12, \139leather $99,","\145chain $300, or \148plate $950: "}
-    return purchase(armors,'armor')
+    return purchase({"buy \131cloth $12, \139leather $99,","\145chain $300, or \148plate $950: "},armors,'armor')
   end,
   weapons=function()
-    update_lines{"buy d\65\71\71\69\82 $8, c\76\85\66 $40,","a\88\69 $75, or s\87\79\82\68 $150: "}
-    return purchase(weapons,'dmg')
+    return purchase({"buy d\65\71\71\69\82 $8, c\76\85\66 $40,","a\88\69 $75, or s\87\79\82\68 $150: "},weapons,'dmg')
   end,
   hospital=function()
-    return {"choose m\69\68\73\67 ($8), c\85\82\69 ($10),","or s\65\86\73\79\82 ($15): "}
+    return checkpurchase({"choose m\69\68\73\67 ($8), c\85\82\69 ($10),","or s\65\86\73\79\82 ($25): "},
+      function(cmd)
+        desiredspell=spells[cmd]
+        if desiredspell and desiredspell.price then
+          return hero.gold>=desiredspell.price and desiredspell
+        else
+          return nil
+        end
+      end,
+      function(desiredspell)
+        hero.gold-=desiredspell.price
+        if desiredspell.mp==7 then
+          -- perform cure
+          hero.health='g'
+        else
+          -- perform healing
+          increasehp(desiredspell.amount)
+        end
+        return desiredspell.name.." is cast!"
+      end
+    )
   end,
   bar=function()
-    return {"$5 per drink; a\65\80\80\82\79\86\69? "}
+    return checkpurchase({"$5 per drink; a\80\80\82\79\86\69? "},
+      function(cmd)
+        if cmd=='a' then
+          return hero.gold>=5
+        else
+          return nil
+        end
+      end,
+      function()
+        rumors={
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8"
+        }
+        update_lines{"while socializing, you hear:"}
+        return '"'..rumors[flr(rnd(#rumors))+1]..'"'
+      end
+    )
   end
 }
 
@@ -579,10 +582,28 @@ end
 
 -- the maps structure holds information about all of the regular
 -- places in the game, dungeons as well as towns.
+towntype={
+  mapnum=0,
+  newmonsters=0,
+  maxmonsters=0,
+  friendly=true
+}
+dungeontype={
+  mapnum=0,
+  dungeon=true,
+  startz=1,
+  startfacing=1,
+  minx=1,
+  miny=1,
+  maxx=9,
+  maxy=9,
+  newmonsters=25,
+  maxmonsters=10,
+  friendly=false,
+}
 maps={
   {
     name="saugus",
-    mapnum=0,
     enterx=13,
     entery=4,
     startx=76,
@@ -590,14 +611,9 @@ maps={
     minx=64,
     miny=0,
     maxx=89,
-    maxy=24,
-    newmonsters=0,
-    maxmonsters=0,
-    friendly=true
-  },
-  {
+    maxy=24
+  },{
     name="lynn",
-    mapnum=0,
     enterx=17,
     entery=4,
     startx=100,
@@ -605,35 +621,34 @@ maps={
     minx=88,
     miny=0,
     maxx=112,
-    maxy=24,
-    newmonsters=0,
-    maxmonsters=0,
-    friendly=true
-  },
-  {
+    maxy=24
+  },{
     name="nibiru",
-    mapnum=0,
     enterx=4,
     entery=11,
-    dungeon=true,
     startx=1,
     starty=8,
-    startz=1,
-    startfacing=1,
     minx=1,
     miny=1,
     maxx=9,
     maxy=9,
-    newmonsters=25,
     maxmonsters=5,
-    --maxmonsters=15,
-    friendly=false,
     levels={
       {0x0000,0x3ffe,0x0300,0x3030,0x3ffc,0x3300,0x33fc,0x00c0},
       {0x0000,0xcccd,0x0330,0x3030,0x3cfc,0x0300,0x3fcc,0x00c0}
     }
   }
 }
+for mapsnum=1,#maps do
+  local maptype
+  if mapsnum<3 then
+    maptype=towntype
+  else
+    maptype=dungeontype
+  end
+  setmetatable(maps[mapsnum],{__index=maptype})
+end
+
 -- map 0 is special; it's the world map, the overview map.
 maps[0]={
   name="world",
@@ -691,10 +706,11 @@ weapons={
 -- spell definitions
 spells={
   a={name='attack',mp=3,amount=10},
-  x={name='medic',mp=5,amount=12,price=20},
-  c={name='cure',mp=7,price=30},
+  x={name='medic',mp=5,amount=12,price=8},
+  c={name='cure',mp=7,price=10},
   tab={name='wound',mp=11,amount=50},
-  s={name='savior',mp=13,amount=60,price=100}
+  e={name='exit',mp=13},
+  s={name='savior',mp=17,amount=60,price=25}
 }
 
 -- the items structure holds the live copy saying which items are
@@ -778,12 +794,14 @@ function _init()
   turn=0
   turnmade=false
   cycle=0
-  menuitem(1,"save game",savegame)
-  menuitem(2,"load game",loadgame)
-  menuitem(3,"list commands",listcommands)
+  menuitem(1,"list commands",listcommands)
+  menuitem(2,"save game",savegame)
+  menuitem(3,"load game",loadgame)
+  menuitem(4,"new game",run)
   processinput=cocreate(inputprocessor)
   _update=world_update
   _draw=world_draw
+  draw_state=world_draw
   definemonster(1,guard,73,21)
   definemonster(2,guard,102,22)
   definemonster(1,medic,68,8)
@@ -800,7 +818,9 @@ function _init()
 end
 
 function listcommands()
-  update_lines{"sorry, not implemented yet"}
+  msg=helpmsg
+  draw_state=_draw
+  _draw=msg_draw
 end
 
 function savegame()
@@ -848,10 +868,22 @@ function checkspell(cmd,extra)
   end
 end
 
+function exitdungeon(curmap)
+  hero.x,hero.y,hero.z=curmap.enterx,curmap.entery,0
+  hero.mapnum=curmap.mapnum
+  hero.facing=0
+  hero.hitdisplay=0
+  _draw=world_draw
+end
+
 function inputprocessor(cmd,mapnum,curmap)
   while true do
     local spots=calculatemoves(mapnum,curmap,hero)
-    if cmd=='west' then
+    if _draw==msg_draw then
+      if cmd!='p' then
+        _draw=draw_state
+      end
+    elseif cmd=='west' then
       if curmap.dungeon then
         hero.facing-=1
         if hero.facing<1 then
@@ -890,7 +922,7 @@ function inputprocessor(cmd,mapnum,curmap)
       end
       logit('hero '..hero.x..','..hero.y..','..hero.z)
     elseif cmd=='c' then
-      update_lines{"choose a\84\84\65\67\75, m\69\68\73\67, c\85\82\69,","w\79\85\78\68, s\65\86\73\79\82: "}
+      update_lines{"choose a\84\84\65\67\75, m\69\68\73\67, c\85\82\69,","w\79\85\78\68, e\88\73\84, s\65\86\73\79\82: "}
       cmd,mapnum,curmap=yield()
       if cmd=='c' then
         -- cast cure
@@ -898,6 +930,13 @@ function inputprocessor(cmd,mapnum,curmap)
       elseif cmd=='x' or cmd=='s' then
         -- cast healing
         if(checkspell(cmd))increasehp(spells[cmd].amount)
+      elseif cmd=='e' then
+        -- cast exit dungeon
+        if not curmap.dungeon then
+          update_lines{'not in a dungeon.'}
+        elseif(checkspell(cmd)) then
+          exitdungeon(curmap)
+        end
       elseif cmd=='tab' or cmd=='a' then
         -- cast offensive spell
         if checkspell(cmd,'dir:') then
@@ -949,11 +988,7 @@ function inputprocessor(cmd,mapnum,curmap)
       local shipindex=checkifinship()
       if curmap.dungeon and hero.z==curmap.startz and hero.x==curmap.startx and hero.y==curmap.starty then
         msg="exiting "..curmap.name.."."
-        hero.x,hero.y,hero.z=curmap.enterx,curmap.entery,0
-        hero.mapnum=curmap.mapnum
-        hero.facing=0
-        hero.hitdisplay=0
-        _draw=world_draw
+        exitdungeon(curmap)
       elseif shipindex then
         msg="exiting ship."
         hero.items[shipindex].facing=hero.facing
@@ -1100,7 +1135,9 @@ end
 function deducthp(damage)
   hero.hp-=damage
   if hero.hp<=0 then
-    update_lines{"you've been killed!"}
+    msg=losemsg
+    draw_state=_draw
+    _draw=msg_draw
   end
 end
 
@@ -1306,7 +1343,7 @@ function dialog_results(ddir,x,y,mapnum)
   if contents[x][y] then
     local dialog_target=contents[x][y]
     if dialog_target.merch then
-      update_lines(shop[dialog_target.merch]())
+      update_lines{shop[dialog_target.merch]()}
     elseif contents[x][y].talk then
       update_lines{cmd,'"'..dialog_target.talk[flr(rnd(#dialog_target.talk))+1]..'"'}
     else
@@ -1506,7 +1543,7 @@ function movecreatures(mapnum,curmap,hero)
           elseif rnd(creature.dex*64)>rnd(hero_dodge+hero.armor) then
             hero.gothit=true
             sfx(1)
-            local damage=flr(rnd(creature.str+creature.dmg)-rnd(hero.armor))+1
+            local damage=max(flr(rnd(creature.str+creature.dmg)-rnd(hero.armor))+1,0)
             deducthp(damage)
             update_lines{"the "..creature.name.." hits!"}
             gothit=true
@@ -1873,6 +1910,11 @@ function dungeondrawmonster(xeno,yako,zabo,distance)
       end
     end
   end
+end
+
+function msg_draw()
+  cls()
+  print(msg)
 end
 
 function world_draw()
