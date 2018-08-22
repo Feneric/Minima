@@ -6,6 +6,6 @@ d: (3,1) dialog, talk
 e: enter, board, mount, climb, descend
 f: (1,1) furnish, wear, equip, ready
 p: pause, save, help
-s: (0,1)
+s: (0,1) sit & wait
 w, lshift, tab: status
 x, m, v, 8: examine, look (repeat to search)

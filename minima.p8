@@ -5,12 +5,10 @@ __lua__
 -- by feneric
 
 -- initialization data
-
 fullheight,fullwidth=11,13
 halfheight,halfwidth=5,6
 
 -- set up the various messages
-
 winmsg="\n\n\n\n\n\n  congratulations, you've won!\n\n\n\n\n\n\n\n\n\n    press p to get game menu,\n anything else to continue and\n      explore a bit more."
 losemsg="\n\n\n\n\n\n      you've been killed!\n          you lose!\n\n\n\n\n\n\n\n\n\n\n\n    press p to get game menu"
 helpmsg="minima commands:\n\na: attack\nc: cast spell\nd: dialog, talk, buy\ne: enter, board, mount, climb,\n   descend\np: pause, save, load, help\ns: sit & wait\nw: wearing & wielding\nx: examine, look (repeat to\n   search)\n\nfor commands with options (like\ncasting or buying) use the first\ncharacter from the list, or\nanything else to cancel."
@@ -27,163 +25,160 @@ anyobj={
   chance=0 
 }
 
--- creature is our most basic animate object. all living things
--- indirectly inherit from it to save space and reduce redundancy.
-creature={
-  hp=10,
-  armor=1,
-  dmg=5,
-  int=8,
-  str=8,
-  dex=8,
-  hostile=true,
-  terrain={1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35},
-  moveallowance=1,
-  gold=10,
-  exp=2,
-  z=0
+-- basetypes are the objects we mean to use to make objects.
+-- they inherit (often indirectly) from our root object.
+basetypes={
+  {
+    hp=10,
+    armor=1,
+    dmg=5,
+    int=8,
+    str=8,
+    dex=8,
+    hostile=true,
+    terrain={1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35},
+    moveallowance=1,
+    gold=10,
+    exp=2,
+    z=0
+  },{
+    img=38,
+    imgalt=38,
+    name="ankh",
+    talk={"yes, ankhs can talk.","shrines make good landmarks."}
+  },{
+    img=69,
+    imgalt=69,
+    name="ship",
+    facingmatters=true,
+    facing=2
+  },{
+    img=74,
+    armor=0,
+    hostile=false,
+    gold=5,
+    exp=1
+  },{
+    name="orc",
+    int=6,
+    chance=5,
+    talk={"urg!","grar!"}
+  },{
+    int=7,
+    dmg=6,
+    dex=6,
+    gold=5,
+    chance=3
+  },{
+    int=3,
+    dex=10,
+    armor=0,
+    hostile=nil,
+    gold=0,
+    chance=3
+  },{
+    img=82,
+    colorsubs={{},{{1,12},{14,2},{15,4}}},
+    name="fighter",
+    hp=12,
+    armor=2,
+    dmg=10,
+    int=6,
+    str=10,
+    dex=9,
+    talk={"check out these pecs!","i'm jacked!"}
+  },{
+    img=90,
+    colorsubs={{},{{15,4}}},
+    name="guard",
+    moveallowance=0,
+    hp=18,
+    armor=3,
+    talk={"behave yourself.","i protect good citizens."}
+  },{
+    img=75,
+    flipimg=true,
+    colorsubs={{},{{1,4},{4,15},{6,1},{14,13}},{{1,4},{6,5},{14,10}},{{1,4},{4,15},{6,1},{14,3}}},
+    name="merchant",
+    talk={"buy my wares!","consume!","stuff makes you happy!"}
+  },{
+    flipimg=true,
+    colorsubs={{},{{2,9},{4,15},{13,14}},{{2,10},{4,15},{13,9}},{{2,11},{13,3}}},
+    name="lady",
+    talk={"pardon me.","well i never."}
+  },{
+    img=76,
+    name="shepherd",
+    colorsubs={{},{{6,5},{15,4}},{{6,5}},{{15,4}}},
+    talk={"i like sheep.","the open air is nice."}
+  },{
+    img=78,
+    name="jester",
+    dex=12,
+    talk={"ho ho ho!","ha ha ha!"}
+  },{
+    name="villain",
+    armor=1,
+    hostile=true,
+    gold=15,
+    exp=5,
+    chance=1,
+    talk={"stand and deliver!","you shall die!"}
+  },{
+    name="grocer",
+    merch='food'
+  },{
+    name="armorer",
+    merch='armor'
+  },{
+    name="smith",
+    merch='weapons'
+  },{
+    name="medic",
+    merch='hospital'
+  },{
+    name="barkeep",
+    merch='bar'
+  }
 }
-setmetatable(creature,{__index=anyobj})
 
--- human isn't meant to be used directly; all occupation
--- types inherit from it. actual humans in the game are
--- instances of the occupation types.
-human={
-  img=74,
-  name="person",
-  armor=0,
-  hostile=false,
-  gold=5,
-  exp=1
-}
-setmetatable(human,{__index=creature})
+-- give our base objects names for convenience & efficiency.
+creature=basetypes[1]
+ankhtype=basetypes[2]
+shiptype=basetypes[3]
+human=basetypes[4]
+orc=basetypes[5]
+undead=basetypes[6]
+animal=basetypes[7]
+fighter=basetypes[8]
+guard=basetypes[9]
+merchant=basetypes[10]
+lady=basetypes[11]
+shepherd=basetypes[12]
+jester=basetypes[13]
+villain=basetypes[14]
+grocer=basetypes[15]
+armorer=basetypes[16]
+smith=basetypes[17]
+medic=basetypes[18]
+barkeep=basetypes[19]
 
-fighter={
-  img=82,
-  colorsubs={{},{{1,12},{14,2},{15,4}}},
-  name="fighter",
-  hp=12,
-  armor=2,
-  dmg=10,
-  int=6,
-  str=10,
-  dex=9,
-  talk={"check out these pecs!","i'm jacked!"}
-}
-setmetatable(fighter,{__index=human})
-
-guard={
-  img=90,
-  colorsubs={{},{{15,4}}},
-  name="guard",
-  moveallowance=0,
-  hp=18,
-  armor=3,
-  talk={"behave yourself.","i protect good citizens."}
-}
-setmetatable(guard,{__index=fighter})
-
-merchant={
-  img=75,
-  flipimg=true,
-  colorsubs={{},{{1,4},{4,15},{6,1},{14,13}},{{1,4},{6,5},{14,10}},{{1,4},{4,15},{6,1},{14,3}}},
-  name="merchant",
-  talk={"buy my wares!","consume!","stuff makes you happy!"}
-}
-setmetatable(merchant,{__index=human})
-
-grocer={
-  name="grocer",
-  merch='food'
-}
-setmetatable(grocer,{__index=merchant})
-
-armorer={
-  name="armorer",
-  merch='armor'
-}
-setmetatable(armorer,{__index=merchant})
-
-smith={
-  name="smith",
-  merch='weapons'
-}
-setmetatable(smith,{__index=merchant})
-
-medic={
-  name="medic",
-  merch='hospital'
-}
-setmetatable(medic,{__index=merchant})
-
-lady={
-  flipimg=true,
-  colorsubs={{},{{2,9},{4,15},{13,14}},{{2,10},{4,15},{13,9}},{{2,11},{13,3}}},
-  name="lady",
-  talk={"pardon me.","well i never."}
-}
-setmetatable(lady,{__index=human})
-
-barkeep={
-  name="barkeep",
-  merch='bar'
-}
-setmetatable(barkeep,{__index=lady})
-
-shepherd={
-  img=76,
-  name="shepherd",
-  colorsubs={{},{{6,5},{15,4}},{{6,5}},{{15,4}}},
-  talk={"i like sheep.","the open air is nice."}
-}
-setmetatable(shepherd,{__index=human})
-
-jester={
-  img=78,
-  name="jester",
-  dex=12,
-  talk={"ho ho ho!","ha ha ha!"}
-}
-setmetatable(jester,{__index=human})
-
-villain={
-  name="villain",
-  armor=1,
-  hostile=true,
-  gold=15,
-  exp=5,
-  talk={"stand and deliver!","you shall die!"}
-}
-setmetatable(villain,{__index=human})
-
--- orc isn't meant to be used directly; other orclike
--- creatures inherit from it.
-orc={
-  int=6,
-  talk={"urg!","grar!"}
-}
-setmetatable(orc,{__index=creature})
-
--- undead isn't meant to be used directly; all undead
--- creatures inherit from it.
-undead={
-  int=7,
-  dmg=6,
-  dex=6,
-  gold=5
-}
-setmetatable(undead,{__index=creature})
-
--- animal isn't meant to be used directly; all non-sentient
--- animal types inherit from it.
-animal={
-  int=3,
-  dex=10,
-  armor=0,
-  hostile=nil,
-  gold=0
-}
-setmetatable(animal,{__index=creature})
+-- set our base objects base values.
+for basetypenum=1,#basetypes do
+  local basetype
+  if basetypenum<4 then
+    basetype=anyobj
+  elseif basetypenum<8 then
+    basetype=creature
+  elseif basetypenum<15 then
+    basetype=human
+  elseif basetypenum<19 then
+    basetype=merchant
+  else
+    basetype=lady
+  end
+  setmetatable(basetypes[basetypenum],{__index=basetype})
+end
 
 -- the bestiary holds all the different monster types that can
 -- be encountered in the game. it builds off of the basic types
@@ -192,9 +187,7 @@ setmetatable(animal,{__index=creature})
 -- bestiary.
 bestiary={
   {
-    img=96,
-    names={"orc","hobgoblin"},
-    chance=5
+    img=96
   },{
     img=102,
     name="troll",
@@ -215,8 +208,7 @@ bestiary={
     hp=8,
     dmg=3,
     gold=5,
-    exp=1,
-    chance=5
+    exp=1
   },{
     img=118,
     flipimg=true,
@@ -234,8 +226,7 @@ bestiary={
     img=100,
     names={"zombie","wight","ghoul"},
     hp=10,
-    dmg=4,
-    chance=3
+    dmg=4
   },{
     img=123,
     flipimg=true,
@@ -244,7 +235,6 @@ bestiary={
     dmg=3,
     terrain={1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35},
     exp=7,
-    chance=3,
     talk={'boooo!','feeear me!'}
   },{
     img=84,
@@ -252,7 +242,6 @@ bestiary={
     names={"warlock","necromancer","sorceror"},
     int=10,
     exp=10,
-    chance=1,
     talk={"i hex you!","a curse on you!"}
   },{
     img=88,
@@ -269,7 +258,6 @@ bestiary={
     poison=true,
     gold=10,
     exp=8,
-    chance=1,
     talk={"you shall die at my hands.","you are no match for me."}
   },{
     img=106,
@@ -278,8 +266,7 @@ bestiary={
     poison=true,
     hostile=true,
     gold=8,
-    exp=5,
-    chance=3
+    exp=5
   },{
     img=108,
     name="giant rat",
@@ -287,11 +274,10 @@ bestiary={
     dmg=4,
     poison=true,
     eat=true,
-    exp=2,
-    chance=3
+    exp=2
   },{
     img=112,
-    names={"giant snake","giant asp","serpent"},
+    names={"giant snake","serpent"},
     hp=20,
     poison=true,
     terrain={4,5,6,7},
@@ -323,8 +309,7 @@ bestiary={
     gold=5,
     terrain={17,22,23},
     eat=true,
-    exp=2,
-    chance=3
+    exp=2
   },{
     img=94,
     names={"kraken","giant squid"},
@@ -368,7 +353,7 @@ bestiary={
     dmg=10,
     gold=20,
     exp=17,
-    chance=1
+    chance=.5
   },{
     img=110,
     names={"daemon","devil"},
@@ -377,7 +362,7 @@ bestiary={
     terrain={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35},
     gold=25,
     exp=15,
-    chance=1
+    chance=.5
   },{
     img=92,
     name="mimic",
@@ -398,6 +383,7 @@ bestiary={
     chance=2
   }
 }
+-- set base values for monsters.
 for beastnum=1,#bestiary do
   local beasttype
   if beastnum<6 then
@@ -412,25 +398,11 @@ for beastnum=1,#bestiary do
     beasttype=creature
   end
   setmetatable(bestiary[beastnum],{__index=beasttype})
+  bestiary[beastnum].idtype=beastnum
 end
 
-ankhtype={
-  img=38,
-  imgalt=38,
-  name="ankh",
-  talk={"yes, ankhs can talk.","shrines make good landmarks."}
-}
-setmetatable(ankhtype,{__index=anyobj})
-
-shiptype={
-  img=69,
-  imgalt=69,
-  name="ship",
-  facingmatters=true,
-  facing=2
-}
-setmetatable(shiptype,{__index=anyobj})
-
+-- check to see whether or not a desired purchase can
+-- be made.
 function checkpurchase(prompt,checkfunc,purchasefunc)
   update_lines(prompt)
   cmd,mapnum,curmap=yield()
@@ -444,6 +416,7 @@ function checkpurchase(prompt,checkfunc,purchasefunc)
   end
 end
 
+-- makes a purchase if all is in order.
 function purchase(prompt,itemtype,attribute)
   return checkpurchase(prompt,
     function(cmd)
@@ -468,6 +441,9 @@ function purchase(prompt,itemtype,attribute)
   )
 end
 
+-- a table of functions to perform the different merchant
+-- operations. while there is a lot in common between them,
+-- there are a lot of differences, too.
 shop={
   food=function()
     return checkpurchase({"$15 for 25 food; a\80\80\82\79\86\69? "},
@@ -480,7 +456,7 @@ shop={
       end,
       function()
         hero.gold-=15
-        hero.food=min(hero.food+25,32767)
+        hero.food=not_over_32767(hero.food+25)
         return "you got more food."
       end
     )
@@ -506,7 +482,7 @@ shop={
         hero.gold-=desiredspell.price
         if desiredspell.mp==7 then
           -- perform cure
-          hero.health='g'
+          hero.status=band(hero.status,14)
         else
           -- perform healing
           increasehp(desiredspell.amount)
@@ -536,7 +512,7 @@ shop={
           "8"
         }
         update_lines{"while socializing, you hear:"}
-        return '"'..rumors[flr(rnd(#rumors))+1]..'"'
+        return '"'..rumors[flr(rnd(#rumors)+1)]..'"'
       end
     )
   end
@@ -630,17 +606,22 @@ maps={
     entery=11,
     startx=1,
     starty=8,
-    minx=1,
-    miny=1,
-    maxx=9,
-    maxy=9,
-    maxmonsters=5,
     levels={
       {0x0000,0x3ffe,0x0300,0x3030,0x3ffc,0x3300,0x33fc,0x00c0},
       {0x0000,0xcccd,0x0330,0x3030,0x3cfc,0x0300,0x3fcc,0x00c0}
     }
+  },{
+    name="purgatory",
+    enterx=32,
+    entery=5,
+    startx=1,
+    starty=1,
+    levels={
+      {0x0330,0x3f3c,0x0300,0x33f0,0xf03c,0x3f00,0x33fc,0x0300}
+    }
   }
 }
+-- set base values for places.
 for mapsnum=1,#maps do
   local maptype
   if mapsnum<3 then
@@ -660,14 +641,26 @@ maps[0]={
   maxy=64,
   wrap=true,
   newmonsters=10,
-  maxmonsters=5,
-  --maxmonsters=50,
+  maxmonsters=10,
   friendly=false
 }
 
+-- the creatures structure holds the live copy saying which
+-- creatures (both human and monster) are where in the world.
+-- individually they are instances of bestiary objects or
+-- occupation type objects.
+creatures={}
+
+-- the items structure holds the live copy saying which items are
+-- where in the world.
+items={}
+
+-- perform the per-map data structure initializations.
 for mapnum=0,#maps do
    maps[mapnum].width=maps[mapnum].maxx-maps[mapnum].minx
    maps[mapnum].height=maps[mapnum].maxy-maps[mapnum].miny
+   creatures[mapnum]={}
+   items[mapnum]={{}}
 end
 
 -- all the signs found in all the maps are defined here with
@@ -712,33 +705,18 @@ spells={
   a={name='attack',mp=3,amount=10},
   x={name='medic',mp=5,amount=12,price=8},
   c={name='cure',mp=7,price=10},
-  tab={name='wound',mp=11,amount=50},
+  w={name='wound',mp=11,amount=50},
   e={name='exit',mp=13},
   s={name='savior',mp=17,amount=60,price=25}
 }
 
--- the items structure holds the live copy saying which items are
--- where in the world.
-items={
-   {{}},
-   {{}},
-   {}
-}
+-- set up initial items.
 items[0]={}
 setmetatable(items[1][1],{__index=ankhtype})
 contents[67][3]=items[1][1]
 setmetatable(items[2][1],{__index=shiptype})
 contents[109][5]=items[2][1]
 
--- the creatures structure holds the live copy saying which
--- creatures (both human and monster) are where in the world.
--- individually they are instances of bestiary objects or
--- occupation type objects.
-creatures={
- {},
- {},
- {}
-}
 -- creature 0 is the maelstrom and not really a creature at all,
 -- although it shares most creature behaviors.
 creatures[0]={}
@@ -771,7 +749,7 @@ hero={
   str=8,
   int=8,
   dex=8,
-  health="g",
+  status=0,
   hitdisplay=0,
   facing=0,
   gold=20,
@@ -819,6 +797,7 @@ function _init()
   definemonster(2,medic,106,12)
   definemonster(1,guard,79,21)
   definemonster(2,guard,98,22)
+  cartdata("minima0")
 end
 
 function listcommands()
@@ -828,10 +807,45 @@ function listcommands()
 end
 
 function savegame()
-  update_lines{"sorry, not implemented yet"}
+  if hero.mapnum~=0 then
+    update_lines{"sorry, only outside."}
+  else
+    local storagenum=0
+    for attr,attrval in pairs(hero) do
+      dset(storagenum,attrval)
+      storagenum+=1
+    end
+    for creaturenum=0,10 do
+      local creature=creatures[0][creaturenum]
+      if creature then
+        dset(storagenum,creature.idtype)
+        dset(storagenum+1,creature.x)
+        dset(storagenum+2,creature.y)
+      else
+        dset(storagenum,0)
+      end
+      storagenum+=3
+    end
+    update_lines{"sorry, not implemented yet"}
+  end
 end
 
 function loadgame()
+  local storagenum=0
+  for attr,attrval in pairs(hero) do
+    hero[attr]=dget(storagenum)
+    storagenum+=1
+  end
+  creatures[0]={}
+  for creaturenum=0,10 do
+    creaturenum=dget(storagenum)
+    if creaturenum~=0 then
+      definemonster(0,bestiary[creaturenum],dget(storagenum+1),dget(storagenum+2))
+      storagenum+=3
+    else
+      break
+    end
+  end
   update_lines{"sorry, not implemented yet"}
 end
 
@@ -848,7 +862,7 @@ buttons={
   "f",
   "e",
   "d",
-  "tab",
+  "w",
   "a"
 }
 
@@ -932,7 +946,7 @@ function inputprocessor(cmd,mapnum,curmap)
         -- cast cure
         if checkspell(cmd) then
           sfx(3)
-          hero.health='g'
+          hero.status=band(hero.status,14)
         end
       elseif cmd=='x' or cmd=='s' then
         -- cast healing
@@ -948,7 +962,7 @@ function inputprocessor(cmd,mapnum,curmap)
           sfx(4)
           exitdungeon(curmap)
         end
-      elseif cmd=='tab' or cmd=='a' then
+      elseif cmd=='w' or cmd=='a' then
         -- cast offensive spell
         if checkspell(cmd,'dir:') then
           local spelldamage=spells[cmd].amount
@@ -1040,7 +1054,7 @@ function inputprocessor(cmd,mapnum,curmap)
         update_lines{"dialog: huh?"}
       end
       turnmade=true
-    elseif cmd=='tab' then
+    elseif cmd=='w' then
       update_lines{
         "worn: "..(hero.worn or "none").."; wield: "..(hero.wield or "none")
       }
@@ -1066,13 +1080,13 @@ function getdirection(spots,mapnum,curmap,resultfunc,magic,adir)
     adir,mapnum,curmap=yield()
   end
   if adir=='east' or hero.facing==2 then
-    resultfunc(adir,spots[4],hero.y,mapnum)
+    resultfunc(adir,spots[4],hero.y,mapnum,magic)
   elseif adir=='west' or hero.facing==4 then
-    resultfunc(adir,spots[2],hero.y,mapnum)
+    resultfunc(adir,spots[2],hero.y,mapnum,magic)
   elseif adir=='north' or hero.facing==1 then
-    resultfunc(adir,hero.x,spots[1],mapnum)
+    resultfunc(adir,hero.x,spots[1],mapnum,magic)
   elseif adir=='south' or hero.facing==3 then
-    resultfunc(adir,hero.x,spots[3],mapnum)
+    resultfunc(adir,hero.x,spots[3],mapnum,magic)
   else
     return false
   end
@@ -1096,7 +1110,7 @@ function definemonster(mapnum,monstertype,monsterx,monstery,monsterz)
   setmetatable(monster,{__index=monstertype})
   if(monstertype.names)monster.name=monstertype.names[flr(rnd(#monstertype.names)+1)]
   --if(monstertype.imgs)monster.img=monstertype.imgs[flr(rnd(#monstertype.imgs)+1)]
-  if(monstertype.colorsubs)monster.colorsub=monstertype.colorsubs[flr(rnd(#monstertype.colorsubs+1))]
+  if(monstertype.colorsubs)monster.colorsub=monstertype.colorsubs[flr(rnd(#monstertype.colorsubs)+1)]
   monster.imgseq=flr(rnd(30))
   monster.imgalt=false
   if monsterz then
@@ -1111,7 +1125,7 @@ end
 function create_monster(mapnum,curmap)
   local monsterx=flr(rnd(curmap.width))+curmap.minx
   local monstery=flr(rnd(curmap.height))+curmap.miny
-  local monsterz=curmap.dungeon and flr(rnd(#curmap.levels))+1 or 0
+  local monsterz=curmap.dungeon and flr(rnd(#curmap.levels)+1) or 0
   if contents[monsterx][monstery] or monsterx==hero.x and monstery==hero.y and monsterz==hero.z then
     -- don't create a monster where there already is one
     monsterx=nil
@@ -1146,7 +1160,7 @@ function deducthp(damage)
   hero.hp-=damage
   if hero.hp<=0 then
     msg=losemsg
-    draw_state=_draw
+    -- draw_state=_draw
     _draw=msg_draw
   end
 end
@@ -1161,25 +1175,29 @@ function deductfood(amount)
   end
 end
 
+function not_over_32767(num)
+  return min(num,32767)
+end
+
 function increasexp(amount)
-  hero.exp=min(hero.exp+amount,32767)
+  hero.exp=not_over_32767(hero.exp+amount)
   if hero.exp>=hero.lvl^2*10 then
     hero.lvl+=1
-    increasehp(25)
+    increasehp(12)
     update_lines{"you went up a level!"}
   end
 end
 
 function increasegold(amount)
-  hero.gold=min(hero.gold+amount,32767)
+  hero.gold=not_over_32767(hero.gold+amount)
 end
 
 function increasemp(amount)
-  hero.mp=min(hero.mp+amount,hero.int*(hero.lvl+1),32767)
+  hero.mp=not_over_32767(min(hero.mp+amount,hero.int*(hero.lvl+1)))
 end
 
 function increasehp(amount)
-  hero.hp=min(hero.hp+amount,hero.str*(hero.lvl+3),32767)
+  hero.hp=not_over_32767(min(hero.hp+amount,hero.str*(hero.lvl+3)))
 end
 
 -- world updates
@@ -1250,7 +1268,7 @@ function checkmove(xeno,yako,cmd)
       hero.facing='4'
     end
     local terraintype=mget(xeno,yako)
-    if not curmap.wrap and((xeno>=curmap.maxx or xeno<curmap.minx)or(yako>=curmap.maxy or yako<curmap.miny)) then
+    if not curmap.wrap and(xeno>=curmap.maxx or xeno<curmap.minx or yako>=curmap.maxy or yako<curmap.miny) then
       xeno,yako=curmap.enterx,curmap.entery
       update_lines{cmd,"exiting "..curmap.name.."."}
       hero.mapnum=0
@@ -1306,7 +1324,7 @@ function checkmove(xeno,yako,cmd)
     end
     if newloc==5 and rnd(10)>8 then
       update_lines{cmd,"poisoned!"}
-      hero.health='p'
+      hero.status=bor(hero.status,1)
     end
   else
     xeno,yako=hero.x,hero.y
@@ -1345,17 +1363,17 @@ function look_results(ldir,x,y,mapnum)
   end
 end
 
-function dialog_results(ddir,x,y,mapnum)
+function dialog_results(ddir,xeno,yako,mapnum)
   local cmd="dialog: "..ddir
-  if terrains[mget(x,y)]=='counter' then
-    return getdirection(calculatemoves(mapnum,maps[mapnum],{x=x,y=y}),mapnum,maps[mapnum],dialog_results,nil,ddir)
+  if terrains[mget(xeno,yako)]=='counter' then
+    return getdirection(calculatemoves(mapnum,maps[mapnum],{x=xeno,y=yako}),mapnum,maps[mapnum],dialog_results,nil,ddir)
   end
-  if contents[x][y] then
-    local dialog_target=contents[x][y]
+  if contents[xeno][yako] then
+    local dialog_target=contents[xeno][yako]
     if dialog_target.merch then
       update_lines{shop[dialog_target.merch]()}
-    elseif contents[x][y].talk then
-      update_lines{cmd,'"'..dialog_target.talk[flr(rnd(#dialog_target.talk))+1]..'"'}
+    elseif contents[xeno][yako].talk then
+      update_lines{cmd,'"'..dialog_target.talk[flr(rnd(#dialog_target.talk)+1)]..'"'}
     else
       update_lines{cmd,'no response!'}
     end
@@ -1380,7 +1398,6 @@ function attack_results(adir,x,y,mapnum,magic)
       creature.hitdisplay=3
       sfx(1)
       creature.hp-=damage
-      logit(creature.name.." hp: "..creature.hp)
       if creature.hp<=0 then
         increasegold(creature.gold)
         increasexp(creature.exp)
@@ -1461,6 +1478,7 @@ function movecreatures(mapnum,curmap,hero)
   local gothit=false
   local actualdistance=500
   for creaturenum,creature in pairs(creatures[mapnum]) do
+    local cfacing=creature.facing
     if creature.z==hero.z then
       local desiredx,desiredy=creature.x,creature.y
       while creature.moveallowance>creature.nummoves do
@@ -1468,7 +1486,7 @@ function movecreatures(mapnum,curmap,hero)
         --foreach(spots,logit)
         if creature.hostile then
           -- most creatures are hostile; move toward player
-          bestfacing=0
+          local bestfacing=0
           actualdistance=squaredistance(creature.x,creature.y,hero.x,hero.y,curmap)
           local currentdistance=actualdistance
           local bestdistance=currentdistance
@@ -1494,14 +1512,14 @@ function movecreatures(mapnum,curmap,hero)
         else
           -- neutral & friendly creatures just do their own thing
           if rnd(1)<.5 then
-            if creature.facing and rnd(1)<.5 then
-              if creature.facing%2==1 then
-                desiredy=spots[creature.facing]
+            if cfacing and rnd(1)<.5 then
+              if cfacing%2==1 then
+                desiredy=spots[cfacing]
               else
-                desiredx=spots[creature.facing]
+                desiredx=spots[cfacing]
               end
             else
-              local facing=flr(rnd(4))+1
+              local facing=flr(rnd(4)+1)
               if facing%2==1 then
                 desiredy=spots[facing]
               else
@@ -1530,7 +1548,7 @@ function movecreatures(mapnum,curmap,hero)
         --logit(creature.name..': actualdistance '..actualdistance..' x '..desiredx..' '..hero.x..' y '..desiredy..' '..hero.y)
         if creature.z==hero.z and (creature.hostile and actualdistance<=1 or (desiredx==hero.x and desiredy==hero.y and creature.hostile==nil and creaturenum~=0)) then
           local hero_dodge=hero.dex+2*hero.lvl
-          if creature.eat and hero.food>0 and rnd(creature.dex*32)>rnd(hero_dodge) then
+          if creature.eat and hero.food>0 and rnd(creature.dex*25)>rnd(hero_dodge) then
             sfx(2)
             update_lines{"the "..creature.name.." eats!"}
             deductfood(flr(rnd(6)))
@@ -1538,22 +1556,22 @@ function movecreatures(mapnum,curmap,hero)
             delay(9)
           elseif creature.thief and hero.gold>0 and rnd(creature.dex*23)>rnd(hero_dodge) then
             sfx(2)
-            local amountstolen=min(flr(rnd(5))+1,hero.gold)
+            local amountstolen=min(ceil(rnd(5)),hero.gold)
             hero.gold-=amountstolen
             creature.gold+=amountstolen
             update_lines{"the "..creature.name.." steals!"}
             gothit=true
             delay(9)
-          elseif creature.poison and rnd(creature.dex*25)>rnd(hero_dodge) then
+          elseif creature.poison and rnd(creature.dex*20)>rnd(hero_dodge) then
             sfx(1)
-            hero.health='p'
+            hero.status=bor(hero.status,1)
             update_lines{"poisoned by the "..creature.name.."!"}
             gothit=true
             delay(3)
           elseif rnd(creature.dex*64)>rnd(hero_dodge+hero.armor) then
             hero.gothit=true
             sfx(1)
-            local damage=max(flr(rnd(creature.str+creature.dmg)-rnd(hero.armor))+1,0)
+            local damage=max(ceil(rnd(creature.str+creature.dmg)-rnd(hero.armor)),0)
             deducthp(damage)
             update_lines{"the "..creature.name.." hits!"}
             gothit=true
@@ -1602,7 +1620,7 @@ function world_update()
     if turn%10==0 then
       increasemp(1)
     end
-    if turn%5==0 and hero.health=='p' then
+    if turn%5==0 and band(hero.status,1)==1 then
       deducthp(1)
       sfx(1,0,8)
       update_lines{"feeling sick!"}
@@ -1645,7 +1663,7 @@ end
 function draw_stats()
   local linestart=106
   print("cond",linestart,0,5)
-  print(hero.health,125,0,6)
+  print(band(hero.status,1)==1 and 'p' or 'g',125,0,6)
   print("lvl",linestart,8,5)
   print(hero.lvl,125,8,6)
   print("hp",linestart,16,5)
