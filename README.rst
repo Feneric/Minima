@@ -44,10 +44,11 @@ Purchasing in towns works. Spells work. Capturing pirate ships works, and with o
 it's possible to explore the (incomplete) waters of the world map. Leveling up works.
 Most sound effects are in place. I've got pits working in dungeons even though they
 were never in the original Ultimas. These will probably not make the final cut though
-as I'm running out of space. The in-game help screen works.
+as I'm running out of space. The in-game help screen works. Saving and loading games
+works, although it has some unavoidable limitations.
 
-Lots of things don't work. You can't win yet. There's no background music yet. Saving
-and loading games doesn't work.
+A few things don't work. You can't win yet. There's no background music yet. Quite a
+bit of the map is still missing.
 
 Challenges
 ----------
