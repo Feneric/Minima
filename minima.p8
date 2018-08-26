@@ -25,6 +25,10 @@ anyobj={
   chance=0 
 }
 
+function makemetaobj(objtype,base)
+  return setmetatable(base or {},{__index=objtype})
+end
+
 -- basetypes are the objects we mean to use to make objects.
 -- they inherit (often indirectly) from our root object.
 basetypes={
@@ -53,6 +57,22 @@ basetypes={
     name="ship",
     facingmatters=true,
     facing=2
+  },{
+    img=92,
+    imgalt=92,
+    name="chest"
+  },{
+    img=12,
+    imgalt=13,
+    name="fountain"
+  },{
+    img=27,
+    imgalt=27,
+    name="ladder up"
+  },{
+    img=26,
+    imgalt=26,
+    name="ladder down"
   },{
     img=74,
     armor=0,
@@ -146,38 +166,42 @@ basetypes={
 creature=basetypes[1]
 ankhtype=basetypes[2]
 shiptype=basetypes[3]
-human=basetypes[4]
-orc=basetypes[5]
-undead=basetypes[6]
-animal=basetypes[7]
-fighter=basetypes[8]
-guard=basetypes[9]
-merchant=basetypes[10]
-lady=basetypes[11]
-shepherd=basetypes[12]
-jester=basetypes[13]
-villain=basetypes[14]
-grocer=basetypes[15]
-armorer=basetypes[16]
-smith=basetypes[17]
-medic=basetypes[18]
-barkeep=basetypes[19]
+chesttype=basetypes[4]
+fountaintype=basetypes[5]
+ladderuptype=basetypes[6]
+ladderdowntype=basetypes[7]
+human=basetypes[8]
+orc=basetypes[9]
+undead=basetypes[10]
+animal=basetypes[11]
+fighter=basetypes[12]
+guard=basetypes[13]
+merchant=basetypes[14]
+lady=basetypes[15]
+shepherd=basetypes[16]
+jester=basetypes[17]
+villain=basetypes[18]
+grocer=basetypes[19]
+armorer=basetypes[20]
+smith=basetypes[21]
+medic=basetypes[22]
+barkeep=basetypes[23]
 
 -- set our base objects base values.
 for basetypenum=1,#basetypes do
   local basetype
-  if basetypenum<4 then
+  if basetypenum<8 then
     basetype=anyobj
-  elseif basetypenum<8 then
+  elseif basetypenum<12 then
     basetype=creature
-  elseif basetypenum<15 then
-    basetype=human
   elseif basetypenum<19 then
+    basetype=human
+  elseif basetypenum<23 then
     basetype=merchant
   else
     basetype=lady
   end
-  setmetatable(basetypes[basetypenum],{__index=basetype})
+  makemetaobj(basetype,basetypes[basetypenum])
 end
 
 -- the bestiary holds all the different monster types that can
@@ -392,7 +416,7 @@ for beastnum=1,#bestiary do
   else
     beasttype=creature
   end
-  setmetatable(bestiary[beastnum],{__index=beasttype})
+  makemetaobj(beasttype,bestiary[beastnum])
   bestiary[beastnum].idtype=beastnum
 end
 
@@ -566,7 +590,7 @@ dungeontype={
   maxy=9,
   newmonsters=25,
   maxmonsters=10,
-  friendly=false,
+  friendly=false
 }
 maps={
   {
@@ -585,6 +609,9 @@ maps={
         y=19,
         msg="welcome to saugus!"
       }
+    },
+    items={
+      {x=68,y=4,objtype=ankhtype}
     }
   },{
     name="lynn",
@@ -602,6 +629,9 @@ maps={
         y=9,
         msg="marina for members only."
       }
+    },
+    items={
+      {x=109,y=5,objtype=shiptype}
     }
   },{
     name="nibiru",
@@ -612,6 +642,9 @@ maps={
     levels={
       {0x0000,0x3ffe,0x0300,0x3030,0x3ffc,0x3300,0x33fc,0x00c0},
       {0x0000,0xcccd,0x0330,0x3030,0x3cfc,0x0300,0x3fcc,0x00c0}
+    },
+    items={
+      {x=1,y=8,z=1,items=ladderuptype}
     }
   },{
     name="purgatory",
@@ -621,6 +654,9 @@ maps={
     starty=1,
     levels={
       {0x0330,0x3f3c,0x0300,0x33f0,0xf03c,0x3f00,0x33fc,0x0300}
+    },
+    items={
+      {x=1,y=1,z=1,objtype=ladderuptype}
     }
   }
 }
@@ -632,7 +668,7 @@ for mapsnum=1,#maps do
   else
     maptype=dungeontype
   end
-  setmetatable(maps[mapsnum],{__index=maptype})
+  makemetaobj(maptype,maps[mapsnum])
 end
 
 -- map 0 is special; it's the world map, the overview map.
@@ -685,11 +721,6 @@ spells={
 }
 
 function initobjs()
-  contents={}
-  for num=0,127 do
-    contents[num]={}
-  end
-
   -- the creatures structure holds the live copy saying which
   -- creatures (both human and monster) are where in the world.
   -- individually they are instances of bestiary objects or
@@ -698,18 +729,23 @@ function initobjs()
 
   -- perform the per-map data structure initializations.
   for mapnum=0,#maps do
-     maps[mapnum].width=maps[mapnum].maxx-maps[mapnum].minx
-     maps[mapnum].height=maps[mapnum].maxy-maps[mapnum].miny
-     creatures[mapnum]={}
+    curmap=maps[mapnum]
+    curmap.width=curmap.maxx-curmap.minx
+    curmap.height=curmap.maxy-curmap.miny
+    creatures[mapnum]={}
+    curmap.contents={}
+    for num=0,127 do
+      curmap.contents[num]={}
+    end
+    for item in all(curmap.items) do
+      curmap.contents[item.x][item.y]=makemetaobj(item.objtype,item)
+    end
   end
 
   -- make the map info global for efficiency
   mapnum=0
   curmap=maps[mapnum]
-
-  -- set up initial items.
-  contents[68][4]=setmetatable({},{__index=ankhtype})
-  contents[109][5]=setmetatable({},{__index=shiptype})
+  contents=curmap.contents
 
   -- creature 0 is the maelstrom and not really a creature at all,
   -- although it shares most creature behaviors.
@@ -725,7 +761,7 @@ function initobjs()
     z=0,
     facing=1
   }
-  setmetatable(creatures[0][0],{__index=anyobj})
+  makemetaobj(anyobj,creatures[0][0])
   contents[13][61]=creatures[0][0]
 
   -- the hero is the player character. although human, it has
@@ -849,7 +885,7 @@ function loadgame()
     end
   end
   if dget(storagenum)>0 then
-    add(hero.items,setmetatable({},{__index=shiptype}))
+    add(hero.items,makemetaobj(shiptype))
     hero.img=69
     hero.facing=1
   end
@@ -886,6 +922,7 @@ function exitdungeon()
   hero.x,hero.y,hero.z=curmap.enterx,curmap.entery,0
   mapnum=curmap.mapnum
   curmap=maps[mapnum]
+  contents=curmap.contents
   hero.facing=0
   hero.hitdisplay=0
   _draw=world_draw
@@ -1026,6 +1063,7 @@ function inputprocessor(cmd)
             hero.x,hero.y=loopmap.startx,loopmap.starty
             mapnum=loopmapnum
             curmap=maps[mapnum]
+            contents=curmap.contents
             msg="entering "..loopmap.name.."."
             logit("new hero mapnum: "..mapnum)
             if loopmap.dungeon then
@@ -1097,7 +1135,7 @@ end
 
 function definemonster(targetmap,monstertype,monsterx,monstery,monsterz)
   local monster={x=monsterx,y=monstery,z=monsterz}
-  setmetatable(monster,{__index=monstertype})
+  makemetaobj(monstertype,monster)
   if(monstertype.names)monster.name=monstertype.names[flr(rnd(#monstertype.names)+1)]
   --if(monstertype.imgs)monster.img=monstertype.imgs[flr(rnd(#monstertype.imgs)+1)]
   if(monstertype.colorsubs)monster.colorsub=monstertype.colorsubs[flr(rnd(#monstertype.colorsubs)+1)]
@@ -1107,7 +1145,7 @@ function definemonster(targetmap,monstertype,monsterx,monstery,monsterz)
     monster.z=monsterz
   end
   add(creatures[targetmap],monster)
-  contents[monsterx][monstery]=monster
+  maps[targetmap].contents[monsterx][monstery]=monster
   logit("made "..(monster.name or monsternum).." at ("..monster.x..","..monster.y..","..(monster.z or 'nil')..")")
   return monster
 end
@@ -1127,7 +1165,7 @@ function create_monster()
     end
     --logit('possible monster location: ('..monsterx..','..monstery..','..(monsterz or 'nil')..') terrain '..monsterspot)
     for monstertype in all(terrainmonsters[monsterspot]) do
-      if rnd(100)<monstertype.chance then
+      if rnd(200)<monstertype.chance then
         definemonster(mapnum,monstertype,monsterx,monstery,monsterz)
         break
       end
@@ -1269,6 +1307,7 @@ function checkmove(xeno,yako,cmd)
     if checkexit(xeno,yako) then
       xeno,yako=curmap.enterx,curmap.entery
       curmap=maps[0]
+      contents=curmap.contents
     elseif content then
       if content.name=='maelstrom' then
         update_lines{cmd,"maelstrom! yikes!"}
@@ -1305,6 +1344,7 @@ function checkmove(xeno,yako,cmd)
     elseif checkexit(xeno,yako) then
       xeno,yako=curmap.enterx,curmap.entery
       curmap=maps[0]
+      contents=curmap.contents
     elseif movecost>hero.movepayment then
       hero.movepayment+=1
       movesuccess=false
@@ -1400,7 +1440,7 @@ function attack_results(adir,x,y,magic)
           contents[x][y]={
             facing=creature.facing
           }
-          setmetatable(contents[x][y],{__index=shiptype})
+          makemetaobj(shiptype,contents[x][y])
         else
           contents[x][y]=nil
         end
@@ -1885,11 +1925,6 @@ function dungeon_draw()
        line(bottominner,bottominner,bottominner,bottomouter)
        line(topouter,bottomouter,bottomouter,bottomouter)
     end
-    if hero.x==curmap.startx and hero.y==curmap.starty and hero.z==curmap.startz then
-      -- we see the way out
-      --line(middle,topouter,middle,middle,4)
-      sspr(88,8,8,8,28,0,25,40)
-    end
     dungeondrawmonster(row[2].x,row[2].y,hero.z,3-depthindex)
     -- local distance=2
     -- if hero.facing%2==0 then
@@ -1920,13 +1955,24 @@ function dungeondrawmonster(xeno,yako,zabo,distance)
     local item=contents[xeno][yako]
     if item and item.z==zabo then
       local flipped=itemdrawprep(item)
-      local distancemod=distance*4
-      sspr(item.img%16*8,flr(item.img/16)*8,8,8,20+distancemod,35,60-distancemod*4,60-distancemod*4,flipped)
+      local distancemod=distance*3
+      local shiftmod,sizemod=0,0
+      -- sspr(88,8,8,8,28,0,25,40)
+      if item.img==27 then
+        shiftmod,sizemod=12,20
+      elseif item.img==26 then
+        shiftmod,sizemod=-12,20
+      end
+      local xoffset,yoffset=20+distancemod+(sizemod*(distance+1)/8),35-(3-distance)*shiftmod
+      local imgsize=60-sizemod-distancemod*4
+      palt(0,true)
+      sspr(item.img%16*8,flr(item.img/16)*8,8,8,xoffset,yoffset,imgsize,imgsize,flipped)
       pal()
       if item.hitdisplay>0 then
-        sspr(127%16*8,flr(127/16)*8,8,8,20+distancemod,35,60-distancemod*4,60-distancemod*4)
+        sspr(120,56,8,8,xoffset,yoffset,imgsize,imgsize)
         item.hitdisplay-=1
       end
+      palt(0,false)
     end
   end
 end
