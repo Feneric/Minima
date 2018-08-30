@@ -37,7 +37,7 @@ This project is still a work-in-progress, and I plan on completing it as time pe
 It is not yet winnable, so I don't recommend playing it for fun at the moment.
 
 Lots of things work. You can move around and explore the (incomplete) world map and
-enter towns and a dungeon. Town views and dungeon views work. Looking at things and
+enter towns and dungeons. Town views and dungeon views work. Looking at things and
 searching for things works. Checking status works. Creature movement and behavior
 works. Combat works in both world and dungeon views. Dialog with townies works.
 Purchasing in towns works. Spells work. Capturing pirate ships works, and with one
@@ -45,10 +45,10 @@ it's possible to explore the (incomplete) waters of the world map. Leveling up w
 Most sound effects are in place. I've got pits working in dungeons even though they
 were never in the original Ultimas. These will probably not make the final cut though
 as I'm running out of space. The in-game help screen works. Saving and loading games
-works, although it has some unavoidable limitations.
+works, although it has some unavoidable limitations. Background music works, but at
+the moment there's only one tune.
 
-A few things don't work. You can't win yet. There's no background music yet. Quite a
-bit of the map is still missing.
+A few things don't work. You can't win yet. Quite a bit of the map is still missing.
 
 Challenges
 ----------
