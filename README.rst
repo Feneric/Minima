@@ -45,8 +45,7 @@ it's possible to explore the (incomplete) waters of the world map. Leveling up w
 Most sound effects are in place. I've got pits working in dungeons even though they
 were never in the original Ultimas. These will probably not make the final cut though
 as I'm running out of space. The in-game help screen works. Saving and loading games
-works, although it has some unavoidable limitations. Background music works, but at
-the moment there's only one tune.
+works, although it has some unavoidable limitations. Background music works.
 
 A few things don't work. You can't win yet. Quite a bit of the map is still missing.
 
