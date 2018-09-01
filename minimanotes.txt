@@ -3,9 +3,9 @@ Commands:
 a, q: (5,1) attack
 c, z, n: (4) cast
 d: (3,1) dialog, talk
-e: enter, board, mount, climb, descend
-f: (1,1) furnish, wear, equip, ready
-p: pause, save, help
+e: (2,1) enter, board, mount, climb, descend
+f: (1,1) furnish, function, finesse, feature
+p: (6) pause, save, help
 s: (0,1) sit & wait
-w, lshift, tab: status
-x, m, v, 8: examine, look (repeat to search)
+w, lshift, tab: (4,1) status
+x, m, v, 8: (5) examine, look (repeat to search)

@@ -55,9 +55,11 @@ Challenges
 The constraints of building something within the PICO-8 environment make a project like
 this fairly tough. The game is pretty close to being fully playable and winnable, but
 there's not a lot of space left and I'll likely have to trim out some already-working
-features to shoehorn in the remaining essential features. I've already had to remove
-a partial Ultima III+ style missile weapon implementation and go back to the Ultima II
-style "adjacent-only" type of combat to keep within the space constraints we've got.
+features to shoehorn in a winnable game. I've already had to remove a partial Ultima
+III+ style missile weapon implementation and go back to the Ultima II style
+"adjacent-only" type of combat, plus replace armor and weapon inventory along with
+related wield and wear commands with automatic switching to best available armor and
+weapons in order to keep within the space constraints we've got.
 
 Other Notes
 -----------
@@ -74,6 +76,14 @@ they really were. I've drawn everything by hand and created the sound effects on
 so while they have all been strongly influenced by those original games I expect they'll
 look quite a bit different if compared side-by-side, so please don't bother to complain
 if you don't think something looks or sounds quite right.
+
+The music is an attempt to recreate a little of the music that appeared in the Commodore
+version of Ultima III. This was done with a combination of viewing various scattered
+notes I found online with listening to recordings of the Commodore SID files. I couldn't
+fully match the time signatures used as the originals are fairly long, fairly complex,
+and do some pretty clever things. They also occasionally go outside the pitch range
+available to PICO-8. Again, it's more about capturing the spirit than being a faithful
+recreation.
 
 The additional `Lua`_ utility script `convert.lua` is used to make it easier to lay out
 a dungeon map and turn it into something the game can use.
