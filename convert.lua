@@ -1,4 +1,4 @@
-#!/usr/bin/lua5.3
+#!/usr/bin/lua
 --[[
 Convert a graphical dungeon into one for Pico-8 Lua
 
@@ -9,7 +9,7 @@ space = open area  = 0
 
 --]]
 
-dungeons = {
+--[[dungeons = {
     {
         "XXXXXXXXXX",
         "X        X",
@@ -21,8 +21,7 @@ dungeons = {
         "X X XXXX X",
         "X    X   X",
         "XXXXXXXXXX",
-    },
-    {
+    },{
         "XXXXXXXXXX",
         "X        X",
         "XX X X X~X",
@@ -31,7 +30,129 @@ dungeons = {
         "X XX XXX X",
         "X   X    X",
         "X XXXX X X",
+        "X   #X   X",
+        "XXXXXXXXXX",
+    },{
+        "XXXXXXXXXX",
+        "X        X",
+        "XXX X  X X",
+        "X   XXXX X",
+        "X X    X X",
+        "X X X XX X",
+        "X X X    X",
+        "XXX XXXX X",
+        "X   ~X   X",
+        "XXXXXXXXXX",
+    }
+}
+
+dungeons = {
+    {
+        "XXXXXXXXXX",
+        "X   X X# X",
+        "X XXX XX X",
+        "X   X    X",
+        "X X XXX  X",
+        "XXX   XX X",
+        "X X X    X",
+        "X X XXXX X",
+        "X   X    X",
+        "XXXXXXXXXX",
+    },{
+        "XXXXXXXXXX",
+        "X X X  ~ X",
+        "X X X XX X",
+        "X      X X",
+        "X XXXX X X",
+        "X X  XXX X",
+        "X XX     X",
+        "X X#XX XXX",
+        "X   X    X",
+        "XXXXXXXXXX",
+    },{
+        "XXXXXXXXXX",
+        "X   X  ~ X",
+        "X X X XX X",
+        "X X   X  X",
+        "XXXXX XX X",
+        "X     X  X",
+        "X XXX  X X",
+        "X X~X XX X",
+        "X   X X  X",
+        "XXXXXXXXXX",
+    }
+}
+
+dungeons = {
+    {
+        "XXXXXXXXXX",
+        "X   X    X",
+        "X XXX#X  X",
+        "X   XXXX X",
+        "X X X    X",
+        "X X XXX XX",
+        "X X      X",
+        "XXXXXXXX X",
+        "X        X",
+        "XXXXXXXXXX",
+    },{
+        "XXXXXXXXXX",
+        "X   X    X",
+        "X X X~XX X",
+        "X X    XXX",
+        "X XXXXXX#X",
+        "X    XXX X",
+        "X XX     X",
+        "X X XX XXX",
+        "X X      X",
+        "XXXXXXXXXX",
+    },{
+        "XXXXXXXXXX",
+        "X   X    X",
+        "X X X XX X",
+        "X X   XX X",
+        "X X X X ~X",
+        "X X X XXXX",
+        "X X X  X X",
+        "X X X XX X",
+        "X        X",
+        "XXXXXXXXXX",
+    }
+}--]]
+
+dungeons = {
+    {
+        "XXXXXXXXXX",
         "X    X   X",
+        "XX X X XXX",
+        "X  X X   X",
+        "X X~ XXX X",
+        "X XXXX   X",
+        "X    X XXX",
+        "X X XX X~X",
+        "X X#X    X",
+        "XXXXXXXXXX",
+    },{
+        "XXXXXXXXXX",
+        "X    X   X",
+        "X ~X X X~X",
+        "X XXXX  XX",
+        "X X# XX  X",
+        "X XX X  XX",
+        "X  X X X X",
+        "X XX X X#X",
+        "X    X   X",
+        "XXXXXXXXXX",
+    },{
+        "XXXXXXXXXX",
+        "X    X   X",
+        "X #X X X#X",
+        "XXXX X XXX",
+        "X    X X X",
+        "X XXXX X X",
+        "X  X X X X",
+        "X    X X X",
+        "X  X     X",
         "XXXXXXXXXX",
     }
 }

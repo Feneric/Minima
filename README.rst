@@ -47,7 +47,7 @@ were never in the original Ultimas. These will probably not make the final cut t
 as I'm running out of space. The in-game help screen works. Saving and loading games
 works, although it has some unavoidable limitations. Background music works.
 
-A few things don't work. You can't win yet. Quite a bit of the map is still missing.
+A few things don't work. You can't win yet.
 
 Challenges
 ----------
