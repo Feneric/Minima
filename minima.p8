@@ -35,9 +35,7 @@ basetypes={
   {
     hp=10,
     armor=1,
-    dmg=5,
-    int=8,
-    str=8,
+    dmg=13,
     dex=8,
     hostile=true,
     terrain={1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35},
@@ -57,22 +55,23 @@ basetypes={
     facingmatters=true,
     facing=2
   },{
-    img=92,
-    imgalt=92,
-    name="chest"
-  },{
     img=39,
     flipimg=true,
     imgseq=12,
-    name="fountain"
+    name="fountain",
+    sizemod=15
   },{
     img=27,
     imgalt=27,
-    name="ladder up"
+    name="ladder up",
+    shiftmod=12,
+    sizemod=20
   },{
     img=26,
     imgalt=26,
-    name="ladder down"
+    name="ladder down",
+    shiftmod=-3,
+    sizemod=20
   },{
     img=75,
     armor=0,
@@ -84,7 +83,7 @@ basetypes={
     chance=8,
     talk={"urg!","grar!"}
   },{
-    dmg=6,
+    dmg=14,
     dex=6,
     gold=5,
     chance=5
@@ -98,9 +97,8 @@ basetypes={
     colorsubs={{},{{1,12},{14,2},{15,4}}},
     name="fighter",
     hp=12,
-    armor=5,
-    dmg=10,
-    str=10,
+    armor=3,
+    dmg=20,
     dex=9,
     talk={"check out these pecs!","i'm jacked!"}
   },{
@@ -108,9 +106,9 @@ basetypes={
     colorsubs={{},{{15,4}}},
     name="guard",
     moveallowance=0,
-    hp=80,
-    dmg=50,
-    armor=8,
+    hp=85,
+    dmg=60,
+    armor=12,
     talk={"behave yourself.","i protect good citizens."}
   },{
     img=75,
@@ -162,37 +160,36 @@ basetypes={
 creature=basetypes[1]
 ankhtype=basetypes[2]
 shiptype=basetypes[3]
-chesttype=basetypes[4]
-fountaintype=basetypes[5]
-ladderuptype=basetypes[6]
-ladderdowntype=basetypes[7]
-human=basetypes[8]
-orc=basetypes[9]
-undead=basetypes[10]
-animal=basetypes[11]
-fighter=basetypes[12]
-guard=basetypes[13]
-merchant=basetypes[14]
-lady=basetypes[15]
-shepherd=basetypes[16]
-jester=basetypes[17]
-villain=basetypes[18]
-grocer=basetypes[19]
-armorer=basetypes[20]
-smith=basetypes[21]
-medic=basetypes[22]
-barkeep=basetypes[23]
+fountaintype=basetypes[4]
+ladderuptype=basetypes[5]
+ladderdowntype=basetypes[6]
+human=basetypes[7]
+orc=basetypes[8]
+undead=basetypes[9]
+animal=basetypes[10]
+fighter=basetypes[11]
+guard=basetypes[12]
+merchant=basetypes[13]
+lady=basetypes[14]
+shepherd=basetypes[15]
+jester=basetypes[16]
+villain=basetypes[17]
+grocer=basetypes[18]
+armorer=basetypes[19]
+smith=basetypes[20]
+medic=basetypes[21]
+barkeep=basetypes[22]
 
 -- set our base objects base values.
-for basetypenum=1,23 do
+for basetypenum=1,22 do
   local basetype
-  if basetypenum<8 then
+  if basetypenum<7 then
     basetype=anyobj
-  elseif basetypenum<12 then
+  elseif basetypenum<11 then
     basetype=creature
-  elseif basetypenum<19 then
+  elseif basetypenum<18 then
     basetype=human
-  elseif basetypenum<23 then
+  elseif basetypenum<22 then
     basetype=merchant
   else
     basetype=lady
@@ -224,7 +221,7 @@ bestiary={
     img=114,
     names={"goblin","kobold"},
     hp=8,
-    dmg=3,
+    dmg=10,
     gold=5,
     exp=1
   },{
@@ -232,7 +229,7 @@ bestiary={
     flipimg=true,
     name="ettin",
     hp=20,
-    dmg=8,
+    dmg=18,
     exp=6,
     chance=1
   },{
@@ -242,14 +239,12 @@ bestiary={
   },{
     img=100,
     names={"zombie","wight","ghoul"},
-    hp=10,
-    dmg=4
+    hp=10
   },{
     img=123,
     flipimg=true,
     names={"phantom","ghost","wraith"},
     hp=15,
-    dmg=3,
     terrain={1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35},
     exp=7,
     talk={'boooo!','feeear me!'}
@@ -264,7 +259,6 @@ bestiary={
     colorsubs={{},{{1,5},{8,2},{4,1},{2,12},{15,4}}},
     names={"rogue","bandit","cutpurse"},
     dex=10,
-    dmg=6,
     thief=true,
     chance=2
   },{
@@ -286,7 +280,7 @@ bestiary={
     img=108,
     name="giant rat",
     hp=5,
-    dmg=4,
+    dmg=10,
     poison=true,
     eat=true,
     exp=2
@@ -309,7 +303,6 @@ bestiary={
     flipimg=true,
     name="megascorpion",
     hp=12,
-    dmg=4,
     poison=true,
     exp=5,
     chance=1
@@ -349,27 +342,27 @@ bestiary={
     colorsubs={{},{{2,14},{1,4}}},
     flipimg=true,
     names={"gazer","beholder"},
-    hp=12,
     terrain={17,22},
     exp=4
   },{
     img=121,
     flipimg=true,
     names={"dragon","drake","wyvern"},
-    terrain={1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35},
     hp=50,
-    dmg=10,
+    armor=7,
+    dmg=28,
     gold=20,
     exp=17
   },{
     img=110,
     names={"daemon","devil"},
     hp=50,
-    dmg=10,
+    armor=3,
+    dmg=23,
     terrain={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35},
     gold=25,
     exp=15,
-    chance=.5
+    chance=.25
   },{
     img=92,
     name="mimic",
@@ -377,17 +370,17 @@ bestiary={
     thief=true,
     gold=12,
     terrain={17,22},
-    exp=4,
-    chance=0
+    exp=4
   },{
     img=124,
     flipimg=true,
     name="reaper",
     moveallowance=0,
+    armor=5,
+    hp=30,
     gold=8,
     terrain={17,22},
-    exp=5,
-    chance=0
+    exp=5
   }
 }
 -- set base values for monsters.
@@ -432,7 +425,7 @@ function purchase(prompt,itemtype,attribute)
       desireditem=itemtype[cmd]
       if desireditem then
         --logit("attr "..hero[attribute].." num "..desireditem[2])
-        return hero.gold>=desireditem.price and desireditem
+        return hero.gold>=desireditem[3] and desireditem
       else
         return nil
       end
@@ -441,7 +434,7 @@ function purchase(prompt,itemtype,attribute)
       if hero[attribute]>=desireditem[2] then
         return "that is not an upgrade."
       else
-        hero.gold-=desireditem.price
+        hero.gold-=desireditem[3]
         hero[attribute]=desireditem[2]
         return "the "..desireditem[1].." is yours."
       end
@@ -515,7 +508,7 @@ shop={
           "faxon is scary powerful.",
           "fountains respect injury.",
           "dungeon fountains rule.",
-          "faxon has a magic sword.",
+          "faxon fears a magic sword.",
           "watch for secret doors.",
           "locked doors break easy.",
           "try magic on locked doors."
@@ -636,7 +629,7 @@ maps={
       {grocer,107,9},
       {jester,106,16},
       {medic,122,12},
-      {merchant,119,6,talk={"i'm rich. i have a yacht.","ho ho! i'm the best!"}},
+      {merchant,119,6,talk={"i'm rich! i have a yacht!","ho ho! i'm the best!"}},
       {guard,114,22}
     }
   },{
@@ -659,7 +652,7 @@ maps={
       {medic,100,30},
       {jester,96,44},
       {fighter,83,27},
-      {merchant,110,41,talk={"the tower requires a key.","search south of the shrine."}},
+      {merchant,110,41,talk={"i've seen the magic sword.","search south of the shrine."}},
       {guard,98,49}
     }
   },{
@@ -679,6 +672,7 @@ maps={
       {barkeep,114,44},
       {grocer,122,51},
       {lady,118,58},
+      {fighter,123,57,talk={"increase stats in dungeons!","only severe injuries work."}},
       {guard,120,63}
     }
   },{
@@ -692,7 +686,8 @@ maps={
     creatures={
       {grocer,93,57},
       {barkeep,100,57},
-      {shepherd,82,57}
+      {shepherd,82,57},
+      {shepherd,102,63,talk={"gilly is in boston.","gilly knows of the sword."}}
     }
   },{
     name="the dark tower",
@@ -706,59 +701,66 @@ maps={
     friendly=false,
     newmonsters=35,
     maxmonsters=20,
+    songstart=17,
     creatures={
       {reaper,119,41},
       {reaper,126,40},
       {reaper,123,38},
       {bestiary[24],121,37},
-      {bestiary[24],119,37},
-      {bestiary[22],118,30,name="faxon",names=nil,img=126,hp=255,dmg=50,exp=100}
+      {bestiary[22],118,30,name="faxon",img=126,hp=255,armor=25,dmg=50}
     }
   },{
     name="nibiru",
     enterx=4,
     entery=11,
     starty=8,
+    attr='int',
     levelstr="0x00000x3ffe0x03000x30300x3ffc0x33000x33fc0x00c00x00000xcccd0x03300x30300x3cfc0x03000x3fcc0x02c00x00000xf30c0x03fc0x300c0x333c0x33000xf3fc0x01c0",
     items={
       {ladderuptype,1,8,1},
       {ladderuptype,8,2,2},
-      {ladderuptype,4,8,3}
+      {ladderuptype,4,8,3},
+      {fountaintype,6,8,3}
     }
   },{
     name="purgatory",
     enterx=32,
     entery=5,
+    attr='str',
     levelstr="0x03380x3f3c0x03000x33f00xf03c0x33000x33fc0x03000x33040x333c0x000c0x3fcc0x30fc0x3c000x3bcf0x03000x03040x333c0x30300xff3c0x00300x3f0c0x373c0x0330",
     items={
       {ladderuptype,1,1,1},
       {ladderuptype,7,1,2},
-      {ladderuptype,3,7,3}
+      {ladderuptype,3,7,3},
+      {fountaintype,7,5,3}
     }
   },{
     name="sheol",
     enterx=33,
     entery=58,
+    attr='dex',
     levelstr="0x03000x3fb00x03fc0x33000x33f30x30000xfffc0x00000x03000x337c0x300f0x3ffe0x00fc0x3c000x33cf0x30000x03000x333c0x303c0x33310x333f0x330c0x333c0x0000",
     items={
       {ladderuptype,1,1,1},
       {ladderuptype,5,2,2},
-      {ladderuptype,8,4,3}
+      {ladderuptype,8,4,3},
+      {fountaintype,6,6,3}
     }
   },{
     name="the upper levels",
     enterx=124,
     entery=26,
+    startx=8,
     startz=3,
     mapnum=6,
-    levelstr="0x00c00x2cce0xfccf0x00cc0x3fcc0x0ccc0x00cc0x0c000x00c00x1ccd0x3fc30x38f00x3cc30x0ccc0x3cce0x00c00x00c00xcccf0x0cc00x34fc0x3fc00x00cf0x33cd0x3b00",
+    levelstr="0x00c00xbcce0xfccf0x00cc0x3fcc0x0ccc0x00cc0x0c000x00c00x7ccd0x3fc30x38f00x3cc30x0ccc0x3cce0x00c00x00c00xcccf0x0cc00x34fc0x3fc00x00cf0x33cd0x3b00",
     items={
-      {ladderdowntype,1,1,3},
+      {ladderdowntype,8,1,3},
       {ladderdowntype,3,8,3},
-      {ladderuptype,7,6,3},
+      {ladderuptype,8,7,3},
       {ladderuptype,3,4,3},
-      {ladderuptype,2,2,2},
-      {ladderuptype,2,8,2}
+      {ladderuptype,1,2,2},
+      {ladderuptype,8,2,2}
     }
   }
 }
@@ -779,10 +781,10 @@ maps[0]={
 
 -- armor definitions
 armors={
-  south={'cloth',8,price=12},
-  west={'leather',23,price=99},
-  east={'chain',40,price=300},
-  north={'plate',90,price=950},
+  south={'cloth',8,12},
+  west={'leather',23,99},
+  east={'chain',40,300},
+  north={'plate',90,950},
   [0]='none',
   [8]='cloth',
   [23]='leather',
@@ -792,15 +794,17 @@ armors={
 
 -- weapon definitions
 weapons={
-  d={'dagger',8,price=8},
-  c={'club',12,price=40},
-  a={'axe',18,price=75},
-  s={'sword',30,price=150},
+  d={'dagger',8,8},
+  c={'club',12,40},
+  a={'axe',18,75},
+  s={'sword',30,150},
+  t={'magic sword',50},
   [0]='none',
   [8]='dagger',
   [12]='club',
   [18]='axe',
-  [30]='sword'
+  [30]='sword',
+  [50]='magic swd'
 }
 
 -- spell definitions
@@ -849,10 +853,8 @@ function initobjs()
       end
       makemetaobj(curmap,maptype)
     end
-    curmap.width=curmap.maxx-curmap.minx
-    curmap.height=curmap.maxy-curmap.miny
-    creatures[mapnum]={}
-    curmap.contents={}
+    curmap.width,curmap.height=curmap.maxx-curmap.minx,curmap.maxy-curmap.miny
+    creatures[mapnum],curmap.contents={},{}
     for num=curmap.minx-1,curmap.maxx+1 do
       curmap.contents[num]={}
       for inner=curmap.miny-1,curmap.maxy+1 do
@@ -930,13 +932,13 @@ end
 
 -- the lines list holds the text output displayed on the screen.
 lines={"","","","",">"}
-numoflines=#lines
+numoflines=5
 curline=numoflines
 
 -- a function for logging to an output log file.
-function logit(entry)
-  printh(entry,'minima.out')
-end
+--function logit(entry)
+--  printh(entry,'minima.out')
+--end
 
 -- initialization routines
 
@@ -956,7 +958,7 @@ function listcommands()
   _draw=msg_draw
 end
 
-attrlist={'armor','dmg','x','y','exp','lvl','str','int','dex','status','gold','food','mp','hp','ship','facing'}
+attrlist={'armor','dmg','x','y','exp','lvl','str','int','dex','status','gold','food','mp','hp','img','facing'}
 
 function savegame()
   if mapnum~=0 then
@@ -1028,8 +1030,7 @@ function checkspell(cmd,extra)
 end
 
 function exitdungeon(rightplace)
-  hero.x,hero.y,hero.z,hero.facing=rightplace and 117 or curmap.enterx,rightplace and 41 or curmap.entery,0,0
-  mapnum=curmap.mapnum
+  hero.x,hero.y,hero.z,hero.facing,mapnum=rightplace and 117 or curmap.enterx,rightplace and 41 or curmap.entery,0,0,curmap.mapnum
   setmap()
   _draw=world_draw
 end
@@ -1048,7 +1049,9 @@ end
 function inputprocessor(cmd)
   while true do
     local spots=calculatemoves(hero)
-    local curobj=contents[hero.x][hero.y][hero.z]
+    local xeno,yako,zabo=hero.x,hero.y,hero.z
+    local curobj=contents[xeno][yako][zabo]
+    local curobjname=curobj and curobj.name or nil
     --logit(hero.x..','..hero.y..','..hero.z..' '..(curobj and curobj.name or 'nil'))
     if _draw==msg_draw then
       if cmd!='p' and hero.hp>0 then
@@ -1063,7 +1066,7 @@ function inputprocessor(cmd)
         update_lines{"turn left"}
         turnmade=true
       else
-        hero.x,hero.y=checkmove(spots[2],hero.y,"west")
+        hero.x,hero.y=checkmove(spots[2],yako,"west")
       end
       --logit('hero '..hero.x..','..hero.y..','..hero.z)
     elseif cmd=='east' then
@@ -1075,21 +1078,21 @@ function inputprocessor(cmd)
         update_lines{"turn right."}
         turnmade=true
       else
-        hero.x,hero.y=checkmove(spots[4],hero.y,"east")
+        hero.x,hero.y=checkmove(spots[4],yako,"east")
       end
       --logit('hero '..hero.x..','..hero.y..','..hero.z)
     elseif cmd=='north' then
       if curmap.dungeon then
         hero.x,hero.y,hero.z=checkdungeonmove(1)
       else
-        hero.x,hero.y=checkmove(hero.x,spots[1],"north")
+        hero.x,hero.y=checkmove(xeno,spots[1],"north")
       end
       --logit('hero '..hero.x..','..hero.y..','..hero.z)
     elseif cmd=='south' then
       if curmap.dungeon then
         hero.x,hero.y,hero.z=checkdungeonmove(-1)
       else
-        hero.x,hero.y=checkmove(hero.x,spots[3],"south")
+        hero.x,hero.y=checkmove(xeno,spots[3],"south")
       end
       --logit('hero '..hero.x..','..hero.y..','..hero.z)
     elseif cmd=='c' then
@@ -1118,7 +1121,7 @@ function inputprocessor(cmd)
       elseif cmd=='w' or cmd=='a' then
         -- cast offensive spell
         if checkspell(cmd,'dir:') then
-          local spelldamage=spells[cmd].amount*hero.int
+          local spelldamage=ceil(rnd(spells[cmd].amount*hero.int))
           if not getdirection(spots,attack_results,spelldamage) then
             update_lines{'nothing to target.'}
           end
@@ -1132,11 +1135,13 @@ function inputprocessor(cmd)
       if not getdirection(spots,look_results) then
         if cmd=='x' then
           local response={"search","you find nothing."}
-          signcontents=check_sign(hero.x,hero.y)
+          signcontents=check_sign(xeno,yako)
           if signcontents then
             response={"read sign",signcontents}
-          --else
-          -- search response
+          elseif xeno==1 and yako==38 and hero.dmg<50 then
+            -- search response
+            response[2]="you find the magic sword!"
+            hero.dmg=50
           end
           update_lines(response)
         else
@@ -1151,10 +1156,15 @@ function inputprocessor(cmd)
       update_lines{"sit and wait."}
     elseif cmd=='f' then
       turnmade=true
-      if curobj and curobj.name=='fountain' then
+      if curobjname=='fountain' then
         sfx(3)
+        msg="healed by the fountain!"
+        if curmap.dungeon and hero.hp<23 and hero[curmap.attr]<16 then
+          hero[curmap.attr]+=1
+          msg="you feel more capable!"
+        end
         increasehp(100)
-        update_lines{"healed by the fountain!"}
+        update_lines{msg}
       else
         update_lines{"no fountain here."}
       end
@@ -1162,11 +1172,11 @@ function inputprocessor(cmd)
       turnmade=true
       local msg="nothing to enter."
       if curmap.dungeon then
-        if curobj and (curobj.name=='ladder up' or curobj.name=='ladder down') then
-          if hero.z==curmap.startz and hero.x==curmap.startx and hero.y==curmap.starty then
+        if curobjname=='ladder up' or curobjname=='ladder down' then
+          if zabo==curmap.startz and xeno==curmap.startx and yako==curmap.starty then
             msg="exiting "..curmap.name.."."
             exitdungeon()
-          elseif curobj.name=='ladder up' then
+          elseif curobjname=='ladder up' then
             msg="ascending."
             hero.z-=1
           else
@@ -1177,20 +1187,20 @@ function inputprocessor(cmd)
             end
           end
         end
-      elseif hero.ship==1 then
+      elseif hero.img>0 then
         msg="exiting ship."
-        contents[hero.x][hero.y][hero.z]=makemetaobj{facing=hero.facing,objtype=shiptype}
-        hero.ship,hero.img,hero.facing=0,0,0
-      elseif curobj and curobj.name=='ship' then
+        contents[xeno][yako][zabo]=makemetaobj{facing=hero.facing,objtype=shiptype}
+        hero.img,hero.facing=0,0
+      elseif curobjname=='ship' then
         msg="boarding ship."
-        hero.ship,hero.img,hero.facing=1,curobj.img,curobj.facing
-        contents[hero.x][hero.y][hero.z]=nil
+        hero.img,hero.facing=70,curobj.facing
+        contents[xeno][yako][zabo]=nil
       else
         for loopmapnum=1,10 do
           local loopmap=maps[loopmapnum]
-          if mapnum==loopmap.mapnum and hero.x==loopmap.enterx and hero.y==loopmap.entery then
+          if mapnum==loopmap.mapnum and xeno==loopmap.enterx and yako==loopmap.entery then
             msg=entermap(loopmap,loopmapnum)
-          elseif mapnum==6 and hero.x==117 and hero.y==41 then
+          elseif mapnum==6 and xeno==117 and yako==41 then
             msg=entermap(loopmap,loopmapnum,true)
           end
         end
@@ -1207,7 +1217,7 @@ function inputprocessor(cmd)
         "worn: "..armors[hero.armor].."; wield: "..weapons[hero.dmg]
       }
     elseif cmd=='a' then
-      if hero.ship==1 then
+      if hero.img>0 then
         update_lines{"fire dir:"}
       else
         update_lines{"attack dir:"}
@@ -1257,7 +1267,7 @@ function definemonster(monster)
   local objtype,xeno,yako,zabo=monster[1],monster[2],monster[3],monster[4] or 0
   monster.x,monster.y,monster.z,monster.objtype=xeno,yako,zabo,objtype
   makemetaobj(monster)
-  if(objtype.names)monster.name=objtype.names[flr(rnd(#objtype.names)+1)]
+  if(not monster.name and objtype.names)monster.name=objtype.names[flr(rnd(#objtype.names)+1)]
   --if(objtype.imgs)monster.img=objtype.imgs[flr(rnd(#objtype.imgs)+1)]
   if(objtype.colorsubs)monster.colorsub=objtype.colorsubs[flr(rnd(#objtype.colorsubs)+1)]
   monster.imgseq=flr(rnd(30))
@@ -1392,7 +1402,7 @@ function checkmove(xeno,yako,cmd)
   local impassable=fget(newloc,3)
   local content=contents[xeno][yako][hero.z]
   --update_lines(""..xeno..","..yako.." "..newloc.." "..movecost.." "..fget(newloc))
-  if hero.ship==1 then
+  if hero.img>0 then
     if cmd=='north' then
       hero.facing=1
     elseif cmd=='west' then
@@ -1426,7 +1436,7 @@ function checkmove(xeno,yako,cmd)
       setmap()
     elseif content then
       local name=content.name
-      if name~='ship' and name~='fountain' and name~='chest' then
+      if name~='ship' and name~='fountain' then
         movesuccess=false
         update_lines{cmd,"blocked!"}
       end
@@ -1453,7 +1463,7 @@ function checkmove(xeno,yako,cmd)
     end
   end
   if movesuccess then
-    if hero.ship==0 then
+    if hero.img==0 then
       sfx(0)
     end
     if newloc==5 and rnd(10)>6 then
@@ -1482,9 +1492,7 @@ function check_sign(x,y)
 end
 
 function look_results(ldir,x,y)
-  local cmd="examine: "..ldir
-  local content=contents[x][y][hero.z] or nil
-  local signcontents=check_sign(x,y)
+  local cmd,signcontents,content="examine: "..ldir,check_sign(x,y),contents[x][y][hero.z] or nil
   if signcontents then
     update_lines{cmd.." (read sign)",signcontents}
   elseif content then
@@ -1492,7 +1500,7 @@ function look_results(ldir,x,y)
   elseif curmap.dungeon then
     update_lines{cmd,"dungeon"}
   else
-    update_lines{cmd,terrains[mget(x,y)]}
+    update_lines{cmd,}
   end
 end
 
@@ -1521,7 +1529,7 @@ function attack_results(adir,x,y,magic)
   local damage=flr(rnd(hero.str+hero.lvl+hero.dmg))
   if magic then
     damage+=magic
-  elseif hero.ship==1 then
+  elseif hero.img>0 then
     cmd="fire: "..adir
     damage+=rnd(50)
   end
@@ -1603,7 +1611,7 @@ function calculatemoves(creature)
   if not curmap.wrap then
     northspot,southspot,eastspot,westspot=creaturey-1,creaturey+1,creaturex-1,creaturex+1
     if creature~=hero then
-      northspot,southspot,eastspot,westspot=max(northspot,curmap.miny),min(southspot,maxy),max(eastspot,curmap.minx),min(westspot,maxx)
+      northspot,southspot,eastspot,westspot=max(northspot,curmap.miny),min(southspot,maxy-1),max(eastspot,curmap.minx),min(westspot,maxx-1)
     end
   end
   --logit('northspot '..northspot)
@@ -1712,7 +1720,7 @@ function movecreatures(hero)
           elseif rnd(creature.dex*64)>rnd(hero_dodge+hero.armor) then
             hero.gothit=true
             sfx(1)
-            local damage=max(ceil(rnd(creature.str+creature.dmg)-rnd(hero.armor)),0)
+            local damage=max(ceil(rnd(creature.dmg)-rnd(hero.armor)),0)
             deducthp(damage)
             update_lines{creature_msg.." hits!"}
             gothit=true
@@ -1966,9 +1974,7 @@ function dungeon_draw()
       line(bottomouter,bottomouter,highextreme,bottomouter)
     end
     if depthindex>1 then
-      local leftoneback=view[depthindex-1][1].block
-      local centeroneback=view[depthindex-1][2].block
-      local rightoneback=view[depthindex-1][3].block
+      local leftoneback,centeroneback,rightoneback=view[depthindex-1][1].block,view[depthindex-1][2].block,view[depthindex-1][3].block
       if (row[1].block==centeroneback and row[1].block==3) or
         (row[1].block~=leftoneback) then
         line(topinner,topinner,topinner,bottominner,5)
@@ -2006,15 +2012,7 @@ function dungeondrawobject(xeno,yako,zabo,distance)
   if xeno>0 and yako>0 then
     local item=contents[xeno][yako][zabo]
     if item then
-      local flipped=itemdrawprep(item)
-      local distancemod=distance*3
-      local shiftmod,sizemod=0,0
-      -- sspr(88,8,8,8,28,0,25,40)
-      if item.img==27 then
-        shiftmod,sizemod=12,20
-      elseif item.img==26 then
-        shiftmod,sizemod=-3,20
-      end
+      local flipped,distancemod,shiftmod,sizemod=itemdrawprep(item),distance*3,item.shiftmod or 0,item.sizemod or 0
       local xoffset,yoffset=20+distancemod+(sizemod*(distance+1)/8),35-(3-distance)*shiftmod
       local imgsize=60-sizemod-distancemod*4
       sspr(item.img%16*8,flr(item.img/16)*8,8,8,xoffset,yoffset,imgsize,imgsize,flipped)
@@ -2037,8 +2035,7 @@ end
 function world_draw()
   local maxx,maxy,minx,miny=curmap.maxx,curmap.maxy,curmap.minx,curmap.miny
   local width,height,wrap=curmap.width,curmap.height,curmap.wrap
-  local xtraleft,xtratop,xtrawidth,xtraheight,scrtx,scrty=0,0,0,0,0,0
-  local left,right=hero.x-halfwidth,hero.x+halfwidth
+  local xtraleft,xtratop,xtrawidth,xtraheight,scrtx,scrty,left,right=0,0,0,0,0,0,hero.x-halfwidth,hero.x+halfwidth
   if left<minx then
     xtrawidth=minx-left
     scrtx=xtrawidth
@@ -2051,15 +2048,13 @@ function world_draw()
       xtrawidth=fullwidth-right+maxx-1
       scrtx=xtrawidth
       xtraleft=left
-      left=minx
-      right=right%width+minx
+      left,right=minx,right%width+minx
     else
       xtrawidth=right-maxx+1
       right=maxx
     end
   end
-  local top=hero.y-halfheight
-  local bottom=hero.y+halfheight
+  local top,bottom=hero.y-halfheight,hero.y+halfheight
   if top<miny then
     xtraheight=miny-top
     scrty=xtraheight
@@ -2071,9 +2066,8 @@ function world_draw()
     if wrap then
       xtraheight=fullheight-bottom+maxy-1
       scrty=xtraheight
-      xtratop=top
-      top=miny
-      bottom=bottom%height+miny
+      scrty,xtratop=xtraheight,top
+      top,bottom=miny,bottom%height+miny
     else
       xtraheight=bottom-maxy+1
       bottom=maxy
@@ -2185,9 +2179,9 @@ e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110150501101111111111111011101111111111101
 e0e0c0c0c0c0404040606060104040c0c0e0e0e0e0e0e0e0e0c07070c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110150501101111111111111011101111111111101111010011101101041616161616161616141614141414141
 e0e0e0c0c0c01040104040404040c0c0e0e0e0e0e0e0e0e0e0c0105270c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110150501101010101110101011101010111010101111010011101101041616161616161616141616161616141
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110150501101010101110101011101010111010101111010011101101041616161616161616171616161616141
 e0c0c0c0c0c0c0424010404040c0c0e0e0e0e0e0e0e0e0e0e0c01010c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110111111111111111111111111111111111111111111111011101101041614141414141414141414141416141
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110111111111111111111111111111111111111111111111011101101041614141414141714141414141416141
 c040c0c0c0c0c0104010106010c0c0e0e0e0e0e0e0e0e0e0e0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110111010101010101111010101010101011010101010111011101101041616161616141616161416161616141
 c06040c0c0c0c0c04040104010c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
@@ -2195,9 +2189,9 @@ e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e010100111011101111111110111104010c01040101101b3c3
 c04040c0e0e0c0c040401010c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e01010011101110192c2825301111010c0c0c0101011011111110111011101101041616161616141616161416161616141
 c0c0c0e0e0e0e0c0c01010c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e01010011101110111111111011110c0c061c0c01011018293430111011101101041614141414141414141414141416141
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e01010011101110111111111011110c0c061c0c01011018293430111011101101041614141414141414171414141416141
 e0c0c0e0e0e0e0c0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c080c0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110111011111111101111010c061c010101101111111011101110110104161616161b141616161616161616141
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110111011111111101111010c061c010101101111111011101110110104161616161b171616161616161616141
 e0e0e0e0e0e0e0e0e0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0e0e0c080a080c0c0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e010100111011101111111110111104010611040101111111111011101110110104141414141414141c141414141414141
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c080c0e0c070807070c0e0e0e0e0
@@ -2227,7 +2221,7 @@ e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0100101018101010110101010101011111111111010101010
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0c0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101010101010101010101010101011111111111010101010101010101010101001110101c10101110111111111011101
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0202020202040406060600101010101010101010101010140401041104110404001111111111111110111111111011101
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e02020202020404060606001538253a204349293c2e3a30140401041104110404001111111111111110111111111011101
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0c0c0c0c0c0c0c0c0c0c0c03080807080303030c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0202020202020404010600111111111111111111111110140104141104141104001111111601111110111111111011101
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0c0808070707070c0c0c0c080803090128030903030c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
@@ -2407,7 +2401,7 @@ __map__
 082001190101010101060401010c0c0c050505050c0c0c0c0c0c0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c101111111111101111111111111111111111111111111111111011111111111014161616161616161614161616161614
 0701010c0c0c0c0101040401010c0c0c0c0c0c0c0c0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c101111111111101110101010101010101110101010101010111011111111111014161616161616161614161616161614
 0704010c0101010c0104060101040c0c0c0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c101010111010101110111111111111101110111111111110111010101110131014161616161616161614161616161614
-0c040c0c040101010101010101040c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0101101113050511102b2c2d2c353a101110342c2b302a10110101101110010114161616161616161614161616161614
+0c040c0c040101010101010101040c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0101101113050511102b2c2d2c353a101110342c2b302a10110101101110010114161616161616161617161616161614
 __sfx__
 000100002365024650206501e64000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00010000245202a6403075034660367703667034770326602f6602d75029650297502a640296402b7402c6502e6502f7502f6502d640296302563022720000000000000000000000000000000000000000000000

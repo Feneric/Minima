@@ -124,7 +124,7 @@ dungeons = {
    {
         "XXXXXXXXXX",
         "X    X   X",
-        "X #X X X#X",
+        "X#XX X X#X",
         "XXXX X XXX",
         "X    X X X",
         "X XXXX X X",
@@ -135,7 +135,7 @@ dungeons = {
     },{
         "XXXXXXXXXX",
         "X    X   X",
-        "X ~X X X~X",
+        "X~XX X X~X",
         "X XXXX  XX",
         "X X# XX  X",
         "X XX X  XX",

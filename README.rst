@@ -33,23 +33,18 @@ homage to all the old 8-bit Ultima games, but especially numbers II through V.
 Status
 ------
 
-This project is still a work-in-progress, and I plan on completing it as time permits.
-It is not yet winnable, so I don't recommend playing it for fun at the moment.
+This project is mostly complete, and pending further testing the version here will
+likely be the one released to the world.
 
 Lots of things work. You can move around and explore the (incomplete) world map and
 enter towns and dungeons. Town views and dungeon views work. Looking at things and
 searching for things works. Checking status works. Creature movement and behavior
 works. Combat works in both world and dungeon views. Dialog with townies works.
 Purchasing in towns works. Spells work. Capturing pirate ships works, and with one
-it's possible to explore the (incomplete) waters of the world map. Leveling up works.
-Most sound effects are in place. I've got pits working in dungeons even though they
-were never in the original Ultimas. These will probably not make the final cut though
-as I'm running out of space. The in-game help screen works. Saving and loading games
-works, although it has some unavoidable limitations. Background music works. It's
-even possible to win the game.
-
-A few things don't work. I'm at the point now I've got to decide which additional
-incomplete features I'll have to drop in order to complete the remainder.
+it's possible to explore the waters of the world map. Leveling up works. Sound effects
+are in place. The in-game help screen works. Saving and loading games works, although
+it has some unavoidable limitations. Background music works. Increasing attributes
+works. Fountains work. It's winnable.
 
 Challenges
 ----------
@@ -57,12 +52,15 @@ Challenges
 The constraints of building something within the PICO-8 environment make a project like
 this fairly tough. The game is pretty close to being fully playable, but there's not a
 lot of space left and I'll likely have to trim out some already-started features to
-shoehorn in the rest of the game. I've already had to remove a partial Ultima
-III+ style missile weapon implementation and go back to the Ultima II style
-"adjacent-only" type of combat, plus replace armor and weapon inventory along with
-related wield and wear commands with automatic switching to best available armor and
-weapons, drop enterable shrines, and remove the concept of creatures that are neither
-particularly friendly nor hostile in order to keep within the space constraints we've got.
+shoehorn in the rest of the game. I've already had to remove lots of things. I've had to
+remove a partial Ultima III+ style missile weapon implementation and go back to the
+Ultima II style "adjacent-only" type of combat. I've had to replace armor and weapon
+inventory along with related wield and wear commands with automatic switching to best
+available armor and weapons. I've had to drop enterable shrines. I've had to cut the
+concept of creatures that are neither particularly friendly nor hostile. I've had to
+remove pits in dungeons. I've had to remove findable chests in dungeons. I've had to
+remove the tower key. All of these were in order to keep within the space constraints
+we've got.
 
 Other Notes
 -----------
