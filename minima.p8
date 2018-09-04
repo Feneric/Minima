@@ -5,13 +5,12 @@ __lua__
 -- by feneric
 
 -- initialization data
-fullheight,fullwidth=11,13
-halfheight,halfwidth=5,6
+fullheight,fullwidth,halfheight,halfwidth=11,13,5,6
 
 -- set up the various messages
 winmsg="\n\n\n\n\n\n  congratulations, you've won!\n\n\n\n\n\n\n\n\n\n    press p to get game menu,\n anything else to continue and\n      explore a bit more."
 losemsg="\n\n\n\n\n\n      you've been killed!\n          you lose!\n\n\n\n\n\n\n\n\n\n\n\n    press p to get game menu"
-helpmsg="minima commands:\n\na: attack\nc: cast spell\nd: dialog, talk, buy\ne: enter, board, mount, climb,\n   descend\np: pause, save, load, help\ns: sit & wait\nw: wearing & wielding\nx: examine, look (repeat to\n   search)\n\nfor commands with options (like\ncasting or buying) use the first\ncharacter from the list, or\nanything else to cancel."
+helpmsg="minima commands:\n\na: attack\nc: cast spell\nd: dialog, talk, buy\ne: enter, board, mount, climb,\n   descend\np: pause, save, load, help\nf: fountain drink; force chest\ns: sit & wait\nw: wearing & wielding\nx: examine, look (repeat to\n   search)\n\nfor commands with options (like\ncasting or buying) use the first\ncharacter from the list, or\nanything else to cancel."
 msg=helpmsg
 
 -- anyobj is our root object. all others inherit from it to
@@ -22,7 +21,8 @@ anyobj={
   nummoves=0,
   movepayment=0,
   hitdisplay=0,
-  chance=0 
+  chance=0,
+  z=0
 }
 
 function makemetaobj(base,basetype)
@@ -44,7 +44,6 @@ basetypes={
     moveallowance=1,
     gold=10,
     exp=2,
-    z=0,
     chance=1
   },{
     img=38,
@@ -75,7 +74,6 @@ basetypes={
     imgalt=26,
     name="ladder down"
   },{
-    name="human",
     img=75,
     armor=0,
     hostile=false,
@@ -83,20 +81,16 @@ basetypes={
     exp=1
   },{
     name="orc",
-    int=6,
-    chance=5,
+    chance=8,
     talk={"urg!","grar!"}
   },{
-    int=7,
     dmg=6,
     dex=6,
     gold=5,
-    chance=3
+    chance=5
   },{
-    int=3,
     dex=10,
     armor=0,
-    hostile=nil,
     gold=0,
     chance=3
   },{
@@ -104,9 +98,8 @@ basetypes={
     colorsubs={{},{{1,12},{14,2},{15,4}}},
     name="fighter",
     hp=12,
-    armor=2,
+    armor=5,
     dmg=10,
-    int=6,
     str=10,
     dex=9,
     talk={"check out these pecs!","i'm jacked!"}
@@ -115,15 +108,15 @@ basetypes={
     colorsubs={{},{{15,4}}},
     name="guard",
     moveallowance=0,
-    hp=18,
-    armor=3,
+    hp=80,
+    dmg=50,
+    armor=8,
     talk={"behave yourself.","i protect good citizens."}
   },{
     img=75,
     flipimg=true,
     colorsubs={{},{{1,4},{4,15},{6,1},{14,13}},{{1,4},{6,5},{14,10}},{{1,4},{4,15},{6,1},{14,3}}},
-    name="merchant",
-    talk={"buy my wares!","consume!","stuff makes you happy!"}
+    name="merchant"
   },{
     img=81,
     flipimg=true,
@@ -191,7 +184,7 @@ medic=basetypes[22]
 barkeep=basetypes[23]
 
 -- set our base objects base values.
-for basetypenum=1,#basetypes do
+for basetypenum=1,23 do
   local basetype
   if basetypenum<8 then
     basetype=anyobj
@@ -220,15 +213,13 @@ bestiary={
     name="troll",
     hp=15,
     gold=10,
-    exp=4,
-    chance=4
+    exp=4
   },{
     img=104,
     names={"hobgoblin","bugbear"},
     hp=15,
     gold=8,
-    exp=3,
-    chance=4
+    exp=3
   },{
     img=114,
     names={"goblin","kobold"},
@@ -247,8 +238,7 @@ bestiary={
   },{
     img=98,
     name="skeleton",
-    gold=12,
-    chance=5
+    gold=12
   },{
     img=100,
     names={"zombie","wight","ghoul"},
@@ -267,7 +257,6 @@ bestiary={
     img=84,
     colorsubs={{},{{2,8},{15,4}}},
     names={"warlock","necromancer","sorceror"},
-    int=10,
     exp=10,
     talk={"i hex you!","a curse on you!"}
   },{
@@ -291,7 +280,6 @@ bestiary={
     name="giant spider",
     hp=18,
     poison=true,
-    hostile=true,
     gold=8,
     exp=5
   },{
@@ -314,10 +302,8 @@ bestiary={
     img=116,
     name="sea serpent",
     hp=45,
-    hostile=true,
     terrain={5,12,13,14,15,25},
-    exp=10,
-    chance=5
+    exp=10
   },{
     img=125,
     flipimg=true,
@@ -325,7 +311,6 @@ bestiary={
     hp=12,
     dmg=4,
     poison=true,
-    hostile=true,
     exp=5,
     chance=1
   },{
@@ -341,7 +326,6 @@ bestiary={
     img=94,
     names={"kraken","giant squid"},
     hp=50,
-    hostile=true,
     terrain={12,13,14,15},
     exp=8,
     chance=2
@@ -376,8 +360,7 @@ bestiary={
     hp=50,
     dmg=10,
     gold=20,
-    exp=17,
-    chance=.5
+    exp=17
   },{
     img=110,
     names={"daemon","devil"},
@@ -408,7 +391,7 @@ bestiary={
   }
 }
 -- set base values for monsters.
-for beastnum=1,#bestiary do
+for beastnum=1,25 do
   local beasttype
   if beastnum<6 then
     beasttype=orc
@@ -424,6 +407,8 @@ for beastnum=1,#bestiary do
   bestiary[beastnum].idtype=beastnum
   makemetaobj(bestiary[beastnum],beasttype)
 end
+-- to use fewer tokens
+reaper=bestiary[25]
 
 -- check to see whether or not a desired purchase can
 -- be made.
@@ -536,7 +521,7 @@ shop={
           "try magic on locked doors."
         }
         update_lines{"while socializing, you hear:"}
-        return '"'..rumors[flr(rnd(#rumors)+1)]..'"'
+        return '"'..rumors[flr(rnd(8)+1)]..'"'
       end
     )
   end
@@ -581,6 +566,10 @@ end
 -- places in the game, dungeons as well as towns.
 towntype={
   mapnum=0,
+  minx=80,
+  maxx=128,
+  miny=0,
+  maxy=64,
   newmonsters=0,
   maxmonsters=0,
   friendly=true
@@ -600,8 +589,7 @@ dungeontype={
   maxmonsters=12,
   friendly=false,
   creatures={},
-  songstart=17,
-  ladderdir=1
+  songstart=17
 }
 maps={
   {
@@ -610,8 +598,6 @@ maps={
     entery=4,
     startx=92,
     starty=23,
-    minx=80,
-    miny=0,
     maxx=105,
     maxy=24,
     signs={
@@ -636,8 +622,6 @@ maps={
     startx=116,
     starty=23,
     minx=104,
-    miny=0,
-    maxx=128,
     maxy=24,
     signs={
       {125,9,"marina for members only."}
@@ -661,7 +645,6 @@ maps={
     entery=19,
     startx=96,
     starty=54,
-    minx=80,
     miny=24,
     maxx=112,
     maxy=56,
@@ -687,8 +670,6 @@ maps={
     starty=62,
     minx=112,
     miny=43,
-    maxx=128,
-    maxy=64,
     items={
       {ankhtype,116,53}
     },
@@ -704,16 +685,14 @@ maps={
     name="great misery",
     enterx=27,
     entery=35,
-    startx=91,
+    startx=82,
     starty=59,
-    minx=89,
     miny=56,
-    maxx=112,
-    maxy=64,
+    maxx=103,
     creatures={
-      {grocer,102,57},
-      {barkeep,109,57},
-      {shepherd,97,57}
+      {grocer,93,57},
+      {barkeep,100,57},
+      {shepherd,82,57}
     }
   },{
     name="the dark tower",
@@ -723,43 +702,28 @@ maps={
     starty=41,
     minx=112,
     miny=24,
-    maxx=128,
     maxy=43,
     friendly=false,
     newmonsters=35,
     maxmonsters=20,
     creatures={
-      {bestiary[25],119,41},
-      {bestiary[25],126,40},
-      {bestiary[25],123,38},
+      {reaper,119,41},
+      {reaper,126,40},
+      {reaper,123,38},
       {bestiary[24],121,37},
       {bestiary[24],119,37},
-      {bestiary[22],118,30,name="faxon",img=126,hp=255,dmg=50,exp=100}
+      {bestiary[22],118,30,name="faxon",names=nil,img=126,hp=255,dmg=50,exp=100}
     }
-  },
-  --{
-    --name="the shrine",
-    --enterx=1,
-    --entery=28,
-    --startx=84,
-    --starty=62,
-    --minx=80,
-    --miny=56,
-    --maxx=89,
-    --maxy=64
-  --},
-  {
+  },{
     name="nibiru",
     enterx=4,
     entery=11,
     starty=8,
     levelstr="0x00000x3ffe0x03000x30300x3ffc0x33000x33fc0x00c00x00000xcccd0x03300x30300x3cfc0x03000x3fcc0x02c00x00000xf30c0x03fc0x300c0x333c0x33000xf3fc0x01c0",
     items={
-      {ladderuptype,1,8,z=1},
-      {ladderdowntype,8,2,z=1},
-      {ladderuptype,8,2,z=2},
-      {ladderdowntype,4,8,z=2},
-      {ladderuptype,4,8,z=3}
+      {ladderuptype,1,8,1},
+      {ladderuptype,8,2,2},
+      {ladderuptype,4,8,3}
     }
   },{
     name="purgatory",
@@ -767,7 +731,9 @@ maps={
     entery=5,
     levelstr="0x03380x3f3c0x03000x33f00xf03c0x33000x33fc0x03000x33040x333c0x000c0x3fcc0x30fc0x3c000x3bcf0x03000x03040x333c0x30300xff3c0x00300x3f0c0x373c0x0330",
     items={
-      {ladderuptype,1,1,z=1}
+      {ladderuptype,1,1,1},
+      {ladderuptype,7,1,2},
+      {ladderuptype,3,7,3}
     }
   },{
     name="sheol",
@@ -775,17 +741,25 @@ maps={
     entery=58,
     levelstr="0x03000x3fb00x03fc0x33000x33f30x30000xfffc0x00000x03000x337c0x300f0x3ffe0x00fc0x3c000x33cf0x30000x03000x333c0x303c0x33310x333f0x330c0x333c0x0000",
     items={
-      {ladderuptype,1,1,z=1}
+      {ladderuptype,1,1,1},
+      {ladderuptype,5,2,2},
+      {ladderuptype,8,4,3}
     }
   },{
-    name="the dark tower",
+    name="the upper levels",
     enterx=124,
     entery=26,
-    levelstr="0x00c00xcccf0x0cc00x34fc0x3fc00x00cf0x33cd0x3b000x00c00x1ccd0x3fc30x38f00x3cc30x0ccc0x3cce0x00c00x00c00x2cce0xfccf0x00cc0x3fcc0x0ccc0x00cc0x0c00",
+    startz=3,
+    mapnum=6,
+    levelstr="0x00c00x2cce0xfccf0x00cc0x3fcc0x0ccc0x00cc0x0c000x00c00x1ccd0x3fc30x38f00x3cc30x0ccc0x3cce0x00c00x00c00xcccf0x0cc00x34fc0x3fc00x00cf0x33cd0x3b00",
     items={
-      {ladderuptype,1,1,z=1}
-    },
-    ladderdir=-1
+      {ladderdowntype,1,1,3},
+      {ladderdowntype,3,8,3},
+      {ladderuptype,7,6,3},
+      {ladderuptype,3,4,3},
+      {ladderuptype,2,2,2},
+      {ladderuptype,2,8,2}
+    }
   }
 }
 
@@ -831,12 +805,12 @@ weapons={
 
 -- spell definitions
 spells={
-  a={'attack',3,amount=10},
-  x={'medic',5,amount=12,price=8},
+  a={'attack',3,amount=1},
+  x={'medic',5,amount=1,price=8},
   c={'cure',7,price=10},
-  w={'wound',11,amount=50},
+  w={'wound',11,amount=5},
   e={'exit',13},
-  s={'savior',17,amount=60,price=25}
+  s={'savior',17,amount=6,price=25}
 }
 
 function setmap()
@@ -855,7 +829,7 @@ function initobjs()
   creatures={}
 
   -- perform the per-map data structure initializations.
-  for mapnum=0,#maps do
+  for mapnum=0,10 do
     local maptype
     curmap=maps[mapnum]
     if mapnum>0 then
@@ -879,12 +853,21 @@ function initobjs()
     curmap.height=curmap.maxy-curmap.miny
     creatures[mapnum]={}
     curmap.contents={}
-    for num=0,127 do
+    for num=curmap.minx-1,curmap.maxx+1 do
       curmap.contents[num]={}
+      for inner=curmap.miny-1,curmap.maxy+1 do
+        curmap.contents[num][inner]={}
+      end
     end
     for item in all(curmap.items) do
-      item.objtype,item.x,item.y=item[1],item[2],item[3]
-      curmap.contents[item.x][item.y]=makemetaobj(item)
+      item.objtype,xeno,yako,zabo=item[1],item[2],item[3],item[4] or 0
+      item.x,item.y,item.z=xeno,yako,zabo
+      curmap.contents[xeno][yako][zabo]=makemetaobj(item)
+      -- automatically make a corresponding ladder down for every ladder up
+      if item.objtype.name=='ladder up' and maptype==dungeontype then
+        zabo-=1
+        curmap.contents[xeno][yako][zabo]=makemetaobj{objtype=ladderdowntype}
+      end
     end
     for creature in all(curmap.creatures) do
       creature.mapnum=mapnum
@@ -913,10 +896,10 @@ function initobjs()
     gold=20,
     food=25,
     movepayment=0,
-    ship=false
+    ship=false,
+    mp=8,
+    hp=24
   }
-  hero.mp=hero.int
-  hero.hp=hero.str*3
 
   -- make the map info global for efficiency
   mapnum=0
@@ -925,19 +908,17 @@ function initobjs()
   -- creature 0 is the maelstrom and not really a creature at all,
   -- although it shares most creature behaviors.
   creatures[0]={}
-  creatures[0][0]={
+  maelstrom=makemetaobj({
     img=69,
     imgseq=23,
     name="maelstrom",
     terrain={12,13,14,15},
     moveallowance=1,
     x=13,
-    y=61,
-    z=0,
-    facing=1,
-  }
-  makemetaobj(creatures[0][0],anyobj)
-  contents[13][61]=creatures[0][0]
+    y=61
+  },anyobj)
+  creatures[0][0]=maelstrom
+  contents[13][61][0]=maelstrom
 
   turn=0
   turnmade=false
@@ -1046,19 +1027,29 @@ function checkspell(cmd,extra)
   end
 end
 
-function exitdungeon()
-  hero.x,hero.y,hero.z=curmap.enterx,curmap.entery,0
+function exitdungeon(rightplace)
+  hero.x,hero.y,hero.z,hero.facing=rightplace and 117 or curmap.enterx,rightplace and 41 or curmap.entery,0,0
   mapnum=curmap.mapnum
   setmap()
-  hero.facing=0
   _draw=world_draw
+end
+
+function entermap(loopmap,loopmapnum,rightplace)
+  hero.x,hero.y=rightplace and 3 or loopmap.startx,rightplace and 8 or loopmap.starty
+  mapnum=loopmapnum
+  setmap()
+  if loopmap.dungeon then
+     _draw=dungeon_draw
+     hero.facing,hero.z=loopmap.startfacing,loopmap.startz
+  end
+  return "entering "..loopmap.name.."."
 end
 
 function inputprocessor(cmd)
   while true do
     local spots=calculatemoves(hero)
-    local curobj=contents[hero.x][hero.y]
-    logit(hero.x..','..hero.y)
+    local curobj=contents[hero.x][hero.y][hero.z]
+    --logit(hero.x..','..hero.y..','..hero.z..' '..(curobj and curobj.name or 'nil'))
     if _draw==msg_draw then
       if cmd!='p' and hero.hp>0 then
         _draw=draw_state
@@ -1114,7 +1105,7 @@ function inputprocessor(cmd)
         -- cast healing
         if checkspell(cmd) then
           sfx(3)
-          increasehp(spells[cmd].amount)
+          increasehp(spells[cmd].amount*hero.int)
         end
       elseif cmd=='e' then
         -- cast exit dungeon
@@ -1127,9 +1118,9 @@ function inputprocessor(cmd)
       elseif cmd=='w' or cmd=='a' then
         -- cast offensive spell
         if checkspell(cmd,'dir:') then
-          local spelldamage=spells[cmd].amount
+          local spelldamage=spells[cmd].amount*hero.int
           if not getdirection(spots,attack_results,spelldamage) then
-            update_lines{'cast at what?'}
+            update_lines{'nothing to target.'}
           end
         end
       else
@@ -1171,46 +1162,36 @@ function inputprocessor(cmd)
       turnmade=true
       local msg="nothing to enter."
       if curmap.dungeon then
-        if curobj and curobj.name=='ladder up' then
-          if curmap.dungeon and hero.z==curmap.startz and hero.x==curmap.startx and hero.y==curmap.starty then
+        if curobj and (curobj.name=='ladder up' or curobj.name=='ladder down') then
+          if hero.z==curmap.startz and hero.x==curmap.startx and hero.y==curmap.starty then
             msg="exiting "..curmap.name.."."
             exitdungeon()
-          else
+          elseif curobj.name=='ladder up' then
             msg="ascending."
-            hero.z-=1*curmap.ladderdir
+            hero.z-=1
+          else
+            msg="descending."
+            hero.z+=1
+            if mapnum==10 and hero.z==4 then
+              exitdungeon(true)
+            end
           end
-        elseif curobj and curobj.name=='ladder down' then
-          msg="descending."
-          hero.z+=1*curmap.ladderdir
         end
-      elseif hero.ship then
+      elseif hero.ship==1 then
         msg="exiting ship."
-        contents[hero.x][hero.y]=makemetaobj{facing=hero.facing,objtype=shiptype}
-        hero.ship=false
-        hero.img=0
-        hero.facing=0
+        contents[hero.x][hero.y][hero.z]=makemetaobj{facing=hero.facing,objtype=shiptype}
+        hero.ship,hero.img,hero.facing=0,0,0
       elseif curobj and curobj.name=='ship' then
         msg="boarding ship."
-        hero.img=curobj.img
-        hero.facing=curobj.facing
-        hero.ship=true
-        contents[hero.x][hero.y]=nil
+        hero.ship,hero.img,hero.facing=1,curobj.img,curobj.facing
+        contents[hero.x][hero.y][hero.z]=nil
       else
-        for loopmapnum=1,#maps do
+        for loopmapnum=1,10 do
           local loopmap=maps[loopmapnum]
           if mapnum==loopmap.mapnum and hero.x==loopmap.enterx and hero.y==loopmap.entery then
-            -- enter the new location
-            hero.x,hero.y=loopmap.startx,loopmap.starty
-            mapnum=loopmapnum
-            setmap()
-            msg="entering "..loopmap.name.."."
-            --logit("new hero mapnum: "..mapnum)
-            if loopmap.dungeon then
-               _draw=dungeon_draw
-               hero.facing=loopmap.startfacing
-               hero.z=loopmap.startz
-            end
-            break
+            msg=entermap(loopmap,loopmapnum)
+          elseif mapnum==6 and hero.x==117 and hero.y==41 then
+            msg=entermap(loopmap,loopmapnum,true)
           end
         end
       end
@@ -1226,7 +1207,7 @@ function inputprocessor(cmd)
         "worn: "..armors[hero.armor].."; wield: "..weapons[hero.dmg]
       }
     elseif cmd=='a' then
-      if hero.ship then
+      if hero.ship==1 then
         update_lines{"fire dir:"}
       else
         update_lines{"attack dir:"}
@@ -1273,8 +1254,8 @@ function update_lines(msg)
 end
 
 function definemonster(monster)
-  local objtype,xeno,yako=monster[1],monster[2],monster[3]
-  monster.x,monster.y,monster.objtype=xeno,yako,objtype
+  local objtype,xeno,yako,zabo=monster[1],monster[2],monster[3],monster[4] or 0
+  monster.x,monster.y,monster.z,monster.objtype=xeno,yako,zabo,objtype
   makemetaobj(monster)
   if(objtype.names)monster.name=objtype.names[flr(rnd(#objtype.names)+1)]
   --if(objtype.imgs)monster.img=objtype.imgs[flr(rnd(#objtype.imgs)+1)]
@@ -1282,7 +1263,7 @@ function definemonster(monster)
   monster.imgseq=flr(rnd(30))
   monster.imgalt=false
   add(creatures[monster.mapnum],monster)
-  maps[monster.mapnum].contents[xeno][yako]=monster
+  maps[monster.mapnum].contents[xeno][yako][zabo]=monster
   --logit("made "..monster.name.." at ("..monster.x..","..monster.y..","..(monster.z or 'nil')..")")
   return monster
 end
@@ -1291,7 +1272,7 @@ function create_monster()
   local monsterx=flr(rnd(curmap.width))+curmap.minx
   local monstery=flr(rnd(curmap.height))+curmap.miny
   local monsterz=curmap.dungeon and flr(rnd(#curmap.levels)+1) or 0
-  if contents[monsterx][monstery] or monsterx==hero.x and monstery==hero.y and monsterz==hero.z then
+  if contents[monsterx][monstery][monsterz] or monsterx==hero.x and monstery==hero.y and monsterz==hero.z then
     -- don't create a monster where there already is one
     monsterx=nil
   end
@@ -1303,7 +1284,7 @@ function create_monster()
     --logit('possible monster location: ('..monsterx..','..monstery..','..(monsterz or 'nil')..') terrain '..monsterspot)
     for objtype in all(terrainmonsters[monsterspot]) do
       if rnd(200)<objtype.chance then
-        definemonster{objtype,monsterx,monstery,mapnum=mapnum,z=monsterz}
+        definemonster{objtype,monsterx,monstery,monsterz,mapnum=mapnum}
         break
       end
     end
@@ -1365,21 +1346,21 @@ function checkdungeonmove(direction)
   if hero.facing==1 then
     newy-=direction
     result=getdungeonblock(xeno,newy,zabo)
-    item=contents[xeno][newy]
+    item=contents[xeno][newy][zabo]
   elseif hero.facing==2 then
     newx+=direction
     result=getdungeonblock(newx,yako,zabo)
-    item=contents[newx][yako]
+    item=contents[newx][yako][zabo]
   elseif hero.facing==3 then
     newy+=direction
     result=getdungeonblock(xeno,newy,zabo)
-    item=contents[xeno][newy]
+    item=contents[xeno][newy][zabo]
   else
     newx-=direction
     result=getdungeonblock(newx,yako,zabo)
-    item=contents[newx][yako]
+    item=contents[newx][yako][zabo]
   end
-  if item and item.z==hero.z and item.hp then
+  if item and item.hp then
     iscreature=true
   end
   if result==3 or iscreature then
@@ -1409,9 +1390,9 @@ function checkmove(xeno,yako,cmd)
   local movecost=band(fget(newloc),3)
   local water=fget(newloc,2)
   local impassable=fget(newloc,3)
-  local content=contents[xeno][yako]
+  local content=contents[xeno][yako][hero.z]
   --update_lines(""..xeno..","..yako.." "..newloc.." "..movecost.." "..fget(newloc))
-  if hero.ship then
+  if hero.ship==1 then
     if cmd=='north' then
       hero.facing=1
     elseif cmd=='west' then
@@ -1443,7 +1424,7 @@ function checkmove(xeno,yako,cmd)
     if checkexit(xeno,yako) then
       xeno,yako=curmap.enterx,curmap.entery
       setmap()
-    elseif content and (content.z==0 or content.z==nil) then
+    elseif content then
       local name=content.name
       if name~='ship' and name~='fountain' and name~='chest' then
         movesuccess=false
@@ -1472,7 +1453,7 @@ function checkmove(xeno,yako,cmd)
     end
   end
   if movesuccess then
-    if not hero.ship then
+    if hero.ship==0 then
       sfx(0)
     end
     if newloc==5 and rnd(10)>6 then
@@ -1502,11 +1483,11 @@ end
 
 function look_results(ldir,x,y)
   local cmd="examine: "..ldir
-  local content=contents[x][y] or nil
+  local content=contents[x][y][hero.z] or nil
   local signcontents=check_sign(x,y)
   if signcontents then
     update_lines{cmd.." (read sign)",signcontents}
-  elseif content and content.z==hero.z then
+  elseif content then
     update_lines{cmd,content.name}
   elseif curmap.dungeon then
     update_lines{cmd,"dungeon"}
@@ -1520,11 +1501,11 @@ function dialog_results(ddir,xeno,yako)
   if terrains[mget(xeno,yako)]=='counter' then
     return getdirection(calculatemoves({x=xeno,y=yako}),dialog_results,nil,ddir)
   end
-  if contents[xeno][yako] then
-    local dialog_target=contents[xeno][yako]
+  local dialog_target=contents[xeno][yako][hero.z]
+  if dialog_target then
     if dialog_target.merch then
       update_lines{shop[dialog_target.merch]()}
-    elseif contents[xeno][yako].talk then
+    elseif dialog_target.talk then
       update_lines{cmd,'"'..dialog_target.talk[flr(rnd(#dialog_target.talk)+1)]..'"'}
     else
       update_lines{cmd,'no response!'}
@@ -1536,15 +1517,15 @@ end
 
 function attack_results(adir,x,y,magic)
   local cmd="attack: "..adir
-  local z,creature=hero.z,contents[x][y]
+  local z,creature=hero.z,contents[x][y][hero.z]
   local damage=flr(rnd(hero.str+hero.lvl+hero.dmg))
   if magic then
     damage+=magic
-  elseif hero.ship then
+  elseif hero.ship==1 then
     cmd="fire: "..adir
     damage+=rnd(50)
   end
-  if creature and creature.hp and creature.z==z then
+  if creature and creature.hp then
     if magic or rnd(hero.dex+hero.lvl*8)>rnd(creature.dex+creature.armor) then
       damage-=rnd(creature.armor)
       creature.hitdisplay=3
@@ -1554,12 +1535,12 @@ function attack_results(adir,x,y,magic)
         increasegold(creature.gold)
         increasexp(creature.exp)
         if creature.name=='pirate' then
-          contents[x][y]=makemetaobj{
+          contents[x][y][z]=makemetaobj{
             facing=creature.facing,
             objtype=shiptype
           }
         else
-          contents[x][y]=nil
+          contents[x][y][z]=nil
         end
         update_lines{cmd,creature.name..' killed; xp+'..creature.exp..' gp+'..creature.gold}
         if creature.name=='faxon' then
@@ -1569,15 +1550,14 @@ function attack_results(adir,x,y,magic)
         del(creatures[mapnum],creature)
       else
         update_lines{cmd,'you hit the '..creature.name..'!'}
-        creature.hostile=true
-        if curmap.friendly then
-          for townie in all(creatures[mapnum]) do
-            --logit(townie.name.." is turning hostile.")
-            townie.hostile=true
-            townie.talk={"you're a lawbreaker!","criminal!"}
-            if townie.name=='guard' then
-              townie.moveallowance=1
-            end
+      end
+      if curmap.friendly then
+        for townie in all(creatures[mapnum]) do
+          --logit(townie.name.." is turning hostile.")
+          townie.hostile=true
+          townie.talk={"you're a lawbreaker!","criminal!"}
+          if townie.name=='guard' then
+            townie.moveallowance=1
           end
         end
       end
@@ -1617,10 +1597,11 @@ end
 
 function calculatemoves(creature)
   local maxx,maxy=curmap.maxx,curmap.maxy
-  local eastspot,westspot=(creature.x+curmap.width-1)%maxx,(creature.x+1)%maxx
-  local northspot,southspot=(creature.y+curmap.height-1)%maxy,(creature.y+1)%maxy
+  local creaturex,creaturey=creature.x,creature.y
+  local eastspot,westspot=(creaturex+curmap.width-1)%maxx,(creaturex+1)%maxx
+  local northspot,southspot=(creaturey+curmap.height-1)%maxy,(creaturey+1)%maxy
   if not curmap.wrap then
-    northspot,southspot,eastspot,westspot=creature.y-1,creature.y+1,creature.x-1,creature.x+1
+    northspot,southspot,eastspot,westspot=creaturey-1,creaturey+1,creaturex-1,creaturex+1
     if creature~=hero then
       northspot,southspot,eastspot,westspot=max(northspot,curmap.miny),min(southspot,maxy),max(eastspot,curmap.minx),min(westspot,maxx)
     end
@@ -1637,9 +1618,8 @@ function movecreatures(hero)
   local actualdistance=500
   local xeno,yako,zabo=hero.x,hero.y,hero.z
   for creaturenum,creature in pairs(creatures[mapnum]) do
-    local cfacing=creature.facing
-    if creature.z==zabo then
-      local desiredx,desiredy=creature.x,creature.y
+    local cfacing,desiredx,desiredy,desiredz=creature.facing,creature.x,creature.y,creature.z
+    if desiredz==zabo then
       while creature.moveallowance>=creature.nummoves do
         local spots=calculatemoves(creature)
         --foreach(spots,logit)
@@ -1691,7 +1671,7 @@ function movecreatures(hero)
         --logit((creature.name or 'nil')..'desiredx '..(desiredx or 'nil')..' desiredy '..(desiredy or 'nil'))
         local newloc=mget(desiredx,desiredy)
         if curmap.dungeon then
-          newloc=getdungeonblockterrain(desiredx,desiredy,creature.z)
+          newloc=getdungeonblockterrain(desiredx,desiredy,desiredz)
         end
         local canmove=false
         for terrain in all(creature.terrain) do
@@ -1701,16 +1681,17 @@ function movecreatures(hero)
           end
         end
         --if curmap.dungeon then
-        --  logit(creature.name..' newloc '..newloc..' '..desiredx..','..desiredy..' '..creature.x..','..creature.y..','..creature.z..' can move '..(canmove and 'true' or 'false'))
+        --  logit(creature.name..' newloc '..newloc..' '..desiredx..','..desiredy..' '..creature.x..','..creature.y..','..desiredz..' can move '..(canmove and 'true' or 'false'))
         --end
         --logit(creature.name..' bestfacing '..bestfacing..': '..spots[bestfacing]..' '..(canmove and 'true' or 'false')..' t '..mget(desiredx,desiredy)..' mp '..creature.movepayment)
         creature.nummoves+=1
         --logit(creature.name..': actualdistance '..actualdistance..' x '..desiredx..' '..xeno..' y '..desiredy..' '..yako)
-        if creature.z==zabo and (creature.hostile and actualdistance<=1 or (desiredx==xeno and desiredy==yako and creature.hostile==nil and creaturenum~=0)) then
+        if creature.hostile and actualdistance<=1 then
           local hero_dodge=hero.dex+2*hero.lvl
+          local creature_msg="the "..creature.name
           if creature.eat and hero.food>0 and rnd(creature.dex*25)>rnd(hero_dodge) then
             sfx(2)
-            update_lines{"the "..creature.name.." eats!"}
+            update_lines{creature_msg.." eats!"}
             deductfood(flr(rnd(6)))
             gothit=true
             delay(9)
@@ -1719,7 +1700,7 @@ function movecreatures(hero)
             local amountstolen=min(ceil(rnd(5)),hero.gold)
             hero.gold-=amountstolen
             creature.gold+=amountstolen
-            update_lines{"the "..creature.name.." steals!"}
+            update_lines{creature_msg.." steals!"}
             gothit=true
             delay(9)
           elseif creature.poison and rnd(creature.dex*20)>rnd(hero_dodge) then
@@ -1733,12 +1714,12 @@ function movecreatures(hero)
             sfx(1)
             local damage=max(ceil(rnd(creature.str+creature.dmg)-rnd(hero.armor)),0)
             deducthp(damage)
-            update_lines{"the "..creature.name.." hits!"}
+            update_lines{creature_msg.." hits!"}
             gothit=true
             delay(3)
             hero.hitdisplay=3
           else
-            update_lines{"the "..creature.name.." misses."}
+            update_lines{creature_msg.." misses."}
           end
           break
         elseif canmove then
@@ -1746,9 +1727,9 @@ function movecreatures(hero)
           --logit(creature.name..' movepayment '..(creature.movepayment or 'nil')..' '..creature.x..','..creature.y)
           creature.movepayment+=1
           --logit((creature.name or 'nil')..' desired '..(desiredx or 'nil')..','..(desiredy or 'nil')..' hero '..(xeno or 'nil')..','..(yako or 'nil')..','..(zabo or 'nil')..' movecost '..(movecost or 'nil'))
-          if creature.movepayment>=movecost and not contents[desiredx][desiredy] and not (desiredx==xeno and desiredy==yako and creature.z==zabo) then
-            contents[creature.x][creature.y]=nil
-            contents[desiredx][desiredy]=creature
+          if creature.movepayment>=movecost and not contents[desiredx][desiredy][zabo] and not (desiredx==xeno and desiredy==yako and desiredz==zabo) then
+            contents[creature.x][creature.y][creature.z]=nil
+            contents[desiredx][desiredy][desiredz]=creature
             creature.x,creature.y=desiredx,desiredy
             creature.movepayment=0
             break
@@ -1816,7 +1797,7 @@ function animatespr(sprnum)
 end
 
 function draw_stats()
-  local linestart=106
+  local linestart,midlinestart,longlinestart=106,110,119
   print("cond",linestart,0,5)
   print(band(hero.status,1)==1 and 'p' or 'g',125,0,6)
   print("lvl",linestart,8,5)
@@ -1826,17 +1807,17 @@ function draw_stats()
   print("mp",linestart,24,5)
   print(hero.mp,linestart+8,24,6)
   print("$",linestart,32,5)
-  print(hero.gold,linestart+4,32,6)
+  print(hero.gold,midlinestart,32,6)
   print("f",linestart,40,5)
-  print(hero.food,linestart+4,40,6)
+  print(hero.food,midlinestart,40,6)
   print("exp",linestart,48,5)
   print(hero.exp,linestart,55,6)
   print("dex",linestart,63,5)
-  print(hero.dex,linestart+13,63,6)
+  print(hero.dex,longlinestart,63,6)
   print("int",linestart,71,5)
-  print(hero.int,linestart+13,71,6)
+  print(hero.int,longlinestart,71,6)
   print("str",linestart,79,5)
-  print(hero.str,linestart+13,79,6)
+  print(hero.str,longlinestart,79,6)
   for linenum=1,numoflines do
     print(lines[(curline-linenum)%numoflines+1],0,128-linenum*8)
   end
@@ -1875,8 +1856,8 @@ function draw_map(x,y,scrtx,scrty,width,height)
   map(x,y,scrtx*8,scrty*8,width,height)
   for contentsx=x,x+width-1 do
     for contentsy=y,y+height-1 do
-      local item=contents[contentsx][contentsy]
-      if item and (item.z==0 or item.z==nil) then
+      local item=contents[contentsx][contentsy][0]
+      if item then
         local flipped=itemdrawprep(item)
         local facing=item.facingmatters and item.facing or 0
         spr(item.img+facing,(contentsx-x+scrtx)*8,(contentsy-y+scrty)*8,1,1,flipped)
@@ -1920,8 +1901,8 @@ function getdungeonblocks(mapx,mapy,mapz,facing)
       add(blocks,{
         block=getdungeonblock(mapx,viewy,mapz),
         x=mapx,
-        y=viewy}
-      )
+        y=viewy
+      })
     end
     if facing==4 then
       triplereverse(blocks)
@@ -1933,8 +1914,7 @@ function getdungeonblocks(mapx,mapy,mapz,facing)
         block=getdungeonblock(viewx,mapy,mapz),
         x=viewx,
         y=mapy
-        }
-      )
+      })
     end
     if facing==3 then
       triplereverse(blocks)
@@ -1968,17 +1948,9 @@ function dungeon_draw()
   cls()
   local view=getdungeonview(hero.x,hero.y,hero.z,hero.facing)
   for depthindex,row in pairs(view) do
-    local depthin=(depthindex-1)*10
-    local depthout=depthindex*10
-    local topouter=30-depthout
-    local topinner=30-depthin
-    local bottomouter=52+depthout
-    local bottominner=52+depthin
-    local lowextreme=30-depthout*2
-    local highextreme=52+depthout*2
-    local lowerase=31-depthin
-    local higherase=51+depthin
-    local middle=42
+    local depthin,depthout=(depthindex-1)*10,depthindex*10
+    local topouter,topinner,bottomouter,bottominner=30-depthout,30-depthin,52+depthout,52+depthin
+    local lowextreme,highextreme,middle,lowerase,higherase=30-depthout*2,52+depthout*2,42,31-depthin,51+depthin
     if row[1].block==3 then
       rectfill(topouter,topouter,topinner,bottomouter,0)
       line(lowextreme,topouter,topouter,topouter,5)
@@ -2032,8 +2004,8 @@ end
 function dungeondrawobject(xeno,yako,zabo,distance)
   --logit('drawmonster ('..(xeno or 'nil')..','..(yako or 'nil')..','..(zabo or 'nil')..') '..(distance or 'nil'))
   if xeno>0 and yako>0 then
-    local item=contents[xeno][yako]
-    if item and item.z==zabo then
+    local item=contents[xeno][yako][zabo]
+    if item then
       local flipped=itemdrawprep(item)
       local distancemod=distance*3
       local shiftmod,sizemod=0,0
@@ -2041,7 +2013,7 @@ function dungeondrawobject(xeno,yako,zabo,distance)
       if item.img==27 then
         shiftmod,sizemod=12,20
       elseif item.img==26 then
-        shiftmod,sizemod=-12,20
+        shiftmod,sizemod=-3,20
       end
       local xoffset,yoffset=20+distancemod+(sizemod*(distance+1)/8),35-(3-distance)*shiftmod
       local imgsize=60-sizemod-distancemod*4
@@ -2063,13 +2035,10 @@ function msg_draw()
 end
 
 function world_draw()
-  local maxx,maxy=curmap.maxx,curmap.maxy
-  local minx,miny=curmap.minx,curmap.miny
+  local maxx,maxy,minx,miny=curmap.maxx,curmap.maxy,curmap.minx,curmap.miny
   local width,height,wrap=curmap.width,curmap.height,curmap.wrap
-  local xtraleft,xtratop,xtrawidth,xtraheight=0,0,0,0
-  local scrtx,scrty=0,0
-  local left=hero.x-halfwidth
-  local right=hero.x+halfwidth
+  local xtraleft,xtratop,xtrawidth,xtraheight,scrtx,scrty=0,0,0,0,0,0
+  local left,right=hero.x-halfwidth,hero.x+halfwidth
   if left<minx then
     xtrawidth=minx-left
     scrtx=xtrawidth
@@ -2110,8 +2079,7 @@ function world_draw()
       bottom=maxy
     end
   end
-  local mainwidth=fullwidth-xtrawidth
-  local mainheight=fullheight-xtraheight
+  local mainwidth,mainheight=fullwidth-xtrawidth,fullheight-xtraheight
   if cycle%16==0 then
     for sprnum=10,14,2 do
       animatespr(sprnum)
@@ -2259,21 +2227,21 @@ e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0100101018101010110101010101011111111111010101010
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0c0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101010101010101010101010101011111111111010101010101010101010101001110101c10101110111111111011101
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0404010411041104040202020202040406060600101010101010101010101010101111111111111110111111111011101
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0202020202040406060600101010101010101010101010140401041104110404001111111111111110111111111011101
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0c0c0c0c0c0c0c0c0c0c0c03080807080303030c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0401041411041411040202020202020404010600111111111111111111111110101111111601111110111111111011101
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0202020202020404010600111111111111111111111110140104141104141104001111111601111110111111111011101
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0c0808070707070c0c0c0c080803090128030903030c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e01010414110414110106161616161206110404001c282b3344434b2930353230101111160406011110111111111011101
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e06161616161206110404001c282b3344434b2930353230110104141104141101001111160406011110111111111011101
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0807070908090807070c0c070808080709080803030c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e041104110101041104161616161616161404040011111111111111111111111010111604010406011c111111111011101
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e061616161616161404040011111111111111111111111014110411010104110410111604010406011c111111111011101
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0803090809080308070c0c0c07080809070803030c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e04110101010101010412020202020206120202001111111111111111111111101011111604060111101c282b3a3011101
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e02020202020616120202001111111111111111111111101411010101010101041011111604060111101c282b3a3011101
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0c03030707030307070c0c0c0c0c0c080808030c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e041104110101041104120202010202061612020010101010101c101010101010101111111601111110101010101011101
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e020202010202061612020010101010101c101010101010141104110101041104101111111601111110101010101011101
 e0e0e0c0c0c0c0c0c0c0c0c0c0e0c0c0c0c0c0c03080307070c0c080808070c0c0c0c0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0104041101010414010202010101020206161612020202040406140402020202001111111111111111111111111111101
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0202010101020206161612020202040406140402020202040404110101041404001111111111111111111111111111101
 e0e0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0703090308070c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0404041401040414040101010101010102020616161616161616120202020202001010101010111111101010101010101
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101010101010102020616161616161616120202020202010404110101041401001010101010111111101010101010101
 __label__
 00000000000000000033000000000000000000000000050000055000000550000005500000055000000005000000000000000000000550055055005500000066
 00030000000300000333300001001000010010000050505000500500005005000050050000500500005050500100010101000101005000505050505050000600

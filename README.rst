@@ -45,21 +45,24 @@ it's possible to explore the (incomplete) waters of the world map. Leveling up w
 Most sound effects are in place. I've got pits working in dungeons even though they
 were never in the original Ultimas. These will probably not make the final cut though
 as I'm running out of space. The in-game help screen works. Saving and loading games
-works, although it has some unavoidable limitations. Background music works.
+works, although it has some unavoidable limitations. Background music works. It's
+even possible to win the game.
 
-A few things don't work. You can't win yet.
+A few things don't work. I'm at the point now I've got to decide which additional
+incomplete features I'll have to drop in order to complete the remainder.
 
 Challenges
 ----------
 
 The constraints of building something within the PICO-8 environment make a project like
-this fairly tough. The game is pretty close to being fully playable and winnable, but
-there's not a lot of space left and I'll likely have to trim out some already-working
-features to shoehorn in a winnable game. I've already had to remove a partial Ultima
+this fairly tough. The game is pretty close to being fully playable, but there's not a
+lot of space left and I'll likely have to trim out some already-started features to
+shoehorn in the rest of the game. I've already had to remove a partial Ultima
 III+ style missile weapon implementation and go back to the Ultima II style
 "adjacent-only" type of combat, plus replace armor and weapon inventory along with
 related wield and wear commands with automatic switching to best available armor and
-weapons in order to keep within the space constraints we've got.
+weapons, drop enterable shrines, and remove the concept of creatures that are neither
+particularly friendly nor hostile in order to keep within the space constraints we've got.
 
 Other Notes
 -----------

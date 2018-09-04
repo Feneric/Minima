@@ -71,7 +71,7 @@ dungeons = {
         "XXXXXXXXXX",
     },{
         "XXXXXXXXXX",
-        "X   X  ~ X",
+        "X   X    X",
         "X X X XX X",
         "X X   X  X",
         "XXXXX XX X",
@@ -121,16 +121,16 @@ dungeons = {
 }--]]
 
 dungeons = {
-    {
+   {
         "XXXXXXXXXX",
         "X    X   X",
-        "XX X X XXX",
-        "X  X X   X",
-        "X X~ XXX X",
-        "X XXXX   X",
-        "X    X XXX",
-        "X X XX X~X",
-        "X X#X    X",
+        "X #X X X#X",
+        "XXXX X XXX",
+        "X    X X X",
+        "X XXXX X X",
+        "X  X X X X",
+        "X    X X X",
+        "X  X     X",
         "XXXXXXXXXX",
     },{
         "XXXXXXXXXX",
@@ -146,13 +146,13 @@ dungeons = {
     },{
         "XXXXXXXXXX",
         "X    X   X",
-        "X #X X X#X",
-        "XXXX X XXX",
-        "X    X X X",
-        "X XXXX X X",
-        "X  X X X X",
-        "X    X X X",
-        "X  X     X",
+        "XX X X XXX",
+        "X  X X   X",
+        "X X~ XXX X",
+        "X XXXX   X",
+        "X    X XXX",
+        "X X XX X~X",
+        "X X#X    X",
         "XXXXXXXXXX",
     }
 }
