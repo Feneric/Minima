@@ -1500,7 +1500,7 @@ function look_results(ldir,x,y)
   elseif curmap.dungeon then
     update_lines{cmd,"dungeon"}
   else
-    update_lines{cmd,}
+    update_lines{cmd,terrains[mget(x,y)]}
   end
 end
 
