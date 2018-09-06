@@ -33,8 +33,7 @@ homage to all the old 8-bit Ultima games, but especially numbers II through V.
 Status
 ------
 
-This project is mostly complete, and pending further testing the version here will
-likely be the one released to the world.
+This project is at version one. It should be completely playable from beginning to end.
 
 Lots of things work. You can move around and explore the (incomplete) world map and
 enter towns and dungeons. Town views and dungeon views work. Looking at things and
