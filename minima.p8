@@ -251,7 +251,7 @@ bestiary={
   },{
     img=84,
     colorsubs={{},{{2,8},{15,4}}},
-    names={"warlock","necromancer","sorceror"},
+    names={"warlock","necromancer","sorcerer"},
     exp=10,
     talk={"i hex you!","a curse on you!"}
   },{
