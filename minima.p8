@@ -954,8 +954,10 @@ end
 
 function listcommands()
   msg=helpmsg
-  draw_state=_draw
-  _draw=msg_draw
+  if _draw~=msg_draw then
+    draw_state=_draw
+    _draw=msg_draw
+  end
 end
 
 attrlist={'armor','dmg','x','y','exp','lvl','str','int','dex','status','gold','food','mp','hp','img','facing'}
