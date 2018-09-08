@@ -22,7 +22,7 @@ anyobj={
   movepayment=0,
   hitdisplay=0,
   chance=0,
-  z=0
+  zabo=0
 }
 
 function makemetaobj(base,basetype)
@@ -157,28 +157,7 @@ basetypes={
 }
 
 -- give our base objects names for convenience & efficiency.
-creature=basetypes[1]
-ankhtype=basetypes[2]
-shiptype=basetypes[3]
-fountaintype=basetypes[4]
-ladderuptype=basetypes[5]
-ladderdowntype=basetypes[6]
-human=basetypes[7]
-orc=basetypes[8]
-undead=basetypes[9]
-animal=basetypes[10]
-fighter=basetypes[11]
-guard=basetypes[12]
-merchant=basetypes[13]
-lady=basetypes[14]
-shepherd=basetypes[15]
-jester=basetypes[16]
-villain=basetypes[17]
-grocer=basetypes[18]
-armorer=basetypes[19]
-smith=basetypes[20]
-medic=basetypes[21]
-barkeep=basetypes[22]
+creature,ankhtype,shiptype,fountaintype,ladderuptype,ladderdowntype,human,orc,undead,animal,fighter,guard,merchant,lady,shepherd,jester,villain,grocer,armorer,smith,medic,barkeep=basetypes[1],basetypes[2],basetypes[3],basetypes[4],basetypes[5],basetypes[6],basetypes[7],basetypes[8],basetypes[9],basetypes[10],basetypes[11],basetypes[12],basetypes[13],basetypes[14],basetypes[15],basetypes[16],basetypes[17],basetypes[18],basetypes[19],basetypes[20],basetypes[21],basetypes[22]
 
 -- set our base objects base values.
 for basetypenum=1,22 do
@@ -862,13 +841,13 @@ function initobjs()
       end
     end
     for item in all(curmap.items) do
-      item.objtype,xeno,yako,zabo=item[1],item[2],item[3],item[4] or 0
-      item.x,item.y,item.z=xeno,yako,zabo
-      curmap.contents[xeno][yako][zabo]=makemetaobj(item)
+      item.objtype,xcoord,ycoord,zcoord=item[1],item[2],item[3],item[4] or 0
+      item.xeno,item.yako,item.zabo=xcoord,ycoord,zcoord
+      curmap.contents[xcoord][ycoord][zcoord]=makemetaobj(item)
       -- automatically make a corresponding ladder down for every ladder up
       if item.objtype.name=='ladder up' and maptype==dungeontype then
-        zabo-=1
-        curmap.contents[xeno][yako][zabo]=makemetaobj{objtype=ladderdowntype}
+        zcoord-=1
+        curmap.contents[xcoord][ycoord][zcoord]=makemetaobj{objtype=ladderdowntype}
       end
     end
     for creature in all(curmap.creatures) do
@@ -884,9 +863,9 @@ function initobjs()
     img=0,
     armor=0,
     dmg=0,
-    x=7,
-    y=7,
-    z=0,
+    xeno=7,
+    yako=7,
+    zabo=0,
     exp=0,
     lvl=0,
     str=8,
@@ -916,8 +895,8 @@ function initobjs()
     name="maelstrom",
     terrain={12,13,14,15},
     moveallowance=1,
-    x=13,
-    y=61
+    xeno=13,
+    yako=61
   },anyobj)
   creatures[0][0]=maelstrom
   contents[13][61][0]=maelstrom
@@ -960,7 +939,7 @@ function listcommands()
   end
 end
 
-attrlist={'armor','dmg','x','y','exp','lvl','str','int','dex','status','gold','food','mp','hp','img','facing'}
+attrlist={'armor','dmg','xeno','yako','exp','lvl','str','int','dex','status','gold','food','mp','hp','img','facing'}
 
 function savegame()
   if mapnum~=0 then
@@ -968,6 +947,7 @@ function savegame()
   else
     local storagenum=0
     for heroattr in all(attrlist) do
+      --logit(heroattr..hero[heroattr])
       dset(storagenum,hero[heroattr])
       storagenum+=1
     end
@@ -975,8 +955,8 @@ function savegame()
       local creature=creatures[0][creaturenum]
       if creature then
         dset(storagenum,creature.idtype)
-        dset(storagenum+1,creature.x)
-        dset(storagenum+2,creature.y)
+        dset(storagenum+1,creature.xeno)
+        dset(storagenum+2,creature.yako)
       else
         dset(storagenum,0)
       end
@@ -991,6 +971,7 @@ function loadgame()
   local storagenum=0
   for heroattr in all(attrlist) do
     hero[heroattr]=dget(storagenum)
+    --logit(heroattr..hero[heroattr])
     storagenum+=1
   end
   for creaturenum=1,10 do
@@ -1032,18 +1013,18 @@ function checkspell(cmd,extra)
 end
 
 function exitdungeon(rightplace)
-  hero.x,hero.y,hero.z,hero.facing,mapnum=rightplace and 117 or curmap.enterx,rightplace and 41 or curmap.entery,0,0,curmap.mapnum
+  hero.xeno,hero.yako,hero.zabo,hero.facing,mapnum=rightplace and 117 or curmap.enterx,rightplace and 41 or curmap.entery,0,0,curmap.mapnum
   setmap()
   _draw=world_draw
 end
 
 function entermap(loopmap,loopmapnum,rightplace)
-  hero.x,hero.y=rightplace and 3 or loopmap.startx,rightplace and 8 or loopmap.starty
+  hero.xeno,hero.yako=rightplace and 3 or loopmap.startx,rightplace and 8 or loopmap.starty
   mapnum=loopmapnum
   setmap()
   if loopmap.dungeon then
      _draw=dungeon_draw
-     hero.facing,hero.z=loopmap.startfacing,loopmap.startz
+     hero.facing,hero.zabo=loopmap.startfacing,loopmap.startz
   end
   return "entering "..loopmap.name.."."
 end
@@ -1051,10 +1032,10 @@ end
 function inputprocessor(cmd)
   while true do
     local spots=calculatemoves(hero)
-    local xeno,yako,zabo=hero.x,hero.y,hero.z
-    local curobj=contents[xeno][yako][zabo]
+    local xcoord,ycoord,zcoord=hero.xeno,hero.yako,hero.zabo
+    local curobj=contents[xcoord][ycoord][zcoord]
     local curobjname=curobj and curobj.name or nil
-    --logit(hero.x..','..hero.y..','..hero.z..' '..(curobj and curobj.name or 'nil'))
+    --logit(hero.xcoord..','..hero.yako..','..hero.zabo..' '..(curobj and curobj.name or 'nil'))
     if _draw==msg_draw then
       if cmd!='p' and hero.hp>0 then
         _draw=draw_state
@@ -1068,9 +1049,9 @@ function inputprocessor(cmd)
         update_lines{"turn left"}
         turnmade=true
       else
-        hero.x,hero.y=checkmove(spots[2],yako,"west")
+        hero.xeno,hero.yako=checkmove(spots[2],ycoord,"west")
       end
-      --logit('hero '..hero.x..','..hero.y..','..hero.z)
+      --logit('hero '..hero.xeno..','..hero.yako..','..hero.zabo)
     elseif cmd=='east' then
       if curmap.dungeon then
         hero.facing+=1
@@ -1080,23 +1061,23 @@ function inputprocessor(cmd)
         update_lines{"turn right."}
         turnmade=true
       else
-        hero.x,hero.y=checkmove(spots[4],yako,"east")
+        hero.xeno,hero.yako=checkmove(spots[4],ycoord,"east")
       end
-      --logit('hero '..hero.x..','..hero.y..','..hero.z)
+      --logit('hero '..hero.xeno..','..hero.yako..','..hero.zabo)
     elseif cmd=='north' then
       if curmap.dungeon then
-        hero.x,hero.y,hero.z=checkdungeonmove(1)
+        hero.xeno,hero.yako,hero.zabo=checkdungeonmove(1)
       else
-        hero.x,hero.y=checkmove(xeno,spots[1],"north")
+        hero.xeno,hero.yako=checkmove(xcoord,spots[1],"north")
       end
-      --logit('hero '..hero.x..','..hero.y..','..hero.z)
+      --logit('hero '..hero.xeno..','..hero.yako..','..hero.zabo)
     elseif cmd=='south' then
       if curmap.dungeon then
-        hero.x,hero.y,hero.z=checkdungeonmove(-1)
+        hero.xeno,hero.yako,hero.zabo=checkdungeonmove(-1)
       else
-        hero.x,hero.y=checkmove(xeno,spots[3],"south")
+        hero.xeno,hero.yako=checkmove(xcoord,spots[3],"south")
       end
-      --logit('hero '..hero.x..','..hero.y..','..hero.z)
+      --logit('hero '..hero.xeno..','..hero.yako..','..hero.zabo)
     elseif cmd=='c' then
       update_lines{"choose a\84\84\65\67\75, m\69\68\73\67, c\85\82\69,","w\79\85\78\68, e\88\73\84, s\65\86\73\79\82: "}
       cmd=yield()
@@ -1137,10 +1118,10 @@ function inputprocessor(cmd)
       if not getdirection(spots,look_results) then
         if cmd=='x' then
           local response={"search","you find nothing."}
-          signcontents=check_sign(xeno,yako)
+          signcontents=check_sign(xcoord,ycoord)
           if signcontents then
             response={"read sign",signcontents}
-          elseif xeno==1 and yako==38 and hero.dmg<50 then
+          elseif xcoord==1 and ycoord==38 and hero.dmg<50 then
             -- search response
             response[2]="you find the magic sword!"
             hero.dmg=50
@@ -1175,35 +1156,35 @@ function inputprocessor(cmd)
       local msg="nothing to enter."
       if curmap.dungeon then
         if curobjname=='ladder up' or curobjname=='ladder down' then
-          if zabo==curmap.startz and xeno==curmap.startx and yako==curmap.starty then
+          if zcoord==curmap.startz and xcoord==curmap.startx and ycoord==curmap.starty then
             msg="exiting "..curmap.name.."."
             exitdungeon()
           elseif curobjname=='ladder up' then
             msg="ascending."
-            hero.z-=1
+            hero.zabo-=1
           else
             msg="descending."
-            hero.z+=1
-            if mapnum==10 and hero.z==4 then
+            hero.zabo+=1
+            if mapnum==10 and hero.zabo==4 then
               exitdungeon(true)
             end
           end
         end
       elseif hero.img>0 then
         msg="exiting ship."
-        contents[xeno][yako][zabo]=makemetaobj{facing=hero.facing,objtype=shiptype}
+        contents[xcoord][ycoord][zcoord]=makemetaobj{facing=hero.facing,objtype=shiptype}
         hero.img,hero.facing=0,0
       elseif curobjname=='ship' then
         msg="boarding ship."
         hero.img,hero.facing=70,curobj.facing
-        contents[xeno][yako][zabo]=nil
+        contents[xcoord][ycoord][zcoord]=nil
       else
         for loopmapnum=1,10 do
           local loopmap=maps[loopmapnum]
-          if mapnum==loopmap.mapnum and xeno==loopmap.enterx and yako==loopmap.entery then
+          if mapnum==loopmap.mapnum and xcoord==loopmap.enterx and ycoord==loopmap.entery then
             msg=entermap(loopmap,loopmapnum)
-          elseif mapnum==6 and xeno==117 and yako==41 then
-            msg=entermap(loopmap,loopmapnum,true)
+          elseif mapnum==6 and xcoord==117 and ycoord==41 then
+            msg=entermap(maps[10],10,true)
           end
         end
       end
@@ -1240,13 +1221,13 @@ function getdirection(spots,resultfunc,magic,adir)
     adir=yield()
   end
   if adir=='east' or hero.facing==2 then
-    resultfunc(adir,spots[4],hero.y,magic)
+    resultfunc(adir,spots[4],hero.yako,magic)
   elseif adir=='west' or hero.facing==4 then
-    resultfunc(adir,spots[2],hero.y,magic)
+    resultfunc(adir,spots[2],hero.yako,magic)
   elseif adir=='north' or hero.facing==1 then
-    resultfunc(adir,hero.x,spots[1],magic)
+    resultfunc(adir,hero.xeno,spots[1],magic)
   elseif adir=='south' or hero.facing==3 then
-    resultfunc(adir,hero.x,spots[3],magic)
+    resultfunc(adir,hero.xeno,spots[3],magic)
   else
     return false
   end
@@ -1266,17 +1247,17 @@ function update_lines(msg)
 end
 
 function definemonster(monster)
-  local objtype,xeno,yako,zabo=monster[1],monster[2],monster[3],monster[4] or 0
-  monster.x,monster.y,monster.z,monster.objtype=xeno,yako,zabo,objtype
+  local objtype,xcoord,ycoord,zcoord=monster[1],monster[2],monster[3],monster[4] or 0
+  monster.xeno,monster.yako,monster.zabo,monster.objtype=xcoord,ycoord,zcoord,objtype
   makemetaobj(monster)
-  if(not monster.name and objtype.names)monster.name=objtype.names[flr(rnd(#objtype.names)+1)]
+  if(monster.name~="faxon" and objtype.names)monster.name=objtype.names[flr(rnd(#objtype.names)+1)]
   --if(objtype.imgs)monster.img=objtype.imgs[flr(rnd(#objtype.imgs)+1)]
   if(objtype.colorsubs)monster.colorsub=objtype.colorsubs[flr(rnd(#objtype.colorsubs)+1)]
   monster.imgseq=flr(rnd(30))
   monster.imgalt=false
   add(creatures[monster.mapnum],monster)
-  maps[monster.mapnum].contents[xeno][yako][zabo]=monster
-  --logit("made "..monster.name.." at ("..monster.x..","..monster.y..","..(monster.z or 'nil')..")")
+  maps[monster.mapnum].contents[xcoord][ycoord][zcoord]=monster
+  --logit("made "..monster.name.." at ("..monster.xeno..","..monster.yako..","..(monster.zabo or 'nil')..")")
   return monster
 end
 
@@ -1284,7 +1265,7 @@ function create_monster()
   local monsterx=flr(rnd(curmap.width))+curmap.minx
   local monstery=flr(rnd(curmap.height))+curmap.miny
   local monsterz=curmap.dungeon and flr(rnd(#curmap.levels)+1) or 0
-  if contents[monsterx][monstery][monsterz] or monsterx==hero.x and monstery==hero.y and monsterz==hero.z then
+  if contents[monsterx][monstery][monsterz] or monsterx==hero.xeno and monstery==hero.yako and monsterz==hero.zabo then
     -- don't create a monster where there already is one
     monsterx=nil
   end
@@ -1350,27 +1331,27 @@ end
 -- world updates
 
 function checkdungeonmove(direction)
-  local newx,newy=hero.x,hero.y
-  local xeno,yako,zabo=hero.x,hero.y,hero.z
+  local newx,newy=hero.xeno,hero.yako
+  local xcoord,ycoord,zcoord=hero.xeno,hero.yako,hero.zabo
   local cmd=direction>0 and 'advance' or 'retreat'
   local item
   local iscreature=false
   if hero.facing==1 then
     newy-=direction
-    result=getdungeonblock(xeno,newy,zabo)
-    item=contents[xeno][newy][zabo]
+    result=getdungeonblock(xcoord,newy,zcoord)
+    item=contents[xcoord][newy][zcoord]
   elseif hero.facing==2 then
     newx+=direction
-    result=getdungeonblock(newx,yako,zabo)
-    item=contents[newx][yako][zabo]
+    result=getdungeonblock(newx,ycoord,zcoord)
+    item=contents[newx][ycoord][zcoord]
   elseif hero.facing==3 then
     newy+=direction
-    result=getdungeonblock(xeno,newy,zabo)
-    item=contents[xeno][newy][zabo]
+    result=getdungeonblock(xcoord,newy,zcoord)
+    item=contents[xcoord][newy][zcoord]
   else
     newx-=direction
-    result=getdungeonblock(newx,yako,zabo)
-    item=contents[newx][yako][zabo]
+    result=getdungeonblock(newx,ycoord,zcoord)
+    item=contents[newx][ycoord][zcoord]
   end
   if item and item.hp then
     iscreature=true
@@ -1378,16 +1359,16 @@ function checkdungeonmove(direction)
   if result==3 or iscreature then
     update_lines{cmd,"blocked!"}
   else
-    xeno,yako=newx,newy
+    xcoord,ycoord=newx,newy
     sfx(0)
     update_lines{cmd}
   end
   turnmade=true
-  return xeno,yako,zabo
+  return xcoord,ycoord,zcoord
 end
 
-function checkexit(xeno,yako)
-  if not curmap.wrap and(xeno>=curmap.maxx or xeno<curmap.minx or yako>=curmap.maxy or yako<curmap.miny) then
+function checkexit(xcoord,ycoord)
+  if not curmap.wrap and(xcoord>=curmap.maxx or xcoord<curmap.minx or ycoord>=curmap.maxy or ycoord<curmap.miny) then
     update_lines{cmd,"exiting "..curmap.name.."."}
     mapnum=0
     return true
@@ -1396,14 +1377,14 @@ function checkexit(xeno,yako)
   end
 end
 
-function checkmove(xeno,yako,cmd)
+function checkmove(xcoord,ycoord,cmd)
   local movesuccess=true
-  local newloc=mget(xeno,yako)
+  local newloc=mget(xcoord,ycoord)
   local movecost=band(fget(newloc),3)
   local water=fget(newloc,2)
   local impassable=fget(newloc,3)
-  local content=contents[xeno][yako][hero.z]
-  --update_lines(""..xeno..","..yako.." "..newloc.." "..movecost.." "..fget(newloc))
+  local content=contents[xcoord][ycoord][hero.zabo]
+  --update_lines(""..xcoord..","..ycoord.." "..newloc.." "..movecost.." "..fget(newloc))
   if hero.img>0 then
     if cmd=='north' then
       hero.facing=1
@@ -1414,14 +1395,14 @@ function checkmove(xeno,yako,cmd)
     else
       hero.facing='4'
     end
-    local terraintype=mget(xeno,yako)
-    if checkexit(xeno,yako) then
-      xeno,yako=curmap.enterx,curmap.entery
+    local terraintype=mget(xcoord,ycoord)
+    if checkexit(xcoord,ycoord) then
+      xcoord,ycoord=curmap.enterx,curmap.entery
       setmap()
     elseif content then
       if content.name=='maelstrom' then
         update_lines{cmd,"maelstrom! yikes!"}
-        deducthp(flr(rnd(25)))
+        deducthp(ceil(rnd(25)))
       else
         movesuccess=false
         update_lines{cmd,"blocked!"}
@@ -1433,8 +1414,8 @@ function checkmove(xeno,yako,cmd)
       update_lines{cmd}
     end
   else
-    if checkexit(xeno,yako) then
-      xeno,yako=curmap.enterx,curmap.entery
+    if checkexit(xcoord,ycoord) then
+      xcoord,ycoord=curmap.enterx,curmap.entery
       setmap()
     elseif content then
       local name=content.name
@@ -1445,7 +1426,7 @@ function checkmove(xeno,yako,cmd)
     elseif newloc==28 then
       update_lines{cmd,"open door."}
       movesuccess=false
-      mset(xeno,yako,30)
+      mset(xcoord,ycoord,30)
     elseif newloc==29 then
       update_lines{cmd,"the door is locked."}
       movesuccess=false
@@ -1473,10 +1454,10 @@ function checkmove(xeno,yako,cmd)
       hero.status=bor(hero.status,1)
     end
   else
-    xeno,yako=hero.x,hero.y
+    xcoord,ycoord=hero.xeno,hero.yako
   end
   turnmade=true
-  return xeno,yako
+  return xcoord,ycoord
 end
 
 function check_sign(x,y)
@@ -1494,7 +1475,7 @@ function check_sign(x,y)
 end
 
 function look_results(ldir,x,y)
-  local cmd,signcontents,content="examine: "..ldir,check_sign(x,y),contents[x][y][hero.z] or nil
+  local cmd,signcontents,content="examine: "..ldir,check_sign(x,y),contents[x][y][hero.zabo] or nil
   if signcontents then
     update_lines{cmd.." (read sign)",signcontents}
   elseif content then
@@ -1506,12 +1487,12 @@ function look_results(ldir,x,y)
   end
 end
 
-function dialog_results(ddir,xeno,yako)
+function dialog_results(ddir,xcoord,ycoord)
   local cmd="dialog: "..ddir
-  if terrains[mget(xeno,yako)]=='counter' then
-    return getdirection(calculatemoves({x=xeno,y=yako}),dialog_results,nil,ddir)
+  if terrains[mget(xcoord,ycoord)]=='counter' then
+    return getdirection(calculatemoves({xeno=xcoord,yako=ycoord}),dialog_results,nil,ddir)
   end
-  local dialog_target=contents[xeno][yako][hero.z]
+  local dialog_target=contents[xcoord][ycoord][hero.zabo]
   if dialog_target then
     if dialog_target.merch then
       update_lines{shop[dialog_target.merch]()}
@@ -1525,9 +1506,9 @@ function dialog_results(ddir,xeno,yako)
   end
 end
 
-function attack_results(adir,x,y,magic)
+function attack_results(adir,xcoord,ycoord,magic)
   local cmd="attack: "..adir
-  local z,creature=hero.z,contents[x][y][hero.z]
+  local zcoord,creature=hero.zabo,contents[xcoord][ycoord][hero.zabo]
   local damage=flr(rnd(hero.str+hero.lvl+hero.dmg))
   if magic then
     damage+=magic
@@ -1545,12 +1526,12 @@ function attack_results(adir,x,y,magic)
         increasegold(creature.gold)
         increasexp(creature.exp)
         if creature.name=='pirate' then
-          contents[x][y][z]=makemetaobj{
+          contents[xcoord][ycoord][zcoord]=makemetaobj{
             facing=creature.facing,
             objtype=shiptype
           }
         else
-          contents[x][y][z]=nil
+          contents[xcoord][ycoord][zcoord]=nil
         end
         update_lines{cmd,creature.name..' killed; xp+'..creature.exp..' gp+'..creature.gold}
         if creature.name=='faxon' then
@@ -1574,13 +1555,13 @@ function attack_results(adir,x,y,magic)
     else
       update_lines{cmd,'you miss the '..creature.name..'!'}
     end
-  elseif mget(x,y)==29 then
+  elseif mget(xcoord,ycoord)==29 then
     -- bash locked door
     sfx(1)
     if(not magic)deducthp(1)
     if rnd(damage)>8 then
       update_lines{cmd,'you break open the door!'}
-      mset(x,y,30)
+      mset(xcoord,ycoord,30)
     else
       update_lines{cmd,'the door is still locked.'}
     end
@@ -1607,7 +1588,7 @@ end
 
 function calculatemoves(creature)
   local maxx,maxy=curmap.maxx,curmap.maxy
-  local creaturex,creaturey=creature.x,creature.y
+  local creaturex,creaturey=creature.xeno,creature.yako
   local eastspot,westspot=(creaturex+curmap.width-1)%maxx,(creaturex+1)%maxx
   local northspot,southspot=(creaturey+curmap.height-1)%maxy,(creaturey+1)%maxy
   if not curmap.wrap then
@@ -1626,24 +1607,24 @@ end
 function movecreatures(hero)
   local gothit=false
   local actualdistance=500
-  local xeno,yako,zabo=hero.x,hero.y,hero.z
+  local xcoord,ycoord,zcoord=hero.xeno,hero.yako,hero.zabo
   for creaturenum,creature in pairs(creatures[mapnum]) do
-    local cfacing,desiredx,desiredy,desiredz=creature.facing,creature.x,creature.y,creature.z
-    if desiredz==zabo then
+    local cfacing,desiredx,desiredy,desiredz=creature.facing,creature.xeno,creature.yako,creature.zabo
+    if desiredz==zcoord then
       while creature.moveallowance>=creature.nummoves do
         local spots=calculatemoves(creature)
         --foreach(spots,logit)
         if creature.hostile then
           -- most creatures are hostile; move toward player
           local bestfacing=0
-          actualdistance=squaredistance(creature.x,creature.y,xeno,yako)
+          actualdistance=squaredistance(creature.xeno,creature.yako,xcoord,ycoord)
           local currentdistance=actualdistance
           local bestdistance=currentdistance
           for facing=1,4 do
             if facing%2==1 then
-              currentdistance=squaredistance(creature.x,spots[facing],xeno,yako)
+              currentdistance=squaredistance(creature.xeno,spots[facing],xcoord,ycoord)
             else
-              currentdistance=squaredistance(spots[facing],creature.y,xeno,yako)
+              currentdistance=squaredistance(spots[facing],creature.yako,xcoord,ycoord)
             end
             if currentdistance<bestdistance then
               --logit(creature.name..' best distance (cur): '..currentdistance..' (old): '..bestdistance..' facing: '..facing)
@@ -1691,11 +1672,11 @@ function movecreatures(hero)
           end
         end
         --if curmap.dungeon then
-        --  logit(creature.name..' newloc '..newloc..' '..desiredx..','..desiredy..' '..creature.x..','..creature.y..','..desiredz..' can move '..(canmove and 'true' or 'false'))
+        --  logit(creature.name..' newloc '..newloc..' '..desiredx..','..desiredy..' '..creature.xeno..','..creature.yako..','..desiredz..' can move '..(canmove and 'true' or 'false'))
         --end
         --logit(creature.name..' bestfacing '..bestfacing..': '..spots[bestfacing]..' '..(canmove and 'true' or 'false')..' t '..mget(desiredx,desiredy)..' mp '..creature.movepayment)
         creature.nummoves+=1
-        --logit(creature.name..': actualdistance '..actualdistance..' x '..desiredx..' '..xeno..' y '..desiredy..' '..yako)
+        --logit(creature.name..': actualdistance '..actualdistance..' x '..desiredx..' '..xeno..' y '..desiredy..' '..ycoord)
         if creature.hostile and actualdistance<=1 then
           local hero_dodge=hero.dex+2*hero.lvl
           local creature_msg="the "..creature.name
@@ -1734,13 +1715,13 @@ function movecreatures(hero)
           break
         elseif canmove then
           local movecost=band(fget(newloc),3)
-          --logit(creature.name..' movepayment '..(creature.movepayment or 'nil')..' '..creature.x..','..creature.y)
+          --logit(creature.name..' movepayment '..(creature.movepayment or 'nil')..' '..creature.xeno..','..creature.yako)
           creature.movepayment+=1
-          --logit((creature.name or 'nil')..' desired '..(desiredx or 'nil')..','..(desiredy or 'nil')..' hero '..(xeno or 'nil')..','..(yako or 'nil')..','..(zabo or 'nil')..' movecost '..(movecost or 'nil'))
-          if creature.movepayment>=movecost and not contents[desiredx][desiredy][zabo] and not (desiredx==xeno and desiredy==yako and desiredz==zabo) then
-            contents[creature.x][creature.y][creature.z]=nil
+          --logit((creature.name or 'nil')..' desired '..(desiredx or 'nil')..','..(desiredy or 'nil')..' hero '..(xeno or 'nil')..','..(ycoord or 'nil')..','..(zcoord or 'nil')..' movecost '..(movecost or 'nil'))
+          if creature.movepayment>=movecost and not contents[desiredx][desiredy][zcoord] and not (desiredx==xcoord and desiredy==ycoord and desiredz==zcoord) then
+            contents[creature.xeno][creature.yako][creature.zabo]=nil
             contents[desiredx][desiredy][desiredz]=creature
-            creature.x,creature.y=desiredx,desiredy
+            creature.xeno,creature.yako=desiredx,desiredy
             creature.movepayment=0
             break
           end
@@ -1910,8 +1891,8 @@ function getdungeonblocks(mapx,mapy,mapz,facing)
     for viewy=mapy-1,mapy+1 do
       add(blocks,{
         block=getdungeonblock(mapx,viewy,mapz),
-        x=mapx,
-        y=viewy
+        xeno=mapx,
+        yako=viewy
       })
     end
     if facing==4 then
@@ -1922,8 +1903,8 @@ function getdungeonblocks(mapx,mapy,mapz,facing)
     for viewx=mapx-1,mapx+1 do
       add(blocks,{
         block=getdungeonblock(viewx,mapy,mapz),
-        x=viewx,
-        y=mapy
+        xeno=viewx,
+        yako=mapy
       })
     end
     if facing==3 then
@@ -1956,7 +1937,7 @@ end
 
 function dungeon_draw()
   cls()
-  local view=getdungeonview(hero.x,hero.y,hero.z,hero.facing)
+  local view=getdungeonview(hero.xeno,hero.yako,hero.zabo,hero.facing)
   for depthindex,row in pairs(view) do
     local depthin,depthout=(depthindex-1)*10,depthindex*10
     local topouter,topinner,bottomouter,bottominner=30-depthout,30-depthin,52+depthout,52+depthin
@@ -2003,16 +1984,16 @@ function dungeon_draw()
         line(bottomouter,topouter,bottomouter,bottomouter)
       end
     end
-    dungeondrawobject(row[2].x,row[2].y,hero.z,3-depthindex)
+    dungeondrawobject(row[2].xeno,row[2].yako,hero.zabo,3-depthindex)
   end
   rectfill(82,0,112,82,0)
   draw_stats()
 end
 
-function dungeondrawobject(xeno,yako,zabo,distance)
-  --logit('drawmonster ('..(xeno or 'nil')..','..(yako or 'nil')..','..(zabo or 'nil')..') '..(distance or 'nil'))
-  if xeno>0 and yako>0 then
-    local item=contents[xeno][yako][zabo]
+function dungeondrawobject(xcoord,ycoord,zcoord,distance)
+  --logit('drawmonster ('..(xcoord or 'nil')..','..(ycoord or 'nil')..','..(zcoord or 'nil')..') '..(distance or 'nil'))
+  if xcoord>0 and ycoord>0 then
+    local item=contents[xcoord][ycoord][zcoord]
     if item then
       local flipped,distancemod,shiftmod,sizemod=itemdrawprep(item),distance*3,item.shiftmod or 0,item.sizemod or 0
       local xoffset,yoffset=20+distancemod+(sizemod*(distance+1)/8),35-(3-distance)*shiftmod
@@ -2037,7 +2018,7 @@ end
 function world_draw()
   local maxx,maxy,minx,miny=curmap.maxx,curmap.maxy,curmap.minx,curmap.miny
   local width,height,wrap=curmap.width,curmap.height,curmap.wrap
-  local xtraleft,xtratop,xtrawidth,xtraheight,scrtx,scrty,left,right=0,0,0,0,0,0,hero.x-halfwidth,hero.x+halfwidth
+  local xtraleft,xtratop,xtrawidth,xtraheight,scrtx,scrty,left,right=0,0,0,0,0,0,hero.xeno-halfwidth,hero.xeno+halfwidth
   if left<minx then
     xtrawidth=minx-left
     scrtx=xtrawidth
@@ -2056,7 +2037,7 @@ function world_draw()
       right=maxx
     end
   end
-  local top,bottom=hero.y-halfheight,hero.y+halfheight
+  local top,bottom=hero.yako-halfheight,hero.yako+halfheight
   if top<miny then
     xtraheight=miny-top
     scrty=xtraheight
@@ -2098,7 +2079,7 @@ function world_draw()
     end
   end
   draw_map(left,top,scrtx,scrty,mainwidth,mainheight)
-  --update_lines{"lt"..left..","..top.." h("..hero.x..","..hero.y..") x("..xtrawidth..","..xtraheight..") m("..fullwidth-xtrawidth..","..fullheight-xtraheight..")"}
+  --update_lines{"lt"..left..","..top.." h("..hero.xeno..","..hero.yako..") x("..xtrawidth..","..xtraheight..") m("..fullwidth-xtrawidth..","..fullheight-xtraheight..")"}
   palt(0,false)
   spr(hero.img+hero.facing,48,40)
   palt()
