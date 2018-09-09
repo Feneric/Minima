@@ -7,6 +7,28 @@ Minima
   :alt: Minima Logo
   :align: right
 
+What Is It?
+-----------
+
+Minima is an adventure RPG in the style of the older Ultima games as played on the
+Commodore 8-bit computers. Just like the original Ultima games, it includes a world
+view, enterable towns, and 3D dungeon displays. It also features graphics, sound
+effects, and music that should help one recollect those classics. More importantly,
+it is a fully playable (and winnable) game with its own backstory, plot, setting, and
+characters.
+
+.. image:: MinimaWorld.png
+  :alt: Minima world view
+  :align: center
+
+.. image:: MinimaTown.png
+  :alt: Minima town view
+  :align: center
+
+.. image:: MinimaDungeon.png
+  :alt: Minima dungeon view
+  :align: center
+
 Origins (yes, I know it's a pun)
 --------------------------------
 
@@ -44,6 +66,16 @@ it's possible to explore the waters of the world map. Leveling up works. Sound e
 are in place. The in-game help screen works. Saving and loading games works, although
 it has some unavoidable limitations. Background music works. Increasing attributes
 works. Fountains work. It's winnable.
+
+Supported Platforms
+-------------------
+
+Minima will run everywhere that PICO-8 runs. By design it does not require the latest
+& greatest version of PICO-8, so it'll even run on PocketC.H.I.P.
+
+.. image:: MinimaPocketCHIP.png
+  :alt: Minima running on a PocketCHIP
+  :align: center
 
 Challenges
 ----------
