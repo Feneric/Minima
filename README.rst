@@ -73,7 +73,7 @@ Supported Platforms
 Minima will run everywhere that PICO-8 runs. By design it does not require the latest
 & greatest version of PICO-8, so it'll even run on PocketC.H.I.P.
 
-.. image:: MinimaPocketCHIP.png
+.. image:: MinimaPocketCHIP.jpg
   :alt: Minima running on a PocketCHIP
   :align: center
 
