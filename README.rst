@@ -21,13 +21,35 @@ characters.
   :alt: Minima world view
   :align: center
 
+Screenshot of the world view in Minima. There's a town to the northwest, mountains to
+the northeast, and plains to the south.
+
 .. image:: MinimaTown.png
   :alt: Minima town view
   :align: center
 
+Screenshot of the town view in one of Minima's towns. A fountain, merchant, and jester
+are all present.
+
 .. image:: MinimaDungeon.png
   :alt: Minima dungeon view
   :align: center
+
+Screenshot of the dungeon view in one of Minima's dungeons. The player is being
+attacked by both an orc (shown directly ahead) and a ghost (from behind). Yikes!
+
+What Is It About?
+-----------------
+
+Figuring this out is part of the game. You're in the land of Miskatonia and you start
+out within sight of a town and a dungeon. It's recommended that you try the town first.
+Also, you start off without any weapons or armor, and this is a very precarious situation
+to be in. You'll want to rectify it as quickly as possible. If you've not done so yet,
+you should peruse the manual and get some tips about surviving in Miskatonia and some
+warnings about the Faxon as well as basic information about game controls. If you are
+too impatient to skim through the manual, the basic game controls are accessible from
+within the pause menu of the game itself. Pressing the `p` key (or the `enter` key on
+some platforms) should bring up this menu.
 
 Origins (yes, I know it's a pun)
 --------------------------------
@@ -76,6 +98,14 @@ Minima will run everywhere that PICO-8 runs. By design it does not require the l
 .. image:: MinimaPocketCHIP.jpg
   :alt: Minima running on a PocketCHIP
   :align: center
+
+Photograph of Minima running on a PocketC.H.I.P.
+
+.. image:: MinimaGPD.jpg
+  :alt: Minima running on a GPD Pocket Laptop
+  :align: center
+
+Photograph of Minima running on a GPD Pocket Ubuntu Laptop
 
 Challenges
 ----------
