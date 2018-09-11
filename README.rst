@@ -17,6 +17,9 @@ effects, and music that should help one recollect those classics. More important
 it is a fully playable (and winnable) game with its own backstory, plot, setting, and
 characters.
 
+You can play it online on the `Minima at Lexaloffle page`_ or play it directly through
+any PICO-8 environment by using the `splore` utility.
+
 .. image:: MinimaWorld.png
   :alt: Minima world view
   :align: center
@@ -123,6 +126,22 @@ remove pits in dungeons. I've had to remove findable chests in dungeons. I've ha
 remove the tower key. All of these were in order to keep within the space constraints
 we've got.
 
+Building Minima
+---------------
+
+Normally PICO-8 applications are written in a special dialect of Lua and are immediately
+interpreted within the PICO-8 environment without any special build steps. Minima is a
+little larger and more complicated than most PICO-8 applications, and it is too large to
+run directly without a special minimization step. The `picotool`_ utility does most of
+what's needed, but at the moment unless this `special branch of picotool`_ is run with the
+`luamin2` argument, it'll break Minima.
+
+You can also substitute in triplefox's version of the music. It's less like the original
+Commodore versions of the Ultima games but does a better job of making the most of what
+is available within the PICO-8 environment. It's in the `alt_music.p8` file. To use it,
+just copy over the existing `__sfx__` and `__music__` sections in `minima.p8` with the
+corresponding versions found in `alt_music.p8`.
+
 Other Notes
 -----------
 
@@ -151,6 +170,7 @@ The additional `Lua`_ utility script `convert.lua` is used to make it easier to 
 a dungeon map and turn it into something the game can use.
 
 
+.. _Minima at Lexaloffle page: https://www.lexaloffle.com/bbs/?tid=31831
 .. _Ultima games: https://en.wikipedia.org/wiki/Ultima_(series)
 .. _Ultima I: https://en.wikipedia.org/wiki/Ultima_I:_The_First_Age_of_Darkness
 .. _Ultima II: https://en.wikipedia.org/wiki/Ultima_II:_The_Revenge_of_the_Enchantress
@@ -165,4 +185,6 @@ a dungeon map and turn it into something the game can use.
 .. _PocketC.H.I.P.: https://en.wikipedia.org/wiki/CHIP_(computer)#Pocket_CHIP_and_Pockulus
 .. _xu4: http://xu4.sourceforge.net/
 .. _PocketInstaller: https://github.com/Feneric/PocketInstaller
+.. _picotool: https://github.com/dansanderson/picotool
+.. _special branch of picotool: https://github.com/Feneric/picotool
 .. _Lua: https://www.lua.org/docs.html
