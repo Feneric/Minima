@@ -4,6 +4,94 @@ __lua__
 -- minima
 -- by feneric
 
+-- a function for logging to an output log file.
+function logit(entry)
+  printh(entry,'minima.out')
+end
+
+-- register json context here
+_tok={
+ ['true']=true,
+ ['false']=false}
+_g={}
+
+-- json parser
+-- from: https://gist.github.com/tylerneylon/59f4bcf316be525b30ab
+table_delims={['{']="}",['[']="]"}
+
+function match(s,tokens)
+  for i=1,#tokens do
+    if(s==sub(tokens,i,i)) return true
+  end
+  return false
+end
+
+function skip_delim(str, pos, delim, err_if_missing)
+ if sub(str,pos,pos)!=delim then
+  if(err_if_missing) assert'delimiter missing'
+  return pos,false
+ end
+ return pos+1,true
+end
+
+function parse_str_val(str, pos, val)
+  val=val or ''
+  if pos>#str then
+    assert'end of input found while parsing string.'
+  end
+  local c=sub(str,pos,pos)
+  if(c=='"') return _g[val] or val,pos+1
+  return parse_str_val(str,pos+1,val..c)
+end
+
+function parse_num_val(str,pos,val)
+  val=val or ''
+  if pos>#str then
+    assert'end of input found while parsing string.'
+  end
+  local c=sub(str,pos,pos)
+  -- support base 10, 16 and 2 numbers
+  if(not match(c,"-xb0123456789abcdef.")) return tonum(val),pos
+  return parse_num_val(str,pos+1,val..c)
+end
+-- public values and functions.
+
+function json_parse(str, pos, end_delim)
+  pos=pos or 1
+  if(pos>#str) assert'reached unexpected end of input.'
+  local first=sub(str,pos,pos)
+  if match(first,"{[") then
+    local obj,key,delim_found={},true,true
+    pos+=1
+    while true do
+      key,pos=json_parse(str, pos, table_delims[first])
+      if(key==nil) return obj,pos
+      if not delim_found then assert'comma missing between table items.' end
+      if first=="{" then
+        pos=skip_delim(str,pos,':',true)  -- true -> error if missing.
+        obj[key],pos=json_parse(str,pos)
+      else
+        add(obj,key)
+      end
+      pos,delim_found=skip_delim(str, pos, ',')
+  end
+  elseif first=='"' then
+    -- parse a string (or a reference to a global object)
+    return parse_str_val(str,pos+1)
+  elseif match(first,"-0123456789") then
+    -- parse a number.
+    return parse_num_val(str, pos)
+  elseif first==end_delim then  -- end of an object or array.
+    return nil,pos+1
+  else  -- parse true, false
+    for lit_str,lit_val in pairs(_tok) do
+      local lit_end=pos+#lit_str-1
+      if sub(str,pos,lit_end)==lit_str then return lit_val,lit_end+1 end
+    end
+    assert'invalid json token'
+  end
+end
+
 -- initialization data
 fullheight,fullwidth,halfheight,halfwidth=11,13,5,6
 
@@ -15,372 +103,72 @@ msg=helpmsg
 
 -- anyobj is our root object. all others inherit from it to
 -- save space and reduce redundancy.
-anyobj={
-  facing=1,
-  moveallowance=0,
-  nummoves=0,
-  movepayment=0,
-  hitdisplay=0,
-  chance=0,
-  zabo=0
-}
+anyobj=json_parse('{"facing":1,"moveallowance":0,"nummoves":0,"movepayment":0,"hitdisplay":0,"chance":0,"zabo":0}')
 
 function makemetaobj(base,basetype)
   return setmetatable(base,{__index=base.objtype or basetype})
 end
 
--- basetypes are the objects we mean to use to make objects.
--- they inherit (often indirectly) from our root object.
-basetypes={
-  {
-    hp=10,
-    armor=1,
-    dmg=13,
-    dex=8,
-    hostile=true,
-    terrain={1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35},
-    moveallowance=1,
-    gold=10,
-    exp=2,
-    chance=1
-  },{
-    img=38,
-    imgalt=38,
-    name="ankh",
-    talk={"yes, ankhs can talk.","shrines make good landmarks."}
-  },{
-    img=70,
-    imgalt=70,
-    name="ship",
-    facingmatters=true,
-    facing=2
-  },{
-    img=39,
-    flipimg=true,
-    imgseq=12,
-    name="fountain",
-    sizemod=15
-  },{
-    img=27,
-    imgalt=27,
-    name="ladder up",
-    shiftmod=12,
-    sizemod=20
-  },{
-    img=26,
-    imgalt=26,
-    name="ladder down",
-    shiftmod=-3,
-    sizemod=20
-  },{
-    img=75,
-    armor=0,
-    hostile=false,
-    gold=5,
-    exp=1
-  },{
-    name="orc",
-    chance=8,
-    talk={"urg!","grar!"}
-  },{
-    dmg=14,
-    dex=6,
-    gold=5,
-    chance=5
-  },{
-    dex=10,
-    armor=0,
-    gold=0,
-    chance=3
-  },{
-    img=82,
-    colorsubs={{},{{1,12},{14,2},{15,4}}},
-    name="fighter",
-    hp=12,
-    armor=3,
-    dmg=20,
-    dex=9,
-    talk={"check out these pecs!","i'm jacked!"}
-  },{
-    img=90,
-    colorsubs={{},{{15,4}}},
-    name="guard",
-    moveallowance=0,
-    hp=85,
-    dmg=60,
-    armor=12,
-    talk={"behave yourself.","i protect good citizens."}
-  },{
-    img=75,
-    flipimg=true,
-    colorsubs={{},{{1,4},{4,15},{6,1},{14,13}},{{1,4},{6,5},{14,10}},{{1,4},{4,15},{6,1},{14,3}}},
-    name="merchant"
-  },{
-    img=81,
-    flipimg=true,
-    colorsubs={{},{{2,9},{4,15},{13,14}},{{2,10},{4,15},{13,9}},{{2,11},{13,3}}},
-    name="lady",
-    talk={"pardon me.","well i never."}
-  },{
-    img=76,
-    name="shepherd",
-    colorsubs={{},{{6,5},{15,4}},{{6,5}},{{15,4}}},
-    talk={"i like sheep.","the open air is nice."}
-  },{
-    img=78,
-    name="jester",
-    dex=12,
-    talk={"ho ho ho!","ha ha ha!"}
-  },{
-    name="villain",
-    armor=1,
-    hostile=true,
-    gold=15,
-    exp=5,
-    talk={"stand and deliver!","you shall die!"}
-  },{
-    name="grocer",
-    merch='food'
-  },{
-    name="armorer",
-    merch='armor'
-  },{
-    name="smith",
-    merch='weapons'
-  },{
-    name="medic",
-    merch='hospital'
-  },{
-    name="barkeep",
-    merch='bar'
-  }
-}
-
--- give our base objects names for convenience & efficiency.
-creature,ankhtype,shiptype,fountaintype,ladderuptype,ladderdowntype,human,orc,undead,animal,fighter,guard,merchant,lady,shepherd,jester,villain,grocer,armorer,smith,medic,barkeep=basetypes[1],basetypes[2],basetypes[3],basetypes[4],basetypes[5],basetypes[6],basetypes[7],basetypes[8],basetypes[9],basetypes[10],basetypes[11],basetypes[12],basetypes[13],basetypes[14],basetypes[15],basetypes[16],basetypes[17],basetypes[18],basetypes[19],basetypes[20],basetypes[21],basetypes[22]
-
--- set our base objects base values.
-for basetypenum=1,22 do
-  local basetype
-  if basetypenum<7 then
-    basetype=anyobj
-  elseif basetypenum<11 then
-    basetype=creature
-  elseif basetypenum<18 then
-    basetype=human
-  elseif basetypenum<22 then
-    basetype=merchant
-  else
-    basetype=lady
-  end
-  makemetaobj(basetypes[basetypenum],basetype)
+-- the types of terrain that exist in the game. each is
+-- given a name and a list of allowed monster types.
+terrains=json_parse('["plains","bare ground","tundra","scrub","swamp","forest","foothills","mountains","tall mountain","volcano","volcano","water","water","deep water","deep water","brick","brick road","brick","mismatched brick","stone","stone","road","barred window","window","bridge","ladder down","ladder up","door","locked door","open door","sign","shrine","dungeon","castle","tower","town","village","ankh"]')
+-- counter terrain types are special as they can be talked
+-- over (essential for purchasing). there are a lot of them
+-- as all the letters are represented.
+for num=1,29 do
+  add(terrains,"counter")
 end
 
--- the bestiary holds all the different monster types that can
+terrainmonsters={}
+for num=1,38 do
+  add(terrainmonsters,{})
+end
+
+-- basetypes are the objects we mean to use to make objects.
+-- they inherit (often indirectly) from our root object.
+basetypes=json_parse('[{"dex":8,"armor":1,"dmg":13,"moveallowance":1,"hostile":true,"terrain":[1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35],"chance":1,"hp":10,"exp":2,"gold":10},{"maxmonsters":0,"minx":80,"newmonsters":0,"miny":0,"maxx":128,"maxy":64,"mapnum":0,"friendly":true},{"starty":1,"creatures":{},"startz":1,"startfacing":1,"maxy":9,"minx":1,"songstart":17,"dungeon":true,"maxx":9,"maxmonsters":18,"miny":1,"startx":1,"newmonsters":25,"mapnum":0,"friendly":false},{"imgalt":38,"img":38,"name":"ankh","talk":["yes, ankhs can talk.","shrines make good landmarks."]},{"imgalt":70,"img":70,"facing":2,"facingmatters":true,"name":"ship"},{"img":39,"sizemod":15,"imgseq":12,"flipimg":true,"name":"fountain"},{"imgalt":27,"img":27,"sizemod":20,"name":"ladder up","shiftmod":12},{"imgalt":26,"img":26,"sizemod":20,"name":"ladder down","shiftmod":-3},{"img":75,"gold":5,"exp":1,"hostile":false,"name":"human","armor":0},{"chance":8,"name":"orc","talk":["urg!","grar!"]},{"dex":6,"dmg":14,"chance":5,"name":"undead","gold":5},{"dex":10,"armor":0,"gold":0,"name":"animal","chance":3},{"dex":9,"img":82,"dmg":20,"talk":["check out these pecs!","i\'m jacked!"],"armor":3,"colorsubs":[{},[[1,12],[14,2],[15,4]]],"name":"fighter","hp":12},{"talk":["behave yourself.","i protect good citizens."],"img":90,"dmg":60,"moveallowance":0,"armor":12,"colorsubs":[{},[[15,4]]],"name":"guard","hp":85},{"img":75,"talk":["buy my wares!","consume!","stuff makes you happy!"],"colorsubs":[{},[[1,4],[4,15],[6,1],[14,13]],[[1,4],[6,5],[14,10]],[[1,4],[4,15],[6,1],[14,3]]],"flipimg":true,"name":"merchant"},{"img":81,"talk":["pardon me.","well i never."],"colorsubs":[{},[[2,9],[4,15],[13,14]],[[2,10],[4,15],[13,9]],[[2,11],[13,3]]],"flipimg":true,"name":"lady"},{"colorsubs":[{},[[6,5],[15,4]],[[6,5]],[[15,4]]],"img":76,"name":"shepherd","talk":["i like sheep.","the open air is nice."]},{"dex":12,"img":78,"name":"jester","talk":["ho ho ho!","ha ha ha!"]},{"armor":1,"gold":15,"talk":["stand and deliver!","you shall die!"],"exp":5,"name":"villain","hostile":true},{"name":"grocer","merch":"food"},{"name":"armorer","merch":"armor"},{"name":"smith","merch":"weapons"},{"name":"medic","merch":"hospital"},{"name":"barkeep","merch":"bar"},{"img":96},{"img":102,"dmg":16,"exp":4,"hp":15,"name":"troll","gold":10},{"names":["hobgoblin","bugbear"],"img":104,"dmg":14,"hp":15,"exp":3,"gold":8},{"names":["goblin","kobold"],"img":114,"dmg":10,"hp":8,"exp":1,"gold":5},{"img":118,"dmg":18,"chance":1,"exp":6,"hp":20,"flipimg":true,"name":"ettin"},{"img":98,"name":"skeleton","gold":12},{"names":["zombie","wight","ghoul"],"img":100,"hp":10},{"names":["phantom","ghost","wraith"],"img":123,"terrain":[1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35],"talk":["boooo!","feeear me!"],"hp":15,"flipimg":true,"exp":7},{"names":["warlock","necromancer","sorcerer"],"img":84,"dmg":18,"talk":["i hex you!","a curse on you!"],"colorsubs":[{},[[2,8],[15,4]]],"exp":10},{"names":["rogue","bandit","cutpurse"],"img":88,"chance":2,"thief":true,"colorsubs":[{},[[1,5],[8,2],[4,1],[2,12],[15,4]]],"dex":10},{"names":["ninja","assassin"],"img":86,"poison":true,"talk":["you shall die at my hands.","you are no match for me."],"colorsubs":[{},[[1,5],[15,4]]],"exp":8,"gold":10},{"img":106,"poison":true,"exp":5,"hp":18,"name":"giant spider","gold":8},{"eat":true,"img":108,"dmg":10,"exp":2,"hp":5,"name":"giant rat","poison":true},{"names":["giant snake","serpent"],"img":112,"poison":true,"chance":1,"hp":20,"exp":6,"terrain":[4,5,6,7]},{"img":116,"terrain":[5,12,13,14,15,25],"hp":45,"name":"sea serpent","exp":10},{"img":125,"poison":true,"chance":1,"exp":5,"hp":12,"flipimg":true,"name":"megascorpion"},{"names":["slime","jelly","blob"],"img":122,"gold":5,"exp":2,"eat":true,"colorsubs":[{},[[3,9],[11,10]],[[3,14],[11,15]]],"flipimg":true,"terrain":[17,22,23]},{"names":["kraken","giant squid"],"img":94,"terrain":[12,13,14,15],"hp":50,"exp":8,"chance":2},{"img":120,"terrain":[4,5,6],"exp":3,"flipimg":true,"name":"wisp"},{"exp":8,"img":70,"terrain":[12,13,14,15],"facingmatters":true,"facing":1,"colorsubs":[[[6,5],[7,6]]],"flipimg":false,"name":"pirate"},{"names":["gazer","beholder"],"img":119,"terrain":[17,22],"colorsubs":[{},[[2,14],[1,4]]],"flipimg":true,"exp":4},{"names":["dragon","drake","wyvern"],"img":121,"dmg":28,"exp":17,"gold":20,"hp":50,"flipimg":true,"armor":7},{"names":["daemon","devil"],"armor":3,"dmg":23,"img":110,"terrain":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35],"chance":0.25,"hp":50,"exp":15,"gold":25},{"img":92,"gold":12,"moveallowance":0,"exp":4,"terrain":[17,22],"name":"mimic","thief":true},{"armor":5,"gold":8,"moveallowance":0,"img":124,"terrain":[17,22],"exp":5,"hp":30,"flipimg":true,"name":"reaper"}]')
+-- give our base objects names for convenience & efficiency.
+creature,towntype,dungeontype,ankhtype,shiptype,fountaintype,ladderuptype,ladderdowntype,human,orc,undead,animal,fighter,guard,merchant,lady,shepherd,jester,villain,grocer,armorer,smith,medic,barkeep=basetypes[1],basetypes[2],basetypes[3],basetypes[4],basetypes[5],basetypes[6],basetypes[7],basetypes[8],basetypes[9],basetypes[10],basetypes[11],basetypes[12],basetypes[13],basetypes[14],basetypes[15],basetypes[16],basetypes[17],basetypes[18],basetypes[19],basetypes[20],basetypes[21],basetypes[22],basetypes[23],basetypes[24]
+
+-- set our base objects base values. the latter portion is
+-- our bestiary. it holds all the different monster types that can
 -- be encountered in the game. it builds off of the basic types
 -- already defined so most do not need many changes. actual
 -- monsters in the game are instances of creatures found in the
 -- bestiary.
-bestiary={
-  {
-    img=96
-  },{
-    img=102,
-    name="troll",
-    hp=15,
-    gold=10,
-    exp=4
-  },{
-    img=104,
-    names={"hobgoblin","bugbear"},
-    hp=15,
-    gold=8,
-    exp=3
-  },{
-    img=114,
-    names={"goblin","kobold"},
-    hp=8,
-    dmg=10,
-    gold=5,
-    exp=1
-  },{
-    img=118,
-    flipimg=true,
-    name="ettin",
-    hp=20,
-    dmg=18,
-    exp=6,
-    chance=1
-  },{
-    img=98,
-    name="skeleton",
-    gold=12
-  },{
-    img=100,
-    names={"zombie","wight","ghoul"},
-    hp=10
-  },{
-    img=123,
-    flipimg=true,
-    names={"phantom","ghost","wraith"},
-    hp=15,
-    terrain={1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35},
-    exp=7,
-    talk={'boooo!','feeear me!'}
-  },{
-    img=84,
-    colorsubs={{},{{2,8},{15,4}}},
-    names={"warlock","necromancer","sorcerer"},
-    exp=10,
-    talk={"i hex you!","a curse on you!"}
-  },{
-    img=88,
-    colorsubs={{},{{1,5},{8,2},{4,1},{2,12},{15,4}}},
-    names={"rogue","bandit","cutpurse"},
-    dex=10,
-    thief=true,
-    chance=2
-  },{
-    img=86,
-    colorsubs={{},{{1,5},{15,4}}},
-    names={"ninja","assassin"},
-    poison=true,
-    gold=10,
-    exp=8,
-    talk={"you shall die at my hands.","you are no match for me."}
-  },{
-    img=106,
-    name="giant spider",
-    hp=18,
-    poison=true,
-    gold=8,
-    exp=5
-  },{
-    img=108,
-    name="giant rat",
-    hp=5,
-    dmg=10,
-    poison=true,
-    eat=true,
-    exp=2
-  },{
-    img=112,
-    names={"giant snake","serpent"},
-    hp=20,
-    poison=true,
-    terrain={4,5,6,7},
-    exp=6,
-    chance=1
-  },{
-    img=116,
-    name="sea serpent",
-    hp=45,
-    terrain={5,12,13,14,15,25},
-    exp=10
-  },{
-    img=125,
-    flipimg=true,
-    name="megascorpion",
-    hp=12,
-    poison=true,
-    exp=5,
-    chance=1
-  },{
-    img=122,
-    colorsubs={{},{{3,9},{11,10}},{{3,14},{11,15}}},
-    flipimg=true,
-    names={"slime","jelly","blob"},
-    gold=5,
-    terrain={17,22,23},
-    eat=true,
-    exp=2
-  },{
-    img=94,
-    names={"kraken","giant squid"},
-    hp=50,
-    terrain={12,13,14,15},
-    exp=8,
-    chance=2
-  },{
-    img=120,
-    flipimg=true,
-    name="wisp",
-    terrain={4,5,6},
-    exp=3
-  },{
-    img=70,
-    colorsubs={{{6,5},{7,6}}},
-    flipimg=false,
-    name="pirate",
-    facingmatters=true,
-    facing=1,
-    terrain={12,13,14,15},
-    exp=8
-  },{
-    img=119,
-    colorsubs={{},{{2,14},{1,4}}},
-    flipimg=true,
-    names={"gazer","beholder"},
-    terrain={17,22},
-    exp=4
-  },{
-    img=121,
-    flipimg=true,
-    names={"dragon","drake","wyvern"},
-    hp=50,
-    armor=7,
-    dmg=28,
-    gold=20,
-    exp=17
-  },{
-    img=110,
-    names={"daemon","devil"},
-    hp=50,
-    armor=3,
-    dmg=23,
-    terrain={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35},
-    gold=25,
-    exp=15,
-    chance=.25
-  },{
-    img=92,
-    name="mimic",
-    moveallowance=0,
-    thief=true,
-    gold=12,
-    terrain={17,22},
-    exp=4
-  },{
-    img=124,
-    flipimg=true,
-    name="reaper",
-    moveallowance=0,
-    armor=5,
-    hp=30,
-    gold=8,
-    terrain={17,22},
-    exp=5
-  }
-}
--- set base values for monsters.
-for beastnum=1,25 do
-  local beasttype
-  if beastnum<6 then
-    beasttype=orc
-  elseif beastnum<9 then
-    beasttype=undead
-  elseif beastnum<12 then
-    beasttype=villain
-  elseif beastnum<19 then
-    beasttype=animal
+for basetypenum=1,49 do
+  local basetype
+  local objecttype=basetypes[basetypenum]
+  --logit(basetypenum..' '..(objecttype.name or 'nil'))
+  if basetypenum<9 then
+    basetype=anyobj
+  elseif basetypenum<13 then
+    basetype=creature
+  elseif basetypenum<20 then
+    basetype=human
+  elseif basetypenum<24 then
+    basetype=merchant
+  elseif basetypenum<25 then
+    basetype=lady
+  elseif basetypenum<31 then
+    basetype=orc
+  elseif basetypenum<34 then
+    basetype=undead
+  elseif basetypenum<37 then
+    basetype=villain
+  elseif basetypenum<44 then
+    basetype=animal
   else
-    beasttype=creature
+    basetype=creature
   end
-  bestiary[beastnum].idtype=beastnum
-  makemetaobj(bestiary[beastnum],beasttype)
+  objecttype.idtype=basetypenum
+  makemetaobj(objecttype,basetype)
+  if basetypenum>25 then
+    for terrain in all(objecttype.terrain) do
+      add(terrainmonsters[terrain],objecttype)
+    end
+  end
 end
--- to use fewer tokens
-reaper=bestiary[25]
 
 -- check to see whether or not a desired purchase can
 -- be made.
@@ -482,16 +270,7 @@ shop={
       end,
       function()
         hero.gold-=5
-        rumors={
-          "faxon has many guards.",
-          "faxon is scary powerful.",
-          "fountains respect injury.",
-          "dungeon fountains rule.",
-          "faxon fears a magic sword.",
-          "watch for secret doors.",
-          "locked doors break easy.",
-          "try magic on locked doors."
-        }
+        rumors=json_parse('["faxon has many guards.","faxon is scary powerful.","fountains respect injury.","dungeon fountains rule.","faxon fears a magic sword.","watch for secret doors.","locked doors break easy.","try magic on locked doors."]')
         update_lines{"while socializing, you hear:"}
         return '"'..rumors[flr(rnd(8)+1)]..'"'
       end
@@ -499,264 +278,11 @@ shop={
   end
 }
 
--- the types of terrain that exist in the game. each is
--- given a name and a list of allowed monster types.
-terrains={
-  "plains","bare ground",
-  "tundra","scrub","swamp",
-  "forest","foothills","mountains",
-  "tall mountain","volcano",
-  "volcano","water","water",
-  "deep water","deep water",
-  "brick","brick road","brick",
-  "mismatched brick","stone",
-  "stone","road","barred window",
-  "window","bridge","ladder down",
-  "ladder up","door","locked door",
-  "open door","sign","shrine",
-  "dungeon","castle","tower",
-  "town","village","ankh"
-}
--- counter terrain types are special as they can be talked
--- over (essential for purchasing). there are a lot of them
--- as all the letters are represented.
-for num=1,29 do
-  add(terrains,"counter")
-end
-
-terrainmonsters={}
-for num=1,38 do
-  add(terrainmonsters,{})
-end
-for beast in all(bestiary) do
-  for terrain in all(beast.terrain) do
-    add(terrainmonsters[terrain],beast)
-  end
-end
-
 -- the maps structure holds information about all of the regular
 -- places in the game, dungeons as well as towns.
-towntype={
-  mapnum=0,
-  minx=80,
-  maxx=128,
-  miny=0,
-  maxy=64,
-  newmonsters=0,
-  maxmonsters=0,
-  friendly=true
-}
-dungeontype={
-  mapnum=0,
-  dungeon=true,
-  startx=1,
-  starty=1,
-  startz=1,
-  startfacing=1,
-  minx=1,
-  miny=1,
-  maxx=9,
-  maxy=9,
-  newmonsters=25,
-  maxmonsters=12,
-  friendly=false,
-  creatures={},
-  songstart=17
-}
-maps={
-  {
-    name="saugus",
-    enterx=13,
-    entery=4,
-    startx=92,
-    starty=23,
-    maxx=105,
-    maxy=24,
-    signs={
-      {92,19,"welcome to saugus!"}
-    },
-    items={
-      {ankhtype,84,4}
-    },
-    creatures={
-      {guard,89,21},
-      {medic,84,9},
-      {armorer,95,3},
-      {grocer,97,13},
-      {fighter,82,21},
-      {lady,85,16,talk={"poynter has a ship.","poynter is in lynn."}},
-      {guard,95,21}
-    }
-  },{
-    name="lynn",
-    enterx=17,
-    entery=4,
-    startx=116,
-    starty=23,
-    minx=104,
-    maxy=24,
-    signs={
-      {125,9,"marina for members only."}
-    },
-    items={
-      {shiptype,125,5}
-    },
-    creatures={
-      {guard,118,22},
-      {smith,106,1},
-      {barkeep,118,2},
-      {grocer,107,9},
-      {jester,106,16},
-      {medic,122,12},
-      {merchant,119,6,talk={"i'm rich! i have a yacht!","ho ho! i'm the best!"}},
-      {guard,114,22}
-    }
-  },{
-    name="boston",
-    enterx=45,
-    entery=19,
-    startx=96,
-    starty=54,
-    miny=24,
-    maxx=112,
-    maxy=56,
-    items={
-      {fountaintype,96,40}
-    },
-    creatures={
-      {guard,94,49},
-      {smith,103,39},
-      {armorer,92,30},
-      {grocer,88,38},
-      {medic,100,30},
-      {jester,96,44},
-      {fighter,83,27},
-      {merchant,110,41,talk={"i've seen the magic sword.","search south of the shrine."}},
-      {guard,98,49}
-    }
-  },{
-    name="salem",
-    enterx=7,
-    entery=36,
-    startx=119,
-    starty=62,
-    minx=112,
-    miny=43,
-    items={
-      {ankhtype,116,53}
-    },
-    creatures={
-      {guard,118,63},
-      {smith,125,44},
-      {barkeep,114,44},
-      {grocer,122,51},
-      {lady,118,58},
-      {fighter,123,57,talk={"increase stats in dungeons!","only severe injuries work."}},
-      {guard,120,63}
-    }
-  },{
-    name="great misery",
-    enterx=27,
-    entery=35,
-    startx=82,
-    starty=59,
-    miny=56,
-    maxx=103,
-    creatures={
-      {grocer,93,57},
-      {barkeep,100,57},
-      {shepherd,82,57},
-      {shepherd,102,63,talk={"gilly is in boston.","gilly knows of the sword."}}
-    }
-  },{
-    name="the dark tower",
-    enterx=56,
-    entery=44,
-    startx=120,
-    starty=41,
-    minx=112,
-    miny=24,
-    maxy=43,
-    friendly=false,
-    newmonsters=35,
-    maxmonsters=20,
-    songstart=17,
-    creatures={
-      {reaper,119,41},
-      {reaper,126,40},
-      {reaper,123,38},
-      {bestiary[24],121,37},
-      {bestiary[22],118,30,name="faxon",img=126,hp=255,armor=25,dmg=50}
-    }
-  },{
-    name="nibiru",
-    enterx=4,
-    entery=11,
-    starty=8,
-    attr='int',
-    levelstr="0x00000x3ffe0x03000x30300x3ffc0x33000x33fc0x00c00x00000xcccd0x03300x30300x3cfc0x03000x3fcc0x02c00x00000xf30c0x03fc0x300c0x333c0x33000xf3fc0x01c0",
-    items={
-      {ladderuptype,1,8,1},
-      {ladderuptype,8,2,2},
-      {ladderuptype,4,8,3},
-      {fountaintype,6,8,3}
-    }
-  },{
-    name="purgatory",
-    enterx=32,
-    entery=5,
-    attr='str',
-    levelstr="0x03380x3f3c0x03000x33f00xf03c0x33000x33fc0x03000x33040x333c0x000c0x3fcc0x30fc0x3c000x3bcf0x03000x03040x333c0x30300xff3c0x00300x3f0c0x373c0x0330",
-    items={
-      {ladderuptype,1,1,1},
-      {ladderuptype,7,1,2},
-      {ladderuptype,3,7,3},
-      {fountaintype,7,5,3}
-    }
-  },{
-    name="sheol",
-    enterx=33,
-    entery=58,
-    attr='dex',
-    levelstr="0x03000x3fb00x03fc0x33000x33f30x30000xfffc0x00000x03000x337c0x300f0x3ffe0x00fc0x3c000x33cf0x30000x03000x333c0x303c0x33310x333f0x330c0x333c0x0000",
-    items={
-      {ladderuptype,1,1,1},
-      {ladderuptype,5,2,2},
-      {ladderuptype,8,4,3},
-      {fountaintype,6,6,3}
-    }
-  },{
-    name="the upper levels",
-    enterx=124,
-    entery=26,
-    startx=8,
-    startz=3,
-    mapnum=6,
-    levelstr="0x00c00xbcce0xfccf0x00cc0x3fcc0x0ccc0x00cc0x0c000x00c00x7ccd0x3fc30x38f00x3cc30x0ccc0x3cce0x00c00x00c00xcccf0x0cc00x34fc0x3fc00x00cf0x33cd0x3b00",
-    items={
-      {ladderdowntype,8,1,3},
-      {ladderdowntype,3,8,3},
-      {ladderuptype,8,7,3},
-      {ladderuptype,3,4,3},
-      {ladderuptype,1,2,2},
-      {ladderuptype,8,2,2}
-    }
-  }
-}
-
+maps=json_parse('[{"name":"saugus","signs":[{"yako":19,"xeno":92,"msg":"welcome to saugus!"}],"maxy":24,"maxx":105,"entery":4,"creatures":[{"yako":21,"idtype":14,"xeno":89},{"yako":9,"idtype":23,"xeno":84},{"yako":3,"idtype":21,"xeno":95},{"yako":13,"idtype":20,"xeno":97},{"yako":21,"idtype":13,"xeno":82},{"talk":["poynter has a ship.","poynter is in lynn."],"yako":16,"idtype":16,"xeno":85},{"yako":21,"idtype":14,"xeno":95}],"items":[{"yako":4,"idtype":4,"xeno":84}],"starty":23,"startx":92,"enterx":13},{"minx":104,"name":"lynn","signs":[{"yako":9,"xeno":125,"msg":"marina for members only."}],"maxy":24,"entery":4,"creatures":[{"yako":22,"idtype":14,"xeno":118},{"yako":1,"idtype":22,"xeno":106},{"yako":2,"idtype":24,"xeno":118},{"yako":9,"idtype":20,"xeno":107},{"yako":16,"idtype":18,"xeno":106},{"yako":12,"idtype":23,"xeno":122},{"talk":["i\'m rich! i have a yacht!","ho ho! i\'m the best!"],"yako":6,"idtype":15,"xeno":119},{"yako":22,"idtype":14,"xeno":114}],"items":[{"yako":5,"idtype":5,"xeno":125}],"starty":23,"startx":116,"enterx":17},{"name":"boston","maxy":56,"maxx":112,"items":[{"yako":40,"idtype":6,"xeno":96}],"entery":19,"creatures":[{"yako":49,"idtype":14,"xeno":94},{"yako":39,"idtype":22,"xeno":103},{"yako":30,"idtype":21,"xeno":92},{"yako":38,"idtype":20,"xeno":88},{"yako":30,"idtype":23,"xeno":100},{"yako":44,"idtype":18,"xeno":96},{"yako":27,"idtype":13,"xeno":83},{"talk":["i\'ve seen the magic sword.","search south of the shrine."],"yako":44,"idtype":15,"xeno":110},{"yako":35,"idtype":14,"xeno":105},{"yako":49,"idtype":14,"xeno":98}],"startx":96,"starty":54,"miny":24,"enterx":45},{"minx":112,"name":"salem","items":[{"yako":53,"idtype":4,"xeno":116}],"entery":36,"creatures":[{"yako":63,"idtype":14,"xeno":118},{"yako":44,"idtype":22,"xeno":125},{"yako":44,"idtype":24,"xeno":114},{"yako":51,"idtype":20,"xeno":122},{"yako":58,"idtype":16,"xeno":118},{"talk":["increase stats in dungeons!","only severe injuries work."],"yako":57,"idtype":13,"xeno":123},{"yako":63,"idtype":14,"xeno":120}],"startx":119,"starty":62,"miny":43,"enterx":7},{"maxx":103,"entery":35,"name":"great misery","creatures":[{"yako":57,"idtype":20,"xeno":93},{"yako":57,"idtype":24,"xeno":100},{"yako":57,"idtype":17,"xeno":82},{"talk":["gilly is in boston.","gilly knows of the sword."],"yako":63,"idtype":17,"xeno":102}],"startx":82,"starty":59,"miny":56,"enterx":27},{"newmonsters":35,"minx":112,"name":"the dark tower","friendly":false,"maxy":43,"maxmonsters":23,"songstart":17,"entery":44,"creatures":[{"yako":41,"idtype":49,"xeno":119},{"yako":40,"idtype":49,"xeno":126},{"yako":38,"idtype":49,"xeno":123},{"yako":40,"idtype":49,"xeno":113},{"yako":37,"idtype":48,"xeno":121},{"yako":38,"idtype":48,"xeno":119},{"yako":34,"idtype":41,"xeno":120},{"yako":35,"idtype":41,"xeno":118},{"armor":25,"yako":30,"idtype":46,"dmg":50,"hp":255,"xeno":118,"propername":"faxon","img":126}],"startx":120,"starty":41,"miny":24,"enterx":56},{"items":[{"xeno":1,"yako":8,"idtype":7,"zabo":1},{"xeno":8,"yako":2,"idtype":7,"zabo":2},{"xeno":4,"yako":8,"idtype":7,"zabo":3},{"xeno":6,"yako":8,"idtype":6,"zabo":3}],"name":"nibiru","attr":"int","levelstr":"0x00000x3ffe0x03000x30300x3ffc0x33000x33fc0x00c00x00000xcccd0x03300x30300x3cfc0x03000x3fcc0x02c00x00000xf30c0x03fc0x300c0x333c0x33000xf3fc0x01c0","starty":8,"entery":11,"enterx":4},{"name":"purgatory","attr":"str","levelstr":"0x03380x3f3c0x03000x33f00xf03c0x33000x33fc0x03000x33040x333c0x000c0x3fcc0x30fc0x3c000x3bcf0x03000x03040x333c0x30300xff3c0x00300x3f0c0x373c0x0330","items":[{"xeno":1,"yako":1,"idtype":7,"zabo":1},{"xeno":7,"yako":1,"idtype":7,"zabo":2},{"xeno":3,"yako":7,"idtype":7,"zabo":3},{"xeno":7,"yako":5,"idtype":6,"zabo":3}],"entery":5,"enterx":32},{"name":"sheol","attr":"dex","levelstr":"0x03000x3fb00x03fc0x33000x33f30x30000xfffc0x00000x03000x337c0x300f0x3ffe0x00fc0x3c000x33cf0x30000x03000x333c0x303c0x33310x333f0x330c0x333c0x0000","items":[{"xeno":1,"yako":1,"idtype":7,"zabo":1},{"xeno":5,"yako":2,"idtype":7,"zabo":2},{"xeno":8,"yako":4,"idtype":7,"zabo":3},{"xeno":6,"yako":6,"idtype":6,"zabo":3}],"entery":58,"enterx":33},{"items":[{"xeno":8,"yako":1,"idtype":8,"zabo":3},{"targety":41,"yako":8,"idtype":8,"zabo":3,"targetx":117,"targetmap":6,"xeno":3},{"xeno":8,"yako":7,"idtype":7,"zabo":3},{"xeno":3,"yako":4,"idtype":7,"zabo":3},{"xeno":1,"yako":2,"idtype":7,"zabo":2},{"xeno":8,"yako":2,"idtype":7,"zabo":2}],"mapnum":6,"name":"the upper levels","startz":3,"levelstr":"0x00c00xbcce0xfccf0x00cc0x3fcc0x0ccc0x00cc0x0c000x00c00x7ccd0x3fc30x38f00x3cc30x0ccc0x3cce0x00c00x00c00xcccf0x0cc00x34fc0x3fc00x00cf0x33cd0x3b00","startx":8,"entery":26,"enterx":124}]')
 -- map 0 is special; it's the world map, the overview map.
-maps[0]={
-  name="world",
-  minx=0,
-  miny=0,
-  maxx=80,
-  maxy=64,
-  wrap=true,
-  newmonsters=10,
-  maxmonsters=10,
-  friendly=false,
-  songstart=0
-}
+maps[0]=json_parse('{"name":"world","minx":0,"miny":0,"maxx":80,"maxy":64,"wrap":true,"newmonsters":10,"maxmonsters":10,"friendly":false,"songstart":0}')
 
 -- armor definitions
 armors={
@@ -841,8 +367,7 @@ function initobjs()
       end
     end
     for item in all(curmap.items) do
-      item.objtype,xcoord,ycoord,zcoord=item[1],item[2],item[3],item[4] or 0
-      item.xeno,item.yako,item.zabo=xcoord,ycoord,zcoord
+      item.objtype,xcoord,ycoord,zcoord=basetypes[item.idtype],item.xeno,item.yako,item.zabo or 0
       curmap.contents[xcoord][ycoord][zcoord]=makemetaobj(item)
       -- automatically make a corresponding ladder down for every ladder up
       if item.objtype.name=='ladder up' and maptype==dungeontype then
@@ -852,6 +377,7 @@ function initobjs()
     end
     for creature in all(curmap.creatures) do
       creature.mapnum=mapnum
+      creature.objtype=basetypes[creature.idtype]
       definemonster(creature)
     end
   end
@@ -859,29 +385,8 @@ function initobjs()
   -- the hero is the player character. although human, it has
   -- enough differences that there is no advantage to inheriting
   -- the human type.
-  hero={
-    img=0,
-    armor=0,
-    dmg=0,
-    xeno=7,
-    yako=7,
-    zabo=0,
-    exp=0,
-    lvl=0,
-    str=8,
-    int=8,
-    dex=8,
-    status=0,
-    hitdisplay=0,
-    facing=0,
-    gold=20,
-    food=25,
-    movepayment=0,
-    ship=false,
-    mp=8,
-    hp=24
-  }
-
+  hero=json_parse('{"img":0,"armor":0,"dmg":0,"xeno":7,"yako":7,"zabo":0,"exp":0,"lvl":0,"str":8,"int":8,"dex":8,"status":0,"hitdisplay":0,"facing":0,"gold":20,"food":25,"movepayment":0,"mp":8,"hp":24}')
+ 
   -- make the map info global for efficiency
   mapnum=0
   setmap()
@@ -889,15 +394,7 @@ function initobjs()
   -- creature 0 is the maelstrom and not really a creature at all,
   -- although it shares most creature behaviors.
   creatures[0]={}
-  maelstrom=makemetaobj({
-    img=69,
-    imgseq=23,
-    name="maelstrom",
-    terrain={12,13,14,15},
-    moveallowance=1,
-    xeno=13,
-    yako=61
-  },anyobj)
+  maelstrom=makemetaobj(json_parse('{"img":69,"imgseq":23,"name":"maelstrom","terrain":[12,13,14,15],"moveallowance":1,"xeno":13,"yako":61}'),anyobj)
   creatures[0][0]=maelstrom
   contents[13][61][0]=maelstrom
 
@@ -913,11 +410,6 @@ end
 lines={"","","","",">"}
 numoflines=5
 curline=numoflines
-
--- a function for logging to an output log file.
---function logit(entry)
---  printh(entry,'minima.out')
---end
 
 -- initialization routines
 
@@ -977,7 +469,7 @@ function loadgame()
   for creaturenum=1,10 do
     creaturenum=dget(storagenum)
     if creaturenum~=0 then
-      definemonster{bestiary[creaturenum],dget(storagenum+1),dget(storagenum+2),mapnum=0}
+      definemonster{basetypes[creaturenum],xeno=dget(storagenum+1),yako=dget(storagenum+2),mapnum=0}
       storagenum+=3
     else
       break
@@ -1035,7 +527,7 @@ function inputprocessor(cmd)
     local xcoord,ycoord,zcoord=hero.xeno,hero.yako,hero.zabo
     local curobj=contents[xcoord][ycoord][zcoord]
     local curobjname=curobj and curobj.name or nil
-    --logit(hero.xcoord..','..hero.yako..','..hero.zabo..' '..(curobj and curobj.name or 'nil'))
+    --logit(hero.xeno..','..hero.yako..','..hero.zabo..' '..hero.facing..' '..(curobj and curobj.name or 'nil'))
     if _draw==msg_draw then
       if cmd!='p' and hero.hp>0 then
         _draw=draw_state
@@ -1247,10 +739,14 @@ function update_lines(msg)
 end
 
 function definemonster(monster)
-  local objtype,xcoord,ycoord,zcoord=monster[1],monster[2],monster[3],monster[4] or 0
-  monster.xeno,monster.yako,monster.zabo,monster.objtype=xcoord,ycoord,zcoord,objtype
+  local objtype,xcoord,ycoord,zcoord=monster.objtype,monster.xeno,monster.yako,monster.zabo or 0
+  monster.objtype=objtype
   makemetaobj(monster)
-  if(monster.name~="faxon" and objtype.names)monster.name=objtype.names[flr(rnd(#objtype.names)+1)]
+  if objtype.propername then
+    monster.name=objtype.propername
+  elseif objtype.names then
+    monster.name=objtype.names[flr(rnd(#objtype.names)+1)]
+  end
   --if(objtype.imgs)monster.img=objtype.imgs[flr(rnd(#objtype.imgs)+1)]
   if(objtype.colorsubs)monster.colorsub=objtype.colorsubs[flr(rnd(#objtype.colorsubs)+1)]
   monster.imgseq=flr(rnd(30))
@@ -1277,7 +773,7 @@ function create_monster()
     --logit('possible monster location: ('..monsterx..','..monstery..','..(monsterz or 'nil')..') terrain '..monsterspot)
     for objtype in all(terrainmonsters[monsterspot]) do
       if rnd(200)<objtype.chance then
-        definemonster{objtype,monsterx,monstery,monsterz,mapnum=mapnum}
+        definemonster{objtype=objtype,xeno=monsterx,yako=monstery,zabo=monsterz,mapnum=mapnum}
         break
       end
     end
@@ -1465,8 +961,8 @@ function check_sign(x,y)
   if mget(x,y)==31 then
     -- read the sign
     for sign in all(curmap.signs) do
-      if x==sign[1] and y==sign[2] then
-        response=sign[3]
+      if x==sign.xeno and y==sign.yako then
+        response=sign.msg
         break
       end
     end
@@ -1481,7 +977,7 @@ function look_results(ldir,x,y)
   elseif content then
     update_lines{cmd,content.name}
   elseif curmap.dungeon then
-    update_lines{cmd,"dungeon"}
+    update_lines{cmd,getdungeonblockterrain(x,y,hero.zabo)==20 and 'passage' or 'wall'}
   else
     update_lines{cmd,terrains[mget(x,y)]}
   end
@@ -1680,13 +1176,13 @@ function movecreatures(hero)
         if creature.hostile and actualdistance<=1 then
           local hero_dodge=hero.dex+2*hero.lvl
           local creature_msg="the "..creature.name
-          if creature.eat and hero.food>0 and rnd(creature.dex*25)>rnd(hero_dodge) then
+          if creature.eat and hero.food>0 and rnd(creature.dex*23)>rnd(hero_dodge) then
             sfx(2)
             update_lines{creature_msg.." eats!"}
             deductfood(flr(rnd(6)))
             gothit=true
             delay(9)
-          elseif creature.thief and hero.gold>0 and rnd(creature.dex*23)>rnd(hero_dodge) then
+          elseif creature.thief and hero.gold>0 and rnd(creature.dex*20)>rnd(hero_dodge) then
             sfx(2)
             local amountstolen=min(ceil(rnd(5)),hero.gold)
             hero.gold-=amountstolen
@@ -1694,7 +1190,7 @@ function movecreatures(hero)
             update_lines{creature_msg.." steals!"}
             gothit=true
             delay(9)
-          elseif creature.poison and rnd(creature.dex*20)>rnd(hero_dodge) then
+          elseif creature.poison and rnd(creature.dex*15)>rnd(hero_dodge) then
             sfx(1)
             hero.status=bor(hero.status,1)
             update_lines{"poisoned by the "..creature.name.."!"}
