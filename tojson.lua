@@ -62,25 +62,34 @@ basetypes={
     imgalt=70,
     name="ship",
     facingmatters=true,
-    facing=2
+    facing=2,
+    passable=true
+  },{
+    img=92,
+    imgalt=92,
+    name="chest",
+    passable=true
   },{
     img=39,
     flipimg=true,
     imgseq=12,
     name="fountain",
-    sizemod=15
+    sizemod=15,
+    passable=true
   },{
     img=27,
     imgalt=27,
     name="ladder up",
     shiftmod=12,
-    sizemod=20
+    sizemod=20,
+    passable=true
   },{
     img=26,
     imgalt=26,
     name="ladder down",
     shiftmod=-3,
-    sizemod=20
+    sizemod=20,
+    passable=true
   },{
     name="human",
     img=75,
@@ -349,7 +358,7 @@ basetypes={
     exp=5
   }
 }
-creature,towntype,dungeontype,ankhtype,shiptype,fountaintype,ladderuptype,ladderdowntype,human,orc,undead,animal,fighter,guard,merchant,lady,shepherd,jester,villain,grocer,armorer,smith,medic,barkeep=basetypes[1],basetypes[2],basetypes[3],basetypes[4],basetypes[5],basetypes[6],basetypes[7],basetypes[8],basetypes[9],basetypes[10],basetypes[11],basetypes[12],basetypes[13],basetypes[14],basetypes[15],basetypes[16],basetypes[17],basetypes[18],basetypes[19],basetypes[20],basetypes[21],basetypes[22],basetypes[23],basetypes[24]
+creature,towntype,dungeontype,ankhtype,shiptype,chesttype,fountaintype,ladderuptype,ladderdowntype,human,orc,undead,animal,fighter,guard,merchant,lady,shepherd,jester,villain,grocer,armorer,smith,medic,barkeep=basetypes[1],basetypes[2],basetypes[3],basetypes[4],basetypes[5],basetypes[6],basetypes[7],basetypes[8],basetypes[9],basetypes[10],basetypes[11],basetypes[12],basetypes[13],basetypes[14],basetypes[15],basetypes[16],basetypes[17],basetypes[18],basetypes[19],basetypes[20],basetypes[21],basetypes[22],basetypes[23],basetypes[24],basetypes[25]
 outputStructure('basetypes', basetypes)
 
 -- Our maps structure includes all of our communities and dungeons.
@@ -369,13 +378,13 @@ maps={
       {idtype=4,xeno=84,yako=4}
     },
     creatures={
-      {idtype=14,xeno=89,yako=21},
-      {idtype=23,xeno=84,yako=9},
-      {idtype=21,xeno=95,yako=3},
-      {idtype=20,xeno=97,yako=13},
-      {idtype=13,xeno=82,yako=21},
-      {idtype=16,xeno=85,yako=16,talk={"poynter has a ship.","poynter is in lynn."}},
-      {idtype=14,xeno=95,yako=21}
+      {idtype=15,xeno=89,yako=21},
+      {idtype=24,xeno=84,yako=9},
+      {idtype=22,xeno=95,yako=3},
+      {idtype=21,xeno=97,yako=13},
+      {idtype=14,xeno=82,yako=21},
+      {idtype=17,xeno=85,yako=16,talk={"poynter has a ship.","poynter is in lynn."}},
+      {idtype=15,xeno=95,yako=21}
     }
   },{
     name="lynn",
@@ -392,14 +401,14 @@ maps={
       {idtype=5,xeno=125,yako=5}
     },
     creatures={
-      {idtype=14,xeno=118,yako=22},
-      {idtype=22,xeno=106,yako=1},
-      {idtype=24,xeno=118,yako=2},
-      {idtype=20,xeno=107,yako=9},
-      {idtype=18,xeno=106,yako=16},
-      {idtype=23,xeno=122,yako=12},
-      {idtype=15,xeno=119,yako=6,talk={"i\'m rich! i have a yacht!","ho ho! i\'m the best!"}},
-      {idtype=14,xeno=114,yako=22}
+      {idtype=15,xeno=118,yako=22},
+      {idtype=23,xeno=106,yako=1},
+      {idtype=25,xeno=118,yako=2},
+      {idtype=21,xeno=107,yako=9},
+      {idtype=19,xeno=106,yako=16},
+      {idtype=24,xeno=122,yako=12},
+      {idtype=16,xeno=119,yako=6,talk={"i\'m rich! i have a yacht!","ho ho! i\'m the best!"}},
+      {idtype=15,xeno=114,yako=22}
     }
   },{
     name="boston",
@@ -411,19 +420,19 @@ maps={
     maxx=112,
     maxy=56,
     items={
-      {idtype=6,xeno=96,yako=40}
+      {idtype=7,xeno=96,yako=40}
     },
     creatures={
-      {idtype=14,xeno=94,yako=49},
-      {idtype=22,xeno=103,yako=39},
-      {idtype=21,xeno=92,yako=30},
-      {idtype=20,xeno=88,yako=38},
-      {idtype=23,xeno=100,yako=30},
-      {idtype=18,xeno=96,yako=44},
-      {idtype=13,xeno=83,yako=27},
-      {idtype=15,xeno=110,yako=44,talk={"i\'ve seen the magic sword.","search south of the shrine."}},
-      {idtype=14,xeno=105,yako=35},
-      {idtype=14,xeno=98,yako=49}
+      {idtype=15,xeno=94,yako=49},
+      {idtype=23,xeno=103,yako=39},
+      {idtype=22,xeno=92,yako=30},
+      {idtype=21,xeno=88,yako=38},
+      {idtype=24,xeno=100,yako=30},
+      {idtype=19,xeno=96,yako=44},
+      {idtype=14,xeno=83,yako=27},
+      {idtype=16,xeno=110,yako=44,talk={"i\'ve seen the magic sword.","search south of the shrine."}},
+      {idtype=15,xeno=105,yako=35,moveallowance=1},
+      {idtype=15,xeno=98,yako=49}
     }
   },{
     name="salem",
@@ -437,13 +446,13 @@ maps={
       {idtype=4,xeno=116,yako=53}
     },
     creatures={
-      {idtype=14,xeno=118,yako=63},
-      {idtype=22,xeno=125,yako=44},
-      {idtype=24,xeno=114,yako=44},
-      {idtype=20,xeno=122,yako=51},
-      {idtype=16,xeno=118,yako=58},
-      {idtype=13,xeno=123,yako=57,talk={"increase stats in dungeons!","only severe injuries work."}},
-      {idtype=14,xeno=120,yako=63}
+      {idtype=15,xeno=118,yako=63},
+      {idtype=23,xeno=125,yako=44},
+      {idtype=25,xeno=114,yako=44},
+      {idtype=21,xeno=122,yako=51},
+      {idtype=17,xeno=118,yako=58},
+      {idtype=14,xeno=123,yako=57,talk={"increase stats in dungeons!","only severe injuries work."}},
+      {idtype=15,xeno=120,yako=63}
     }
   },{
     name="great misery",
@@ -454,10 +463,10 @@ maps={
     miny=56,
     maxx=103,
     creatures={
-      {idtype=20,xeno=93,yako=57},
-      {idtype=24,xeno=100,yako=57},
-      {idtype=17,xeno=82,yako=57},
-      {idtype=17,xeno=102,yako=63,talk={"gilly is in boston.","gilly knows of the sword."}}
+      {idtype=21,xeno=93,yako=57},
+      {idtype=25,xeno=100,yako=57},
+      {idtype=18,xeno=82,yako=57},
+      {idtype=18,xeno=102,yako=63,talk={"gilly is in boston.","gilly knows of the sword."}}
     }
   },{
     name="the dark tower",
@@ -472,16 +481,26 @@ maps={
     newmonsters=35,
     maxmonsters=23,
     songstart=17,
+    items={
+      {idtype=8,xeno=117,yako=41,targetmap=10,targetx=3,targety=8,targetz=3},
+      {idtype=6,xeno=119,yako=37},
+      {idtype=6,xeno=119,yako=39},
+      {idtype=6,xeno=120,yako=37},
+      {idtype=6,xeno=120,yako=38},
+      {idtype=6,xeno=120,yako=39},
+      {idtype=6,xeno=121,yako=38},
+      {idtype=6,xeno=121,yako=39}
+    },
     creatures={
-      {idtype=49,xeno=119,yako=41},
-      {idtype=49,xeno=126,yako=40},
-      {idtype=49,xeno=123,yako=38},
-      {idtype=49,xeno=113,yako=40},
-      {idtype=48,xeno=121,yako=37},
-      {idtype=48,xeno=119,yako=38},
-      {idtype=41,xeno=120,yako=34},
-      {idtype=41,xeno=118,yako=35},
-      {idtype=46,xeno=118,yako=30,propername="faxon",img=126,hp=255,armor=25,dmg=50}
+      {idtype=50,xeno=119,yako=41},
+      {idtype=50,xeno=126,yako=40},
+      {idtype=50,xeno=123,yako=38},
+      {idtype=50,xeno=113,yako=40},
+      {idtype=49,xeno=121,yako=37},
+      {idtype=49,xeno=119,yako=38},
+      {idtype=42,xeno=120,yako=34},
+      {idtype=42,xeno=118,yako=35},
+      {idtype=47,xeno=118,yako=30,propername="faxon",img=126,hp=255,armor=25,dmg=50}
     }
   },{
     name="nibiru",
@@ -491,10 +510,10 @@ maps={
     attr='int',
     levelstr="0x00000x3ffe0x03000x30300x3ffc0x33000x33fc0x00c00x00000xcccd0x03300x30300x3cfc0x03000x3fcc0x02c00x00000xf30c0x03fc0x300c0x333c0x33000xf3fc0x01c0",
     items={
-      {idtype=7,xeno=1,yako=8,zabo=1},
-      {idtype=7,xeno=8,yako=2,zabo=2},
-      {idtype=7,xeno=4,yako=8,zabo=3},
-      {idtype=6,xeno=6,yako=8,zabo=3}
+      {idtype=8,xeno=1,yako=8,zabo=1},
+      {idtype=8,xeno=8,yako=2,zabo=2},
+      {idtype=8,xeno=4,yako=8,zabo=3},
+      {idtype=7,xeno=6,yako=8,zabo=3}
     }
   },{
     name="purgatory",
@@ -503,10 +522,10 @@ maps={
     attr='str',
     levelstr="0x03380x3f3c0x03000x33f00xf03c0x33000x33fc0x03000x33040x333c0x000c0x3fcc0x30fc0x3c000x3bcf0x03000x03040x333c0x30300xff3c0x00300x3f0c0x373c0x0330",
     items={
-      {idtype=7,xeno=1,yako=1,zabo=1},
-      {idtype=7,xeno=7,yako=1,zabo=2},
-      {idtype=7,xeno=3,yako=7,zabo=3},
-      {idtype=6,xeno=7,yako=5,zabo=3}
+      {idtype=8,xeno=1,yako=1,zabo=1},
+      {idtype=8,xeno=7,yako=1,zabo=2},
+      {idtype=8,xeno=3,yako=7,zabo=3},
+      {idtype=7,xeno=7,yako=5,zabo=3}
     }
   },{
     name="sheol",
@@ -515,10 +534,10 @@ maps={
     attr='dex',
     levelstr="0x03000x3fb00x03fc0x33000x33f30x30000xfffc0x00000x03000x337c0x300f0x3ffe0x00fc0x3c000x33cf0x30000x03000x333c0x303c0x33310x333f0x330c0x333c0x0000",
     items={
-      {idtype=7,xeno=1,yako=1,zabo=1},
-      {idtype=7,xeno=5,yako=2,zabo=2},
-      {idtype=7,xeno=8,yako=4,zabo=3},
-      {idtype=6,xeno=6,yako=6,zabo=3}
+      {idtype=8,xeno=1,yako=1,zabo=1},
+      {idtype=8,xeno=5,yako=2,zabo=2},
+      {idtype=8,xeno=8,yako=4,zabo=3},
+      {idtype=7,xeno=6,yako=6,zabo=3}
     }
   },{
     name="the upper levels",
@@ -529,12 +548,19 @@ maps={
     mapnum=6,
     levelstr="0x00c00xbcce0xfccf0x00cc0x3fcc0x0ccc0x00cc0x0c000x00c00x7ccd0x3fc30x38f00x3cc30x0ccc0x3cce0x00c00x00c00xcccf0x0cc00x34fc0x3fc00x00cf0x33cd0x3b00",
     items={
-      {idtype=8,xeno=8,yako=1,zabo=3},
-      {idtype=8,xeno=3,yako=8,zabo=3,targetmap=6,targetx=117,targety=41},
-      {idtype=7,xeno=8,yako=7,zabo=3},
-      {idtype=7,xeno=3,yako=4,zabo=3},
-      {idtype=7,xeno=1,yako=2,zabo=2},
-      {idtype=7,xeno=8,yako=2,zabo=2}
+      {idtype=9,xeno=8,yako=1,zabo=3},
+      {idtype=9,xeno=3,yako=8,zabo=3,targetmap=6,targetx=117,targety=41,targetz=0},
+      {idtype=8,xeno=8,yako=7,zabo=3},
+      {idtype=8,xeno=3,yako=4,zabo=3},
+      {idtype=8,xeno=1,yako=2,zabo=2},
+      {idtype=8,xeno=8,yako=2,zabo=2}
+    },
+    creatures={
+      {idtype=50,xeno=6,yako=8,zabo=3},
+      {idtype=50,xeno=8,yako=4,zabo=3},
+      {idtype=50,xeno=3,yako=1,zabo=3},
+      {idtype=50,xeno=6,yako=6,zabo=2},
+      {idtype=50,xeno=6,yako=8,zabo=1}
     }
   }
 }
