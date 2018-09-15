@@ -192,18 +192,18 @@ function purchase(prompt,itemtype,attribute)
       desireditem=itemtype[cmd]
       if desireditem then
         --logit("attr "..hero[attribute].." num "..desireditem[2])
-        return hero.gold>=desireditem[3] and desireditem
+        return hero.gold>=desireditem.price and desireditem
       else
         return nil
       end
     end,
     function(desireditem)
-      if hero[attribute]>=desireditem[2] then
+      if hero[attribute]>=desireditem.amount then
         return "that is not an upgrade."
       else
-        hero.gold-=desireditem[3]
-        hero[attribute]=desireditem[2]
-        return "the "..desireditem[1].." is yours."
+        hero.gold-=desireditem.price
+        hero[attribute]=desireditem.amount
+        return "the "..desireditem.name.." is yours."
       end
     end
   )
@@ -248,14 +248,14 @@ shop={
       function(desiredspell)
         sfx(3)
         hero.gold-=desiredspell.price
-        if desiredspell[2]==7 then
+        if desiredspell.name=='cure' then
           -- perform cure
           hero.status=band(hero.status,14)
         else
           -- perform healing
           increasehp(desiredspell.amount)
         end
-        return desiredspell[1].." is cast!"
+        return desiredspell.name.." is cast!"
       end
     )
   end,
@@ -280,47 +280,30 @@ shop={
 
 -- the maps structure holds information about all of the regular
 -- places in the game, dungeons as well as towns.
-maps=json_parse('[{"startx":92,"creatures":[{"xeno":89,"yako":21,"idtype":15},{"xeno":84,"yako":9,"idtype":24},{"xeno":95,"yako":3,"idtype":22},{"xeno":97,"yako":13,"idtype":21},{"xeno":82,"yako":21,"idtype":14},{"talk":["poynter has a ship.","poynter is in lynn."],"xeno":85,"yako":16,"idtype":17},{"xeno":95,"yako":21,"idtype":15}],"entery":4,"enterx":13,"name":"saugus","items":[{"xeno":84,"yako":4,"idtype":4}],"maxx":105,"maxy":24,"starty":23,"signs":[{"xeno":92,"yako":19,"msg":"welcome to saugus!"}]},{"startx":116,"creatures":[{"xeno":118,"yako":22,"idtype":15},{"xeno":106,"yako":1,"idtype":23},{"xeno":118,"yako":2,"idtype":25},{"xeno":107,"yako":9,"idtype":21},{"xeno":106,"yako":16,"idtype":19},{"xeno":122,"yako":12,"idtype":24},{"talk":["i\'m rich! i have a yacht!","ho ho! i\'m the best!"],"xeno":119,"yako":6,"idtype":16},{"xeno":114,"yako":22,"idtype":15}],"entery":4,"minx":104,"name":"lynn","items":[{"xeno":125,"yako":5,"idtype":5}],"enterx":17,"maxy":24,"starty":23,"signs":[{"xeno":125,"yako":9,"msg":"marina for members only."}]},{"startx":96,"creatures":[{"xeno":94,"yako":49,"idtype":15},{"xeno":103,"yako":39,"idtype":23},{"xeno":92,"yako":30,"idtype":22},{"xeno":88,"yako":38,"idtype":21},{"xeno":100,"yako":30,"idtype":24},{"xeno":96,"yako":44,"idtype":19},{"xeno":83,"yako":27,"idtype":14},{"talk":["i\'ve seen the magic sword.","search south of the shrine."],"xeno":110,"yako":44,"idtype":16},{"moveallowance":1,"xeno":105,"yako":35,"idtype":15},{"xeno":98,"yako":49,"idtype":15}],"entery":19,"enterx":45,"name":"boston","items":[{"xeno":96,"yako":40,"idtype":7}],"maxx":112,"maxy":56,"starty":54,"miny":24},{"startx":119,"creatures":[{"xeno":118,"yako":63,"idtype":15},{"xeno":125,"yako":44,"idtype":23},{"xeno":114,"yako":44,"idtype":25},{"xeno":122,"yako":51,"idtype":21},{"xeno":118,"yako":58,"idtype":17},{"talk":["increase stats in dungeons!","only severe injuries work."],"xeno":123,"yako":57,"idtype":14},{"xeno":120,"yako":63,"idtype":15}],"entery":36,"minx":112,"name":"salem","items":[{"xeno":116,"yako":53,"idtype":4}],"enterx":7,"starty":62,"miny":43},{"startx":82,"creatures":[{"xeno":93,"yako":57,"idtype":21},{"xeno":100,"yako":57,"idtype":25},{"xeno":82,"yako":57,"idtype":18},{"talk":["gilly is in boston.","gilly knows of the sword."],"xeno":102,"yako":63,"idtype":18}],"name":"great misery","maxx":103,"entery":35,"enterx":27,"starty":59,"miny":56},{"startx":120,"creatures":[{"xeno":119,"yako":41,"idtype":50},{"xeno":126,"yako":40,"idtype":50},{"xeno":123,"yako":38,"idtype":50},{"xeno":113,"yako":40,"idtype":50},{"xeno":121,"yako":37,"idtype":49},{"xeno":119,"yako":38,"idtype":49},{"xeno":120,"yako":34,"idtype":42},{"xeno":118,"yako":35,"idtype":42},{"dmg":50,"xeno":118,"yako":30,"idtype":47,"propername":"faxon","armor":25,"img":126,"hp":255}],"friendly":false,"entery":44,"maxmonsters":23,"minx":112,"items":[{"xeno":117,"yako":41,"idtype":8,"targetz":3,"targety":8,"targetx":3,"targetmap":10},{"xeno":119,"yako":37,"idtype":6},{"xeno":119,"yako":39,"idtype":6},{"xeno":120,"yako":37,"idtype":6},{"xeno":120,"yako":38,"idtype":6},{"xeno":120,"yako":39,"idtype":6},{"xeno":121,"yako":38,"idtype":6},{"xeno":121,"yako":39,"idtype":6}],"newmonsters":35,"name":"the dark tower","songstart":17,"enterx":56,"maxy":43,"starty":41,"miny":24},{"items":[{"zabo":1,"xeno":1,"yako":8,"idtype":8},{"zabo":2,"xeno":8,"yako":2,"idtype":8},{"zabo":3,"xeno":4,"yako":8,"idtype":8},{"zabo":3,"xeno":6,"yako":8,"idtype":7}],"name":"nibiru","levelstr":"0x00000x3ffe0x03000x30300x3ffc0x33000x33fc0x00c00x00000xcccd0x03300x30300x3cfc0x03000x3fcc0x02c00x00000xf30c0x03fc0x300c0x333c0x33000xf3fc0x01c0","entery":11,"attr":"int","starty":8,"enterx":4},{"name":"purgatory","levelstr":"0x03380x3f3c0x03000x33f00xf03c0x33000x33fc0x03000x33040x333c0x000c0x3fcc0x30fc0x3c000x3bcf0x03000x03040x333c0x30300xff3c0x00300x3f0c0x373c0x0330","entery":5,"attr":"str","items":[{"zabo":1,"xeno":1,"yako":1,"idtype":8},{"zabo":2,"xeno":7,"yako":1,"idtype":8},{"zabo":3,"xeno":3,"yako":7,"idtype":8},{"zabo":3,"xeno":7,"yako":5,"idtype":7}],"enterx":32},{"name":"sheol","levelstr":"0x03000x3fb00x03fc0x33000x33f30x30000xfffc0x00000x03000x337c0x300f0x3ffe0x00fc0x3c000x33cf0x30000x03000x333c0x303c0x33310x333f0x330c0x333c0x0000","entery":58,"attr":"dex","items":[{"zabo":1,"xeno":1,"yako":1,"idtype":8},{"zabo":2,"xeno":5,"yako":2,"idtype":8},{"zabo":3,"xeno":8,"yako":4,"idtype":8},{"zabo":3,"xeno":6,"yako":6,"idtype":7}],"enterx":33},{"startx":8,"creatures":[{"zabo":3,"xeno":6,"yako":8,"idtype":50},{"zabo":3,"xeno":8,"yako":4,"idtype":50},{"zabo":3,"xeno":3,"yako":1,"idtype":50},{"zabo":2,"xeno":6,"yako":6,"idtype":50},{"zabo":1,"xeno":6,"yako":8,"idtype":50}],"levelstr":"0x00c00xbcce0xfccf0x00cc0x3fcc0x0ccc0x00cc0x0c000x00c00x7ccd0x3fc30x38f00x3cc30x0ccc0x3cce0x00c00x00c00xcccf0x0cc00x34fc0x3fc00x00cf0x33cd0x3b00","entery":26,"startz":3,"name":"the upper levels","items":[{"zabo":3,"xeno":8,"yako":1,"idtype":9},{"targetz":0,"xeno":3,"yako":8,"idtype":9,"targety":41,"zabo":3,"targetx":117,"targetmap":6},{"zabo":3,"xeno":8,"yako":7,"idtype":8},{"zabo":3,"xeno":3,"yako":4,"idtype":8},{"zabo":2,"xeno":1,"yako":2,"idtype":8},{"zabo":2,"xeno":8,"yako":2,"idtype":8}],"mapnum":6,"enterx":124}]')
+maps=json_parse('[{"startx":92,"name":"saugus","maxy":24,"creatures":[{"idtype":15,"yako":21,"xeno":89},{"idtype":24,"yako":9,"xeno":84},{"idtype":22,"yako":3,"xeno":95},{"idtype":21,"yako":13,"xeno":97},{"idtype":14,"yako":21,"xeno":82},{"idtype":17,"talk":["poynter has a ship.","poynter is in lynn."],"yako":16,"xeno":85},{"idtype":15,"yako":21,"xeno":95}],"starty":23,"entery":4,"enterx":13,"maxx":105,"signs":[{"yako":19,"msg":"welcome to saugus!","xeno":92}],"items":[{"idtype":4,"yako":4,"xeno":84}]},{"startx":116,"name":"lynn","maxy":24,"creatures":[{"idtype":15,"yako":22,"xeno":118},{"idtype":23,"yako":1,"xeno":106},{"idtype":25,"yako":2,"xeno":118},{"idtype":21,"yako":9,"xeno":107},{"idtype":19,"yako":16,"xeno":106},{"idtype":24,"yako":12,"xeno":122},{"idtype":16,"talk":["i\'m rich! i have a yacht!","ho ho! i\'m the best!"],"yako":6,"xeno":119},{"idtype":15,"yako":22,"xeno":114}],"starty":23,"entery":4,"enterx":17,"signs":[{"yako":9,"msg":"marina for members only.","xeno":125}],"minx":104,"items":[{"idtype":5,"yako":5,"xeno":125}]},{"startx":96,"name":"boston","maxy":56,"creatures":[{"idtype":15,"yako":49,"xeno":94},{"idtype":23,"yako":39,"xeno":103},{"idtype":22,"yako":30,"xeno":92},{"idtype":21,"yako":38,"xeno":88},{"idtype":24,"yako":30,"xeno":100},{"idtype":19,"yako":44,"xeno":96},{"idtype":14,"yako":27,"xeno":83},{"idtype":16,"talk":["i\'ve seen the magic sword.","search south of the shrine."],"yako":44,"xeno":110},{"idtype":15,"yako":35,"moveallowance":1,"xeno":105},{"idtype":15,"yako":49,"xeno":98}],"miny":24,"starty":54,"entery":19,"enterx":45,"maxx":112,"items":[{"idtype":7,"yako":40,"xeno":96}]},{"startx":119,"name":"salem","creatures":[{"idtype":15,"yako":63,"xeno":118},{"idtype":23,"yako":44,"xeno":125},{"idtype":25,"yako":44,"xeno":114},{"idtype":21,"yako":51,"xeno":122},{"idtype":17,"yako":58,"xeno":118},{"idtype":14,"talk":["increase stats in dungeons!","only severe injuries work."],"yako":57,"xeno":123},{"idtype":15,"yako":63,"xeno":120}],"miny":43,"starty":62,"entery":36,"enterx":7,"minx":112,"items":[{"idtype":4,"yako":53,"xeno":116}]},{"startx":82,"name":"great misery","enterx":27,"maxx":103,"creatures":[{"idtype":21,"yako":57,"xeno":93},{"idtype":25,"yako":57,"xeno":100},{"idtype":18,"yako":57,"xeno":82},{"idtype":18,"talk":["gilly is in boston.","gilly knows of the sword."],"yako":63,"xeno":102}],"miny":56,"entery":35,"starty":59},{"startx":120,"name":"the dark tower","maxy":43,"creatures":[{"idtype":50,"yako":41,"xeno":119},{"idtype":50,"yako":40,"xeno":126},{"idtype":50,"yako":38,"xeno":123},{"idtype":50,"yako":40,"xeno":113},{"idtype":49,"yako":37,"xeno":121},{"idtype":49,"yako":38,"xeno":119},{"idtype":42,"yako":34,"xeno":120},{"idtype":42,"yako":35,"xeno":118},{"idtype":47,"hp":255,"img":126,"xeno":118,"propername":"faxon","dmg":50,"armor":25,"yako":30}],"miny":24,"starty":41,"items":[{"idtype":8,"targetmap":10,"xeno":117,"targetz":3,"targety":8,"targetx":3,"yako":41},{"idtype":6,"yako":37,"xeno":119},{"idtype":6,"yako":39,"xeno":119},{"idtype":6,"yako":37,"xeno":120},{"idtype":6,"yako":38,"xeno":120},{"idtype":6,"yako":39,"xeno":120},{"idtype":6,"yako":38,"xeno":121},{"idtype":6,"yako":39,"xeno":121}],"entery":44,"enterx":56,"songstart":17,"newmonsters":35,"friendly":false,"minx":112,"maxmonsters":23},{"name":"nibiru","enterx":4,"attr":"int","items":[{"idtype":8,"zabo":1,"yako":8,"xeno":1},{"idtype":8,"zabo":2,"yako":2,"xeno":8},{"idtype":8,"zabo":3,"yako":8,"xeno":4},{"idtype":7,"zabo":3,"yako":8,"xeno":6}],"levels":[[0,16382,768,12336,16380,13056,13308,192],[0,-13107,816,12336,15612,768,16332,704],[0,-3316,1020,12300,13116,13056,-3076,448]],"entery":11,"starty":8},{"name":"purgatory","enterx":32,"attr":"str","entery":5,"levels":[[824,16188,768,13296,-4036,13056,13308,768],[13060,13116,12,16332,12540,15360,15311,768],[768,13116,12336,-196,48,16140,14140,816]],"items":[{"idtype":8,"zabo":1,"yako":1,"xeno":1},{"idtype":8,"zabo":2,"yako":1,"xeno":7},{"idtype":8,"zabo":3,"yako":7,"xeno":3},{"idtype":7,"zabo":3,"yako":5,"xeno":7}]},{"name":"sheol","enterx":33,"attr":"dex","entery":58,"levels":[[768,16304,1020,13056,13299,12288,-4,0],[768,13180,12303,16382,252,15360,13263,12288],[768,13116,12348,13105,13119,13068,13116,0]],"items":[{"idtype":8,"zabo":1,"yako":1,"xeno":1},{"idtype":8,"zabo":2,"yako":2,"xeno":5},{"idtype":8,"zabo":3,"yako":4,"xeno":8},{"idtype":7,"zabo":3,"yako":6,"xeno":6}]},{"startx":8,"name":"the upper levels","startz":3,"creatures":[{"idtype":50,"zabo":3,"yako":8,"xeno":6},{"idtype":50,"zabo":3,"yako":4,"xeno":8},{"idtype":50,"zabo":3,"yako":1,"xeno":3},{"idtype":50,"zabo":2,"yako":6,"xeno":6},{"idtype":50,"zabo":1,"yako":8,"xeno":6}],"mapnum":6,"entery":26,"enterx":124,"levels":[[192,-17202,-817,204,16332,3276,204,3072],[192,31949,16323,14576,15555,3276,15566,192],[192,-13105,3264,13564,16320,207,13261,15104]],"items":[{"idtype":9,"zabo":3,"yako":1,"xeno":8},{"idtype":9,"targetmap":6,"targetz":0,"xeno":3,"zabo":3,"targety":41,"targetx":117,"yako":8},{"idtype":8,"zabo":3,"yako":7,"xeno":8},{"idtype":8,"zabo":3,"yako":4,"xeno":3},{"idtype":8,"zabo":2,"yako":2,"xeno":1},{"idtype":8,"zabo":2,"yako":2,"xeno":8}]}]')
 -- map 0 is special; it's the world map, the overview map.
 maps[0]=json_parse('{"name":"world","minx":0,"miny":0,"maxx":80,"maxy":64,"wrap":true,"newmonsters":10,"maxmonsters":10,"friendly":false,"songstart":0}')
 
+-- add numerical references to names by amounts
+function makenameforamount(itemtype)
+  nameforamount={}
+  for itemcmd,item in pairs(itemtype) do
+    nameforamount[item.amount]=item.name
+  end
+  nameforamount[0]='none'
+  return nameforamount
+end
+
 -- armor definitions
-armors={
-  south={'cloth',8,12},
-  west={'leather',23,99},
-  east={'chain',40,300},
-  north={'plate',90,950},
-  [0]='none',
-  [8]='cloth',
-  [23]='leather',
-  [40]='chain',
-  [90]='plate'
-}
+armors=json_parse('{"south":{"name":"cloth","amount":8,"price":12},"west":{"name":"leather","amount":23,"price":99},"east":{"name":"chain","amount":40,"price":300},"north":{"name":"plate","amount":90,"price":950}}')
+armornames=makenameforamount(armors)
 
 -- weapon definitions
-weapons={
-  d={'dagger',8,8},
-  c={'club',12,40},
-  a={'axe',18,75},
-  s={'sword',30,150},
-  t={'magic sword',50},
-  [0]='none',
-  [8]='dagger',
-  [12]='club',
-  [18]='axe',
-  [30]='sword',
-  [50]='magic swd'
-}
+weapons=json_parse('{"d":{"name":"dagger","amount":8,"price":8},"c":{"name":"club","amount":12,"price":40},"a":{"name":"axe","amount":18,"price":75},"s":{"name":"sword","amount":30,"price":150},"t":{"name":"magic sword","amount":40}}')
+weaponnames=makenameforamount(weapons)
 
 -- spell definitions
-spells={
-  a={'attack',3,amount=1},
-  x={'medic',5,amount=1,price=8},
-  c={'cure',7,price=10},
-  w={'wound',11,amount=5},
-  e={'exit',13},
-  s={'savior',17,amount=6,price=25}
-}
+spells=json_parse('{"a":{"name":"attack","cost":3,"amount":1},"x":{"name":"medic","cost":5,"amount":1,"price":8},"c":{"name":"cure","cost":7,"price":10},"w":{"name":"wound","cost":11,"amount":5},"e":{"name":"exit","cost":13},"s":{"name":"savior","cost":17,"amount":6,"price":25}}')
 
 function setmap()
   local songstart=curmap.songstart
@@ -346,15 +329,6 @@ function initobjs()
         maptype=towntype
       else
         maptype=dungeontype
-        local row={}
-        curmap.levels={}
-        for rowblocksnum=1,#curmap.levelstr,6 do
-          add(row,tonum(sub(curmap.levelstr,rowblocksnum,rowblocksnum+5)))
-          if rowblocksnum%48==43 then
-            add(curmap.levels,row)
-            row={}
-          end
-        end
       end
       makemetaobj(curmap,maptype)
     end
@@ -494,9 +468,9 @@ end
 
 function checkspell(cmd,extra)
   local spell=spells[cmd]
-  if hero.mp>=spell[2] then
-    hero.mp-=spell[2]
-    update_lines{spell[1].." is cast! "..(extra or '')}
+  if hero.mp>=spell.cost then
+    hero.mp-=spell.cost
+    update_lines{spell.name.." is cast! "..(extra or '')}
     return true
   else
     update_lines{"not enough mp."}
@@ -694,7 +668,7 @@ function inputprocessor(cmd)
       turnmade=true
     elseif cmd=='w' then
       update_lines{
-        "worn: "..armors[hero.armor].."; wield: "..weapons[hero.dmg]
+        "worn: "..armornames[hero.armor].."; wield: "..weaponnames[hero.dmg]
       }
     elseif cmd=='a' then
       if hero.img>0 then
@@ -1150,6 +1124,7 @@ function movecreatures(hero)
               end
             else
               local facing=flr(rnd(4)+1)
+              creature.facing=facing
               if facing%2==1 then
                 desiredy=spots[facing]
               else
@@ -1656,7 +1631,7 @@ f8999550000000030000000400000006000003330000100103003333000505005000550005050050
 000b00000b00000000311300403113000333330333333030011011000022220000000600b013310b033b3300005555000035530b888008080050050000900900
 00000000000000000330033003300330033333033333303044000440000000000000000003311330000330000555555000355300808000000550055000000000
 c0c0c0c040404040101010604040c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0101001110150501101111111111111011101111111111101111010011101101041616161616161616141414141416141
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0101001110150501101111111111111011101111111111101111010011101101041616161616161616141414151416141
 c0c0c0c0c0c040406060604040404040c0c0c0e0e0e0e0e0e0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110150501101111111111111011101111111111101111010011101101041616161616161616141616161616141
 e0e0c0c0c0c0404040606060104040c0c0e0e0e0e0e0e0e0e0c07070c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
@@ -1670,11 +1645,11 @@ e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110111010101010101111010101010101011010101
 c06040c0c0c0c0c04040104010c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e010100111011101111111110111104010c01040101101b3c3d20111011101101041414141416141616161516141414141
 c04040c0e0e0c0c040401010c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e01010011101110192c2825301111010c0c0c0101011011111110111011101101041616161616141616161416161616141
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e01010011101110192c2825301111010c0c0c0101011011111110111011101101041616161616171616161416161616141
 c0c0c0e0e0e0e0c0c01010c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0e0e0e0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e01010011101110111111111011110c0c061c0c01011018293430111011101101041614141414141414171414141416141
 e0c0c0e0e0e0e0c0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c080c0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110111011111111101111010c061c010101101111111011101110110104161616161b171616161616161616141
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110111011111111101111010c061c010101101111111011101110110104161616161b141616161616161616141
 e0e0e0e0e0e0e0e0e0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0e0e0c080a080c0c0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e010100111011101111111110111104010611040101111111111011101110110104141414141414141c141414141414141
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c080c0e0c070807070c0e0e0e0e0
@@ -1704,7 +1679,7 @@ e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0100101018101010110101010101011111111111010101010
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0c0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101010101010101010101010101011111111111010101010101010101010101001110101c10101110111111111011101
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e02020202020404060606001538253a204349293c2e3a30140401041104110404001111111111111110111111111011101
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e02020202020404060606001538253a204349293c2e3a30140401041104110404001111111111111110111111111011131
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0c0c0c0c0c0c0c0c0c0c0c03080807080303030c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0202020202020404010600111111111111111111111110140104141104141104001111111601111110111111111011101
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0c0808070707070c0c0c0c080803090128030903030c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0

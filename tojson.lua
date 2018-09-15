@@ -358,10 +358,25 @@ basetypes={
     exp=5
   }
 }
-creature,towntype,dungeontype,ankhtype,shiptype,chesttype,fountaintype,ladderuptype,ladderdowntype,human,orc,undead,animal,fighter,guard,merchant,lady,shepherd,jester,villain,grocer,armorer,smith,medic,barkeep=basetypes[1],basetypes[2],basetypes[3],basetypes[4],basetypes[5],basetypes[6],basetypes[7],basetypes[8],basetypes[9],basetypes[10],basetypes[11],basetypes[12],basetypes[13],basetypes[14],basetypes[15],basetypes[16],basetypes[17],basetypes[18],basetypes[19],basetypes[20],basetypes[21],basetypes[22],basetypes[23],basetypes[24],basetypes[25]
+-- We want to make a table of named items so we can refer to them easily
+-- in the next section in such a way that they automatically get converted
+-- to raw numbers for the final PICO-8 version.
+thing = {}
+for basetypeIdx, basetype in pairs(basetypes) do
+  -- We don't always have a name; when we do, use it. If we have a list of
+  -- possible ones, use the first.
+  local name = basetype.name or (basetype.names and basetype.names[1])
+  -- Otherwise just ignore it.
+  if name then
+    thing[name] = basetypeIdx
+  end
+end
+-- write out the resulting basetypes & bestiary structure string for copying &
+-- pasting into PICO-8 source
 outputStructure('basetypes', basetypes)
 
 -- Our maps structure includes all of our communities and dungeons.
+-- We can use the thing table defined above to make desired objects explicit.
 maps={
   {
     name="saugus",
@@ -375,16 +390,16 @@ maps={
       {xeno=92,yako=19,msg="welcome to saugus!"}
     },
     items={
-      {idtype=4,xeno=84,yako=4}
+      {idtype=thing['ankh'],xeno=84,yako=4}
     },
     creatures={
-      {idtype=15,xeno=89,yako=21},
-      {idtype=24,xeno=84,yako=9},
-      {idtype=22,xeno=95,yako=3},
-      {idtype=21,xeno=97,yako=13},
-      {idtype=14,xeno=82,yako=21},
-      {idtype=17,xeno=85,yako=16,talk={"poynter has a ship.","poynter is in lynn."}},
-      {idtype=15,xeno=95,yako=21}
+      {idtype=thing['guard'],xeno=89,yako=21},
+      {idtype=thing['medic'],xeno=84,yako=9},
+      {idtype=thing['armorer'],xeno=95,yako=3},
+      {idtype=thing['grocer'],xeno=97,yako=13},
+      {idtype=thing['fighter'],xeno=82,yako=21},
+      {idtype=thing['lady'],xeno=85,yako=16,talk={"poynter has a ship.","poynter is in lynn."}},
+      {idtype=thing['guard'],xeno=95,yako=21}
     }
   },{
     name="lynn",
@@ -398,17 +413,17 @@ maps={
       {xeno=125,yako=9,msg="marina for members only."}
     },
     items={
-      {idtype=5,xeno=125,yako=5}
+      {idtype=thing['ship'],xeno=125,yako=5}
     },
     creatures={
-      {idtype=15,xeno=118,yako=22},
-      {idtype=23,xeno=106,yako=1},
-      {idtype=25,xeno=118,yako=2},
-      {idtype=21,xeno=107,yako=9},
-      {idtype=19,xeno=106,yako=16},
-      {idtype=24,xeno=122,yako=12},
-      {idtype=16,xeno=119,yako=6,talk={"i\'m rich! i have a yacht!","ho ho! i\'m the best!"}},
-      {idtype=15,xeno=114,yako=22}
+      {idtype=thing['guard'],xeno=118,yako=22},
+      {idtype=thing['smith'],xeno=106,yako=1},
+      {idtype=thing['barkeep'],xeno=118,yako=2},
+      {idtype=thing['grocer'],xeno=107,yako=9},
+      {idtype=thing['jester'],xeno=106,yako=16},
+      {idtype=thing['medic'],xeno=122,yako=12},
+      {idtype=thing['merchant'],xeno=119,yako=6,talk={"i\'m rich! i have a yacht!","ho ho! i\'m the best!"}},
+      {idtype=thing['guard'],xeno=114,yako=22}
     }
   },{
     name="boston",
@@ -420,19 +435,19 @@ maps={
     maxx=112,
     maxy=56,
     items={
-      {idtype=7,xeno=96,yako=40}
+      {idtype=thing['fountain'],xeno=96,yako=40}
     },
     creatures={
-      {idtype=15,xeno=94,yako=49},
-      {idtype=23,xeno=103,yako=39},
-      {idtype=22,xeno=92,yako=30},
-      {idtype=21,xeno=88,yako=38},
-      {idtype=24,xeno=100,yako=30},
-      {idtype=19,xeno=96,yako=44},
-      {idtype=14,xeno=83,yako=27},
-      {idtype=16,xeno=110,yako=44,talk={"i\'ve seen the magic sword.","search south of the shrine."}},
-      {idtype=15,xeno=105,yako=35,moveallowance=1},
-      {idtype=15,xeno=98,yako=49}
+      {idtype=thing['guard'],xeno=94,yako=49},
+      {idtype=thing['smith'],xeno=103,yako=39},
+      {idtype=thing['armorer'],xeno=92,yako=30},
+      {idtype=thing['grocer'],xeno=88,yako=38},
+      {idtype=thing['medic'],xeno=100,yako=30},
+      {idtype=thing['jester'],xeno=96,yako=44},
+      {idtype=thing['fighter'],xeno=83,yako=27},
+      {idtype=thing['merchant'],xeno=110,yako=44,talk={"i\'ve seen the magic sword.","search south of the shrine."}},
+      {idtype=thing['guard'],xeno=105,yako=35,moveallowance=1},
+      {idtype=thing['guard'],xeno=98,yako=49}
     }
   },{
     name="salem",
@@ -443,16 +458,16 @@ maps={
     minx=112,
     miny=43,
     items={
-      {idtype=4,xeno=116,yako=53}
+      {idtype=thing['ankh'],xeno=116,yako=53}
     },
     creatures={
-      {idtype=15,xeno=118,yako=63},
-      {idtype=23,xeno=125,yako=44},
-      {idtype=25,xeno=114,yako=44},
-      {idtype=21,xeno=122,yako=51},
-      {idtype=17,xeno=118,yako=58},
-      {idtype=14,xeno=123,yako=57,talk={"increase stats in dungeons!","only severe injuries work."}},
-      {idtype=15,xeno=120,yako=63}
+      {idtype=thing['guard'],xeno=118,yako=63},
+      {idtype=thing['smith'],xeno=125,yako=44},
+      {idtype=thing['barkeep'],xeno=114,yako=44},
+      {idtype=thing['grocer'],xeno=122,yako=51},
+      {idtype=thing['lady'],xeno=118,yako=58},
+      {idtype=thing['fighter'],xeno=123,yako=57,talk={"increase stats in dungeons!","only severe injuries work."}},
+      {idtype=thing['guard'],xeno=120,yako=63}
     }
   },{
     name="great misery",
@@ -463,10 +478,10 @@ maps={
     miny=56,
     maxx=103,
     creatures={
-      {idtype=21,xeno=93,yako=57},
-      {idtype=25,xeno=100,yako=57},
-      {idtype=18,xeno=82,yako=57},
-      {idtype=18,xeno=102,yako=63,talk={"gilly is in boston.","gilly knows of the sword."}}
+      {idtype=thing['grocer'],xeno=93,yako=57},
+      {idtype=thing['barkeep'],xeno=100,yako=57},
+      {idtype=thing['shepherd'],xeno=82,yako=57},
+      {idtype=thing['shepherd'],xeno=102,yako=63,talk={"gilly is in boston.","gilly knows of the sword."}}
     }
   },{
     name="the dark tower",
@@ -482,25 +497,25 @@ maps={
     maxmonsters=23,
     songstart=17,
     items={
-      {idtype=8,xeno=117,yako=41,targetmap=10,targetx=3,targety=8,targetz=3},
-      {idtype=6,xeno=119,yako=37},
-      {idtype=6,xeno=119,yako=39},
-      {idtype=6,xeno=120,yako=37},
-      {idtype=6,xeno=120,yako=38},
-      {idtype=6,xeno=120,yako=39},
-      {idtype=6,xeno=121,yako=38},
-      {idtype=6,xeno=121,yako=39}
+      {idtype=thing['ladder up'],xeno=117,yako=41,targetmap=10,targetx=3,targety=8,targetz=3},
+      {idtype=thing['chest'],xeno=119,yako=37},
+      {idtype=thing['chest'],xeno=119,yako=39},
+      {idtype=thing['chest'],xeno=120,yako=37},
+      {idtype=thing['chest'],xeno=120,yako=38},
+      {idtype=thing['chest'],xeno=120,yako=39},
+      {idtype=thing['chest'],xeno=121,yako=38},
+      {idtype=thing['chest'],xeno=121,yako=39}
     },
     creatures={
-      {idtype=50,xeno=119,yako=41},
-      {idtype=50,xeno=126,yako=40},
-      {idtype=50,xeno=123,yako=38},
-      {idtype=50,xeno=113,yako=40},
-      {idtype=49,xeno=121,yako=37},
-      {idtype=49,xeno=119,yako=38},
-      {idtype=42,xeno=120,yako=34},
-      {idtype=42,xeno=118,yako=35},
-      {idtype=47,xeno=118,yako=30,propername="faxon",img=126,hp=255,armor=25,dmg=50}
+      {idtype=thing['reaper'],xeno=119,yako=41},
+      {idtype=thing['reaper'],xeno=126,yako=40},
+      {idtype=thing['reaper'],xeno=123,yako=38},
+      {idtype=thing['reaper'],xeno=113,yako=40},
+      {idtype=thing['mimic'],xeno=121,yako=37},
+      {idtype=thing['mimic'],xeno=119,yako=38},
+      {idtype=thing['slime'],xeno=120,yako=34},
+      {idtype=thing['slime'],xeno=118,yako=35},
+      {idtype=thing['dragon'],xeno=118,yako=30,propername="faxon",img=126,hp=255,armor=25,dmg=50}
     }
   },{
     name="nibiru",
@@ -508,36 +523,123 @@ maps={
     entery=11,
     starty=8,
     attr='int',
-    levelstr="0x00000x3ffe0x03000x30300x3ffc0x33000x33fc0x00c00x00000xcccd0x03300x30300x3cfc0x03000x3fcc0x02c00x00000xf30c0x03fc0x300c0x333c0x33000xf3fc0x01c0",
+    levels={
+      {
+        0x0000,
+        0x3ffe,
+        0x0300,
+        0x3030,
+        0x3ffc,
+        0x3300,
+        0x33fc,
+        0x00c0
+      },{
+        0x0000,
+        0xcccd,
+        0x0330,
+        0x3030,
+        0x3cfc,
+        0x0300,
+        0x3fcc,
+        0x02c0
+      },{
+        0x0000,
+        0xf30c,
+        0x03fc,
+        0x300c,
+        0x333c,
+        0x3300,
+        0xf3fc,
+        0x01c0
+      }
+    },
     items={
-      {idtype=8,xeno=1,yako=8,zabo=1},
-      {idtype=8,xeno=8,yako=2,zabo=2},
-      {idtype=8,xeno=4,yako=8,zabo=3},
-      {idtype=7,xeno=6,yako=8,zabo=3}
+      {idtype=thing['ladder up'],xeno=1,yako=8,zabo=1},
+      {idtype=thing['ladder up'],xeno=8,yako=2,zabo=2},
+      {idtype=thing['ladder up'],xeno=4,yako=8,zabo=3},
+      {idtype=thing['fountain'],xeno=6,yako=8,zabo=3}
     }
   },{
     name="purgatory",
     enterx=32,
     entery=5,
     attr='str',
-    levelstr="0x03380x3f3c0x03000x33f00xf03c0x33000x33fc0x03000x33040x333c0x000c0x3fcc0x30fc0x3c000x3bcf0x03000x03040x333c0x30300xff3c0x00300x3f0c0x373c0x0330",
+    levels={
+      {
+        0x0338,
+        0x3f3c,
+        0x0300,
+        0x33f0,
+        0xf03c,
+        0x3300,
+        0x33fc,
+        0x0300
+      },{
+        0x3304,
+        0x333c,
+        0x000c,
+        0x3fcc,
+        0x30fc,
+        0x3c00,
+        0x3bcf,
+        0x0300
+      },{
+        0x0300,
+        0x333c,
+        0x3030,
+        0xff3c,
+        0x0030,
+        0x3f0c,
+        0x373c,
+        0x0330
+      }
+    },
     items={
-      {idtype=8,xeno=1,yako=1,zabo=1},
-      {idtype=8,xeno=7,yako=1,zabo=2},
-      {idtype=8,xeno=3,yako=7,zabo=3},
-      {idtype=7,xeno=7,yako=5,zabo=3}
+      {idtype=thing['ladder up'],xeno=1,yako=1,zabo=1},
+      {idtype=thing['ladder up'],xeno=7,yako=1,zabo=2},
+      {idtype=thing['ladder up'],xeno=3,yako=7,zabo=3},
+      {idtype=thing['fountain'],xeno=7,yako=5,zabo=3}
     }
   },{
     name="sheol",
     enterx=33,
     entery=58,
     attr='dex',
-    levelstr="0x03000x3fb00x03fc0x33000x33f30x30000xfffc0x00000x03000x337c0x300f0x3ffe0x00fc0x3c000x33cf0x30000x03000x333c0x303c0x33310x333f0x330c0x333c0x0000",
+    levels={
+      {
+        0x0300,
+        0x3fb0,
+        0x03fc,
+        0x3300,
+        0x33f3,
+        0x3000,
+        0xfffc,
+        0x0000
+      },{
+        0x0300,
+        0x337c,
+        0x300f,
+        0x3ffe,
+        0x00fc,
+        0x3c00,
+        0x33cf,
+        0x3000
+      },{
+        0x0300,
+        0x333c,
+        0x303c,
+        0x3331,
+        0x333f,
+        0x330c,
+        0x333c,
+        0x0000
+      }
+    },
     items={
-      {idtype=8,xeno=1,yako=1,zabo=1},
-      {idtype=8,xeno=5,yako=2,zabo=2},
-      {idtype=8,xeno=8,yako=4,zabo=3},
-      {idtype=7,xeno=6,yako=6,zabo=3}
+      {idtype=thing['ladder up'],xeno=1,yako=1,zabo=1},
+      {idtype=thing['ladder up'],xeno=5,yako=2,zabo=2},
+      {idtype=thing['ladder up'],xeno=8,yako=4,zabo=3},
+      {idtype=thing['fountain'],xeno=6,yako=6,zabo=3}
     }
   },{
     name="the upper levels",
@@ -546,22 +648,69 @@ maps={
     startx=8,
     startz=3,
     mapnum=6,
-    levelstr="0x00c00xbcce0xfccf0x00cc0x3fcc0x0ccc0x00cc0x0c000x00c00x7ccd0x3fc30x38f00x3cc30x0ccc0x3cce0x00c00x00c00xcccf0x0cc00x34fc0x3fc00x00cf0x33cd0x3b00",
+    levels={
+      {
+        0x00c0,
+        0xbcce,
+        0xfccf,
+        0x00cc,
+        0x3fcc,
+        0x0ccc,
+        0x00cc,
+        0x0c00
+      },{
+        0x00c0,
+        0x7ccd,
+        0x3fc3,
+        0x38f0,
+        0x3cc3,
+        0x0ccc,
+        0x3cce,
+        0x00c0
+      },{
+        0x00c0,
+        0xcccf,
+        0x0cc0,
+        0x34fc,
+        0x3fc0,
+        0x00cf,
+        0x33cd,
+        0x3b00
+      }
+    },
     items={
-      {idtype=9,xeno=8,yako=1,zabo=3},
-      {idtype=9,xeno=3,yako=8,zabo=3,targetmap=6,targetx=117,targety=41,targetz=0},
-      {idtype=8,xeno=8,yako=7,zabo=3},
-      {idtype=8,xeno=3,yako=4,zabo=3},
-      {idtype=8,xeno=1,yako=2,zabo=2},
-      {idtype=8,xeno=8,yako=2,zabo=2}
+      {idtype=thing['ladder down'],xeno=8,yako=1,zabo=3},
+      {idtype=thing['ladder down'],xeno=3,yako=8,zabo=3,targetmap=6,targetx=117,targety=41,targetz=0},
+      {idtype=thing['ladder up'],xeno=8,yako=7,zabo=3},
+      {idtype=thing['ladder up'],xeno=3,yako=4,zabo=3},
+      {idtype=thing['ladder up'],xeno=1,yako=2,zabo=2},
+      {idtype=thing['ladder up'],xeno=8,yako=2,zabo=2}
     },
     creatures={
-      {idtype=50,xeno=6,yako=8,zabo=3},
-      {idtype=50,xeno=8,yako=4,zabo=3},
-      {idtype=50,xeno=3,yako=1,zabo=3},
-      {idtype=50,xeno=6,yako=6,zabo=2},
-      {idtype=50,xeno=6,yako=8,zabo=1}
+      {idtype=thing['reaper'],xeno=6,yako=8,zabo=3},
+      {idtype=thing['reaper'],xeno=8,yako=4,zabo=3},
+      {idtype=thing['reaper'],xeno=3,yako=1,zabo=3},
+      {idtype=thing['reaper'],xeno=6,yako=6,zabo=2},
+      {idtype=thing['reaper'],xeno=6,yako=8,zabo=1}
     }
   }
 }
+-- Map by map...
+for mapIdx, map in pairs(maps) do
+  -- Only for dungeons...
+  if map.levels then
+    -- Level by level...
+    for levelIdx, level in pairs(map.levels) do
+      -- Row by row...
+      for rowIdx, row in pairs(level) do
+        -- We need to convert values outside PICO-8's range.
+        if row > 32767 then
+          level[rowIdx] = row - 65536
+        end
+      end
+    end
+  end
+end
+-- write out the resulting maps structure string for copying & pasting
+-- into PICO-8 source
 outputStructure('maps', maps)
