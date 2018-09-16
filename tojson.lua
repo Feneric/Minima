@@ -345,7 +345,8 @@ basetypes={
     thief=true,
     gold=12,
     terrain={17,22},
-    exp=4
+    exp=4,
+    chance=0
   },{
     img=124,
     flipimg=true,
@@ -355,7 +356,8 @@ basetypes={
     hp=30,
     gold=8,
     terrain={17,22},
-    exp=5
+    exp=5,
+    chance=0
   }
 }
 -- We want to make a table of named items so we can refer to them easily
@@ -398,6 +400,7 @@ maps={
       {idtype=thing['armorer'],xeno=95,yako=3},
       {idtype=thing['grocer'],xeno=97,yako=13},
       {idtype=thing['fighter'],xeno=82,yako=21},
+      {idtype=thing['human'],xeno=103,yako=18,talk={"faxon is in a tower.","volcanoes mark it."}},
       {idtype=thing['lady'],xeno=85,yako=16,talk={"poynter has a ship.","poynter is in lynn."}},
       {idtype=thing['guard'],xeno=95,yako=21}
     }
@@ -466,6 +469,7 @@ maps={
       {idtype=thing['barkeep'],xeno=114,yako=44},
       {idtype=thing['grocer'],xeno=122,yako=51},
       {idtype=thing['lady'],xeno=118,yako=58},
+      {idtype=thing['human'],xeno=113,yako=50,talk={"faxon is a blight.","daemons work for faxon."}},
       {idtype=thing['fighter'],xeno=123,yako=57,talk={"increase stats in dungeons!","only severe injuries work."}},
       {idtype=thing['guard'],xeno=120,yako=63}
     }
@@ -480,6 +484,7 @@ maps={
     creatures={
       {idtype=thing['grocer'],xeno=93,yako=57},
       {idtype=thing['barkeep'],xeno=100,yako=57},
+      {idtype=thing['fighter'],xeno=91,yako=60,talk={"i saw a dragon once.","it was deep in a dungeon."}},
       {idtype=thing['shepherd'],xeno=82,yako=57},
       {idtype=thing['shepherd'],xeno=102,yako=63,talk={"gilly is in boston.","gilly knows of the sword."}}
     }
@@ -543,7 +548,7 @@ maps={
         0x3fcc,
         0x02c0
       },{
-        0x0000,
+        0x8000,
         0xf30c,
         0x03fc,
         0x300c,
@@ -551,13 +556,35 @@ maps={
         0x3300,
         0xf3fc,
         0x01c0
+      },{
+        0x7330,
+        0x333c,
+        0x0000,
+        0xf3ff,
+        0x0000,
+        0xf3cc,
+        0x030c,
+        0x333c
       }
     },
     items={
       {idtype=thing['ladder up'],xeno=1,yako=8,zabo=1},
       {idtype=thing['ladder up'],xeno=8,yako=2,zabo=2},
       {idtype=thing['ladder up'],xeno=4,yako=8,zabo=3},
+      {idtype=thing['ladder up'],xeno=1,yako=1,zabo=4},
+      {idtype=thing['chest'],xeno=1,yako=8,zabo=4},
+      {idtype=thing['chest'],xeno=7,yako=1,zabo=4},
+      {idtype=thing['chest'],xeno=3,yako=8,zabo=4},
+      {idtype=thing['chest'],xeno=5,yako=8,zabo=4},
+      {idtype=thing['chest'],xeno=8,yako=8,zabo=4},
       {idtype=thing['fountain'],xeno=6,yako=8,zabo=3}
+    },
+    creatures={
+      {idtype=thing['dragon'],xeno=8,yako=5,zabo=4},
+      {idtype=thing['mimic'],xeno=3,yako=1,zabo=4},
+      {idtype=thing['mimic'],xeno=1,yako=5,zabo=4},
+      {idtype=thing['mimic'],xeno=5,yako=1,zabo=4},
+      {idtype=thing['reaper'],xeno=3,yako=3,zabo=4}
     }
   },{
     name="purgatory",
@@ -586,19 +613,41 @@ maps={
       },{
         0x0300,
         0x333c,
-        0x3030,
+        0xb030,
         0xff3c,
         0x0030,
         0x3f0c,
         0x373c,
         0x0330
+      },{
+        0x0000,
+        0xcccc,
+        0x4c0c,
+        0xcccc,
+        0x00c0,
+        0xcccc,
+        0x0c0c,
+        0xcccc
       }
     },
     items={
       {idtype=thing['ladder up'],xeno=1,yako=1,zabo=1},
       {idtype=thing['ladder up'],xeno=7,yako=1,zabo=2},
       {idtype=thing['ladder up'],xeno=3,yako=7,zabo=3},
+      {idtype=thing['ladder up'],xeno=1,yako=3,zabo=4},
+      {idtype=thing['chest'],xeno=1,yako=1,zabo=4},
+      {idtype=thing['chest'],xeno=1,yako=8,zabo=4},
+      {idtype=thing['chest'],xeno=1,yako=7,zabo=4},
+      {idtype=thing['chest'],xeno=2,yako=8,zabo=4},
+      {idtype=thing['chest'],xeno=8,yako=8,zabo=4},
       {idtype=thing['fountain'],xeno=7,yako=5,zabo=3}
+    },
+    creatures={
+      {idtype=thing['dragon'],xeno=3,yako=5,zabo=4},
+      {idtype=thing['mimic'],xeno=1,yako=5,zabo=4},
+      {idtype=thing['mimic'],xeno=7,yako=5,zabo=4},
+      {idtype=thing['reaper'],xeno=5,yako=3,zabo=4},
+      {idtype=thing['reaper'],xeno=5,yako=7,zabo=4}
     }
   },{
     name="sheol",
@@ -632,14 +681,36 @@ maps={
         0x333f,
         0x330c,
         0x333c,
-        0x0000
+        0x0200
+      },{
+        0x0000,
+        0x3f3c,
+        0x300c,
+        0x33cc,
+        0x300c,
+        0x300c,
+        0x3ffc,
+        0x0100
       }
     },
     items={
       {idtype=thing['ladder up'],xeno=1,yako=1,zabo=1},
       {idtype=thing['ladder up'],xeno=5,yako=2,zabo=2},
       {idtype=thing['ladder up'],xeno=8,yako=4,zabo=3},
+      {idtype=thing['ladder up'],xeno=4,yako=8,zabo=4},
+      {idtype=thing['chest'],xeno=5,yako=5,zabo=4},
+      {idtype=thing['chest'],xeno=3,yako=6,zabo=4},
+      {idtype=thing['chest'],xeno=4,yako=6,zabo=4},
+      {idtype=thing['chest'],xeno=5,yako=6,zabo=4},
+      {idtype=thing['chest'],xeno=6,yako=6,zabo=4},
       {idtype=thing['fountain'],xeno=6,yako=6,zabo=3}
+    },
+    creatures={
+      {idtype=thing['dragon'],xeno=3,yako=1,zabo=4},
+      {idtype=thing['mimic'],xeno=4,yako=5,zabo=4},
+      {idtype=thing['mimic'],xeno=5,yako=2,zabo=4},
+      {idtype=thing['reaper'],xeno=3,yako=4,zabo=4},
+      {idtype=thing['reaper'],xeno=6,yako=4,zabo=4}
     }
   },{
     name="the upper levels",
@@ -687,6 +758,9 @@ maps={
       {idtype=thing['ladder up'],xeno=8,yako=2,zabo=2}
     },
     creatures={
+      {idtype=thing['daemon'],xeno=4,yako=6,zabo=1},
+      {idtype=thing['daemon'],xeno=4,yako=7,zabo=2},
+      {idtype=thing['daemon'],xeno=1,yako=7,zabo=3},
       {idtype=thing['reaper'],xeno=6,yako=8,zabo=3},
       {idtype=thing['reaper'],xeno=8,yako=4,zabo=3},
       {idtype=thing['reaper'],xeno=3,yako=1,zabo=3},

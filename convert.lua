@@ -7,7 +7,10 @@ X     = wall block = 3
 ~     = under pit  = 1
 space = open area  = 0
 
-Note that pits and under pits are now ignored by Minima.
+Note that pits and under pits are now ignored by Minima. We're using
+them to track location of ladders for ease-of-use, but they don't
+really do anything. Likewise periods can be used to map out points
+of interest, but they get ignored by this converter.
 --]]
 
 dungeons = {
@@ -37,14 +40,25 @@ dungeons = {
             "XXXXXXXXXX"
         }, {
             "XXXXXXXXXX",
-            "X        X",
+            "X#       X",
             "XXX X  X X",
             "X   XXXX X",
             "X X    X X",
             "X X X XX X",
             "X X X    X",
             "XXX XXXX X",
-            "X   ~X   X",
+            "X   ~X.  X",
+            "XXXXXXXXXX"
+        }, {
+            "XXXXXXXXXX",
+            "X~X X X  X",
+            "X X X XX X",
+            "X        X",
+            "XXX XXXXXX",
+            "X        X",
+            "XXX XX X X",
+            "X   X  X X",
+            "X X X XX X",
             "XXXXXXXXXX"
         }
     },
@@ -76,12 +90,23 @@ dungeons = {
             "XXXXXXXXXX",
             "X   X    X",
             "X X X XX X",
-            "X X   X  X",
+            "X#X   X  X",
             "XXXXX XX X",
-            "X     X  X",
+            "X     X. X",
             "X XXX  X X",
             "X X~X XX X",
             "X   X X  X",
+            "XXXXXXXXXX"
+        }, {
+            "XXXXXXXXXX",
+            "X        X",
+            "XX X X X X",
+            "X~ X   X X",
+            "XX X X X X",
+            "X    X   X",
+            "XX X X X X",
+            "X  X   X X",
+            "XX X X X X",
             "XXXXXXXXXX"
         }
     },
@@ -116,9 +141,20 @@ dungeons = {
             "X X   XX X",
             "X X X X ~X",
             "X X X XXXX",
-            "X X X  X X",
+            "X X X .X X",
             "X X X XX X",
+            "X   #    X",
+            "XXXXXXXXXX"
+        }, {
+            "XXXXXXXXXX",
             "X        X",
+            "X XXX XX X",
+            "X X    X X",
+            "X X XX X X",
+            "X X    X X",
+            "X X    X X",
+            "X XXXXXX X",
+            "X   ~    X",
             "XXXXXXXXXX"
         }
     },
@@ -181,12 +217,16 @@ for dungeonIdx, dungeon in pairs(dungeons) do
                 local col = string.sub(row, colNum, colNum)
                 rowNum = rowNum * 4
                 if col == 'X' then
+                    -- it's a wall
                     rowNum = rowNum + 3
                 elseif col == '#' then
+                    -- it's a pit
                     rowNum = rowNum + 2
                 elseif col == '~' then
+                    -- it's the underside of a pit
                     rowNum = rowNum + 1
                 end
+                -- anything that isn't an X, #, or ~ gets ignored.
                 if rowIdx < #floor then
                     comma = ','
                 end
