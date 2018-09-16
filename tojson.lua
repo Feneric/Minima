@@ -48,7 +48,7 @@ basetypes={
     maxx=9,
     maxy=9,
     newmonsters=25,
-    maxmonsters=18,
+    maxmonsters=27,
     friendly=false,
     creatures={},
     songstart=17
@@ -92,7 +92,7 @@ basetypes={
     passable=true
   },{
     name="human",
-    img=75,
+    img=80,
     armor=0,
     hostile=false,
     gold=5,
@@ -153,6 +153,10 @@ basetypes={
     name="jester",
     dex=12,
     talk={"ho ho ho!","ha ha ha!"}
+  },{
+    img=84,
+    name="mage",
+    talk={"a mage is always on time.","brain over brawn."}
   },{
     name="villain",
     armor=1,
@@ -400,7 +404,7 @@ maps={
       {idtype=thing['armorer'],xeno=95,yako=3},
       {idtype=thing['grocer'],xeno=97,yako=13},
       {idtype=thing['fighter'],xeno=82,yako=21},
-      {idtype=thing['human'],xeno=103,yako=18,talk={"faxon is in a tower.","volcanoes mark it."}},
+      {idtype=thing['human'],xeno=103,yako=18,name="woman",flipimg=true,talk={"faxon is in a tower.","volcanoes mark it."}},
       {idtype=thing['lady'],xeno=85,yako=16,talk={"poynter has a ship.","poynter is in lynn."}},
       {idtype=thing['guard'],xeno=95,yako=21}
     }
@@ -425,6 +429,7 @@ maps={
       {idtype=thing['grocer'],xeno=107,yako=9},
       {idtype=thing['jester'],xeno=106,yako=16},
       {idtype=thing['medic'],xeno=122,yako=12},
+      {idtype=thing['lady'],xeno=106,yako=7,talk={"griswold knows dungeons.","griswold is in salem."}},
       {idtype=thing['merchant'],xeno=119,yako=6,talk={"i\'m rich! i have a yacht!","ho ho! i\'m the best!"}},
       {idtype=thing['guard'],xeno=114,yako=22}
     }
@@ -448,7 +453,9 @@ maps={
       {idtype=thing['medic'],xeno=100,yako=30},
       {idtype=thing['jester'],xeno=96,yako=44},
       {idtype=thing['fighter'],xeno=83,yako=27},
-      {idtype=thing['merchant'],xeno=110,yako=44,talk={"i\'ve seen the magic sword.","search south of the shrine."}},
+      {idtype=thing['merchant'],xeno=81,yako=44},
+      {idtype=thing['mage'],xeno=104,yako=26,talk={"each shrine has a caretaker.","seek their wisdom."}},
+      {idtype=thing['merchant'],xeno=110,yako=40,talk={"i\'ve seen the magic sword.","search south of the shrine."}},
       {idtype=thing['guard'],xeno=105,yako=35,moveallowance=1},
       {idtype=thing['guard'],xeno=98,yako=49}
     }
@@ -469,7 +476,7 @@ maps={
       {idtype=thing['barkeep'],xeno=114,yako=44},
       {idtype=thing['grocer'],xeno=122,yako=51},
       {idtype=thing['lady'],xeno=118,yako=58},
-      {idtype=thing['human'],xeno=113,yako=50,talk={"faxon is a blight.","daemons work for faxon."}},
+      {idtype=thing['human'],xeno=113,yako=50,name="man",flipimg=true,talk={"faxon is a blight.","daemons work for faxon."}},
       {idtype=thing['fighter'],xeno=123,yako=57,talk={"increase stats in dungeons!","only severe injuries work."}},
       {idtype=thing['guard'],xeno=120,yako=63}
     }
@@ -487,6 +494,30 @@ maps={
       {idtype=thing['fighter'],xeno=91,yako=60,talk={"i saw a dragon once.","it was deep in a dungeon."}},
       {idtype=thing['shepherd'],xeno=82,yako=57},
       {idtype=thing['shepherd'],xeno=102,yako=63,talk={"gilly is in boston.","gilly knows of the sword."}}
+    }
+  },{
+    name="western shrine",
+    enterx=1,
+    entery=28,
+    startx=107,
+    starty=62,
+    minx=103,
+    maxx=112,
+    miny=56,
+    creatures={
+      {idtype=thing['mage'],xeno=107,yako=59,talk={"magic serves good or evil.","swords cut both ways."}}
+    }
+  },{
+    name="eastern shrine",
+    enterx=49,
+    entery=6,
+    startx=107,
+    starty=62,
+    minx=103,
+    maxx=112,
+    miny=56,
+    creatures={
+      {idtype=thing['shepherd'],xeno=107,yako=59,talk={"some fountains have secrets.","learn of dungeon fountains."}}
     }
   },{
     name="the dark tower",
