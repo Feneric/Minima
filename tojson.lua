@@ -68,6 +68,7 @@ basetypes={
     img=92,
     imgalt=92,
     name="chest",
+    sizemod=12,
     passable=true
   },{
     img=39,
@@ -157,6 +158,11 @@ basetypes={
     img=84,
     name="mage",
     talk={"a mage is always on time.","brain over brawn."}
+  },{
+    name="ranger",
+    flipimg=true,
+    colorsubs={{},{{9,11},{1,3},{15,4}},{{9,11},{1,3}},{{15,4}}},
+    talk={"i travel the land.","my home is the range."}
   },{
     name="villain",
     armor=1,
@@ -404,7 +410,8 @@ maps={
       {idtype=thing['armorer'],xeno=95,yako=3},
       {idtype=thing['grocer'],xeno=97,yako=13},
       {idtype=thing['fighter'],xeno=82,yako=21},
-      {idtype=thing['human'],xeno=103,yako=18,name="woman",flipimg=true,talk={"faxon is in a tower.","volcanoes mark it."}},
+      {idtype=thing['ranger'],xeno=101,yako=5},
+      {idtype=thing['ranger'],xeno=103,yako=18,talk={"faxon is in a tower.","volcanoes mark it."}},
       {idtype=thing['lady'],xeno=85,yako=16,talk={"poynter has a ship.","poynter is in lynn."}},
       {idtype=thing['guard'],xeno=95,yako=21}
     }
@@ -476,7 +483,7 @@ maps={
       {idtype=thing['barkeep'],xeno=114,yako=44},
       {idtype=thing['grocer'],xeno=122,yako=51},
       {idtype=thing['lady'],xeno=118,yako=58},
-      {idtype=thing['human'],xeno=113,yako=50,name="man",flipimg=true,talk={"faxon is a blight.","daemons work for faxon."}},
+      {idtype=thing['ranger'],xeno=113,yako=50,talk={"faxon is a blight.","daemons work for faxon."}},
       {idtype=thing['fighter'],xeno=123,yako=57,talk={"increase stats in dungeons!","only severe injuries work."}},
       {idtype=thing['guard'],xeno=120,yako=63}
     }
@@ -533,7 +540,7 @@ maps={
     maxmonsters=23,
     songstart=17,
     items={
-      {idtype=thing['ladder up'],xeno=117,yako=41,targetmap=10,targetx=3,targety=8,targetz=3},
+      {idtype=thing['ladder up'],xeno=117,yako=41,targetmap=12,targetx=3,targety=8,targetz=3},
       {idtype=thing['chest'],xeno=119,yako=37},
       {idtype=thing['chest'],xeno=119,yako=39},
       {idtype=thing['chest'],xeno=120,yako=37},
@@ -749,7 +756,7 @@ maps={
     entery=26,
     startx=8,
     startz=3,
-    mapnum=6,
+    mapnum=8,
     levels={
       {
         0x00c0,
@@ -782,7 +789,7 @@ maps={
     },
     items={
       {idtype=thing['ladder down'],xeno=8,yako=1,zabo=3},
-      {idtype=thing['ladder down'],xeno=3,yako=8,zabo=3,targetmap=6,targetx=117,targety=41,targetz=0},
+      {idtype=thing['ladder down'],xeno=3,yako=8,zabo=3,targetmap=8,targetx=117,targety=41,targetz=0},
       {idtype=thing['ladder up'],xeno=8,yako=7,zabo=3},
       {idtype=thing['ladder up'],xeno=3,yako=4,zabo=3},
       {idtype=thing['ladder up'],xeno=1,yako=2,zabo=2},
