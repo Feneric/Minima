@@ -98,7 +98,7 @@ fullheight,fullwidth,halfheight,halfwidth=11,13,5,6
 -- set up the various messages
 winmsg="\n\n\n\n\n\n  congratulations, you've won!\n\n\n\n\n\n\n\n\n\n    press p to get game menu,\n anything else to continue and\n      explore a bit more."
 losemsg="\n\n\n\n\n\n      you've been killed!\n          you lose!\n\n\n\n\n\n\n\n\n\n\n\n    press p to get game menu"
-helpmsg="minima commands:\n\na: attack\nc: cast spell\nd: dialog, talk, buy\ne: enter, board, mount, climb,\n   descend\np: pause, save, load, help\nf: fountain drink; force chest\ns: sit & wait\nw: wearing & wielding\nx: examine, look (repeat to\n   search)\n\nfor commands with options (like\ncasting or buying) use the first\ncharacter from the list, or\nanything else to cancel."
+helpmsg="minima commands:\n\na: attack\nc: cast spell\nd: dialog, talk, buy\ne: enter, board, mount, climb,\n   descend\np: pause, save, load, help\nf: fountain drink; force chest;\n   flame torch\ns: sit & wait\nw: wearing & wielding\nx: examine, look (repeat to\n   search)\n\nfor commands with options (like\ncasting or buying) use the first\ncharacter from the list, or\nanything else to cancel."
 msg=helpmsg
 
 -- anyobj is our root object. all others inherit from it to
@@ -126,7 +126,7 @@ end
 
 -- basetypes are the objects we mean to use to make objects.
 -- they inherit (often indirectly) from our root object.
-basetypes=json_parse('[{"dmg":13,"dex":8,"hp":10,"hostile":true,"armor":1,"gold":10,"chance":1,"moveallowance":1,"terrain":[1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35],"exp":2},{"newmonsters":0,"maxy":64,"miny":0,"maxmonsters":0,"mapnum":0,"friendly":true,"minx":80,"maxx":128},{"maxy":9,"startfacing":1,"songstart":17,"mapnum":0,"friendly":false,"maxx":9,"creatures":{},"maxmonsters":27,"starty":1,"newmonsters":25,"miny":1,"dungeon":true,"minx":1,"startx":1,"startz":1},{"imgalt":38,"name":"ankh","talk":["yes, ankhs can talk.","shrines make good landmarks."],"img":38},{"facing":2,"passable":true,"imgalt":70,"name":"ship","facingmatters":true,"img":70},{"passable":true,"sizemod":12,"name":"chest","imgalt":92,"img":92},{"passable":true,"imgseq":12,"sizemod":15,"name":"fountain","flipimg":true,"img":39},{"passable":true,"sizemod":20,"shiftmod":12,"name":"ladder up","imgalt":27,"img":27},{"passable":true,"sizemod":20,"shiftmod":-3,"name":"ladder down","imgalt":26,"img":26},{"gold":5,"exp":1,"img":80,"hostile":false,"armor":0,"name":"human"},{"chance":8,"talk":["urg!","grar!"],"name":"orc"},{"dmg":14,"gold":5,"dex":6,"chance":5,"name":"undead"},{"gold":0,"dex":10,"chance":3,"armor":0,"name":"animal"},{"dmg":20,"talk":["check out these pecs!","i\'m jacked!"],"dex":9,"name":"fighter","hp":12,"colorsubs":[{},[[1,12],[14,2],[15,4]]],"armor":3,"img":82},{"dmg":60,"talk":["behave yourself.","i protect good citizens."],"name":"guard","moveallowance":0,"hp":85,"colorsubs":[{},[[15,4]]],"armor":12,"img":90},{"talk":["buy my wares!","consume!","stuff makes you happy!"],"name":"merchant","colorsubs":[{},[[1,4],[4,15],[6,1],[14,13]],[[1,4],[6,5],[14,10]],[[1,4],[4,15],[6,1],[14,3]]],"flipimg":true,"img":75},{"talk":["pardon me.","well i never."],"name":"lady","colorsubs":[{},[[2,9],[4,15],[13,14]],[[2,10],[4,15],[13,9]],[[2,11],[13,3]]],"flipimg":true,"img":81},{"name":"shepherd","colorsubs":[{},[[6,5],[15,4]],[[6,5]],[[15,4]]],"talk":["i like sheep.","the open air is nice."],"img":76},{"talk":["ho ho ho!","ha ha ha!"],"name":"jester","dex":12,"img":78},{"name":"mage","talk":["a mage is always on time.","brain over brawn."],"img":84},{"talk":["i travel the land.","my home is the range."],"colorsubs":[{},[[9,11],[1,3],[15,4]],[[9,11],[1,3]],[[15,4]]],"flipimg":true,"name":"ranger"},{"gold":15,"talk":["stand and deliver!","you shall die!"],"exp":5,"hostile":true,"armor":1,"name":"villain"},{"merch":"food","name":"grocer"},{"merch":"armor","name":"armorer"},{"merch":"weapons","name":"smith"},{"merch":"hospital","name":"medic"},{"merch":"bar","name":"barkeep"},{"img":96},{"dmg":16,"gold":10,"hp":15,"exp":4,"name":"troll","img":102},{"dmg":14,"gold":8,"hp":15,"exp":3,"names":["hobgoblin","bugbear"],"img":104},{"dmg":10,"gold":5,"hp":8,"exp":1,"names":["goblin","kobold"],"img":114},{"dmg":18,"chance":1,"name":"ettin","hp":20,"exp":6,"flipimg":true,"img":118},{"gold":12,"name":"skeleton","img":98},{"hp":10,"names":["zombie","wight","ghoul"],"img":100},{"talk":["boooo!","feeear me!"],"names":["phantom","ghost","wraith"],"terrain":[1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35],"hp":15,"exp":7,"flipimg":true,"img":123},{"dmg":18,"talk":["i hex you!","a curse on you!"],"exp":10,"colorsubs":[{},[[2,8],[15,4]]],"names":["warlock","necromancer","sorcerer"],"img":84},{"thief":true,"dex":10,"chance":2,"colorsubs":[{},[[1,5],[8,2],[4,1],[2,12],[15,4]]],"names":["rogue","bandit","cutpurse"],"img":88},{"gold":10,"talk":["you shall die at my hands.","you are no match for me."],"exp":8,"poison":true,"colorsubs":[{},[[1,5],[15,4]]],"names":["ninja","assassin"],"img":86},{"gold":8,"poison":true,"hp":18,"exp":5,"name":"giant spider","img":106},{"dmg":10,"poison":true,"eat":true,"hp":5,"exp":2,"name":"giant rat","img":108},{"chance":1,"poison":true,"terrain":[4,5,6,7],"hp":20,"exp":6,"names":["giant snake","serpent"],"img":112},{"name":"sea serpent","hp":45,"exp":10,"terrain":[5,12,13,14,15,25],"img":116},{"chance":1,"name":"megascorpion","poison":true,"hp":12,"exp":5,"flipimg":true,"img":125},{"exp":2,"gold":5,"terrain":[17,22,23],"eat":true,"names":["slime","jelly","blob"],"colorsubs":[{},[[3,9],[11,10]],[[3,14],[11,15]]],"flipimg":true,"img":122},{"chance":2,"terrain":[12,13,14,15],"hp":50,"exp":8,"names":["kraken","giant squid"],"img":94},{"name":"wisp","terrain":[4,5,6],"exp":3,"flipimg":true,"img":120},{"exp":8,"terrain":[12,13,14,15],"facing":1,"facingmatters":true,"name":"pirate","colorsubs":[[[6,5],[7,6]]],"flipimg":false,"img":70},{"exp":4,"terrain":[17,22],"names":["gazer","beholder"],"colorsubs":[{},[[2,14],[1,4]]],"flipimg":true,"img":119},{"dmg":28,"gold":20,"names":["dragon","drake","wyvern"],"armor":7,"hp":50,"exp":17,"flipimg":true,"img":121},{"dmg":23,"hp":50,"chance":0.25,"armor":3,"gold":25,"terrain":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35],"exp":15,"names":["daemon","devil"],"img":110},{"chance":0,"thief":true,"exp":4,"name":"mimic","gold":12,"moveallowance":0,"terrain":[17,22],"img":92},{"hp":30,"chance":0,"armor":5,"gold":8,"exp":5,"terrain":[17,22],"name":"reaper","moveallowance":0,"flipimg":true,"img":124}]')
+basetypes=json_parse('[{"exp":2,"hostile":true,"moveallowance":1,"hp":10,"dmg":13,"dex":8,"terrain":[1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35],"armor":1,"gold":10,"chance":1},{"maxmonsters":0,"friendly":true,"minx":80,"maxx":128,"miny":0,"mapnum":0,"maxy":64,"newmonsters":0},{"maxmonsters":27,"songstart":17,"creatures":{},"friendly":false,"startx":1,"startz":1,"dungeon":true,"maxy":9,"maxx":9,"minx":1,"miny":1,"starty":1,"mapnum":0,"startfacing":1,"newmonsters":25},{"img":38,"imgalt":38,"talk":["yes, ankhs can talk.","shrines make good landmarks."],"name":"ankh"},{"passable":true,"facing":2,"img":70,"imgalt":70,"facingmatters":true,"name":"ship"},{"sizemod":12,"img":92,"imgalt":92,"passable":true,"name":"chest"},{"imgseq":12,"sizemod":15,"img":39,"passable":true,"flipimg":true,"name":"fountain"},{"sizemod":20,"shiftmod":12,"img":27,"imgalt":27,"passable":true,"name":"ladder up"},{"sizemod":20,"shiftmod":-3,"img":26,"imgalt":26,"passable":true,"name":"ladder down"},{"hostile":false,"exp":1,"img":80,"armor":0,"gold":5,"name":"human"},{"talk":["urg!","grar!"],"chance":8,"name":"orc"},{"dmg":14,"chance":5,"dex":6,"gold":5,"name":"undead"},{"dex":10,"chance":3,"armor":0,"gold":0,"name":"animal"},{"talk":["check out these pecs!","i\'m jacked!"],"dmg":20,"colorsubs":[{},[[1,12],[14,2],[15,4]]],"dex":9,"img":82,"armor":3,"hp":12,"name":"fighter"},{"talk":["behave yourself.","i protect good citizens."],"dmg":60,"colorsubs":[{},[[15,4]]],"armor":12,"img":90,"moveallowance":0,"hp":85,"name":"guard"},{"colorsubs":[{},[[1,4],[4,15],[6,1],[14,13]],[[1,4],[6,5],[14,10]],[[1,4],[4,15],[6,1],[14,3]]],"img":75,"talk":["buy my wares!","consume!","stuff makes you happy!"],"flipimg":true,"name":"merchant"},{"colorsubs":[{},[[2,9],[4,15],[13,14]],[[2,10],[4,15],[13,9]],[[2,11],[13,3]]],"img":81,"talk":["pardon me.","well i never."],"flipimg":true,"name":"lady"},{"img":76,"talk":["i like sheep.","the open air is nice."],"colorsubs":[{},[[6,5],[15,4]],[[6,5]],[[15,4]]],"name":"shepherd"},{"img":78,"dex":12,"talk":["ho ho ho!","ha ha ha!"],"name":"jester"},{"img":84,"talk":["a mage is always on time.","brain over brawn."],"name":"mage","attackcolors":[[9,6],[8,13],[10,12]]},{"colorsubs":[{},[[9,11],[1,3],[15,4]],[[9,11],[1,3]],[[15,4]]],"talk":["i travel the land.","my home is the range."],"flipimg":true,"name":"ranger"},{"talk":["stand and deliver!","you shall die!"],"exp":5,"hostile":true,"armor":1,"gold":15,"name":"villain"},{"merch":"food","name":"grocer"},{"merch":"armor","name":"armorer"},{"merch":"weapons","name":"smith"},{"merch":"hospital","name":"medic"},{"merch":"guild","name":"guildkeeper"},{"merch":"bar","name":"barkeep"},{"img":96},{"dmg":16,"exp":4,"img":102,"gold":10,"hp":15,"name":"troll"},{"dmg":14,"exp":3,"img":104,"gold":8,"names":["hobgoblin","bugbear"],"hp":15},{"dmg":10,"exp":1,"img":114,"gold":5,"names":["goblin","kobold"],"hp":8},{"dmg":18,"chance":1,"exp":6,"img":118,"hp":20,"flipimg":true,"name":"ettin"},{"img":98,"gold":12,"name":"skeleton"},{"img":100,"names":["zombie","wight","ghoul"],"hp":10},{"hp":15,"terrain":[1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35],"exp":7,"img":123,"talk":["boooo!","feeear me!"],"flipimg":true,"names":["phantom","ghost","wraith"]},{"dmg":18,"colorsubs":[{},[[2,8],[15,4]]],"exp":10,"img":84,"talk":["i hex you!","a curse on you!"],"names":["warlock","necromancer","sorcerer"],"attackcolors":[[9,6],[8,13],[10,12]]},{"dex":10,"colorsubs":[{},[[1,5],[8,2],[4,1],[2,12],[15,4]]],"thief":true,"img":88,"names":["rogue","bandit","cutpurse"],"chance":2},{"gold":10,"colorsubs":[{},[[1,5],[15,4]]],"exp":8,"img":86,"talk":["you shall die at my hands.","you are no match for me."],"names":["ninja","assassin"],"poison":true},{"gold":8,"exp":5,"img":106,"poison":true,"hp":18,"name":"giant spider"},{"dmg":10,"eat":true,"exp":2,"img":108,"poison":true,"hp":5,"name":"giant rat"},{"hp":20,"terrain":[4,5,6,7],"exp":6,"img":112,"poison":true,"names":["giant snake","serpent"],"chance":1},{"exp":10,"img":116,"terrain":[5,12,13,14,15,25],"hp":45,"name":"sea serpent"},{"chance":1,"poison":true,"exp":5,"img":125,"hp":12,"flipimg":true,"name":"megascorpion"},{"terrain":[17,22,23],"eat":true,"colorsubs":[{},[[3,9],[11,10]],[[3,14],[11,15]]],"exp":2,"img":122,"gold":5,"flipimg":true,"names":["slime","jelly","blob"]},{"hp":50,"exp":8,"img":94,"terrain":[12,13,14,15],"names":["kraken","giant squid"],"chance":2},{"exp":3,"img":120,"terrain":[4,5,6],"flipimg":true,"name":"wisp"},{"facing":1,"flipimg":false,"facingmatters":true,"colorsubs":[[[6,5],[7,6]]],"exp":8,"img":70,"terrain":[12,13,14,15],"name":"pirate","attackcolors":[[9,8],[8,9],[10,1]]},{"colorsubs":[{},[[2,14],[1,4]]],"exp":4,"img":119,"terrain":[17,22],"flipimg":true,"names":["gazer","beholder"]},{"exp":17,"flipimg":true,"dmg":28,"names":["dragon","drake","wyvern"],"hp":50,"img":121,"armor":7,"gold":20,"attackcolors":[[9,6],[8,13],[10,12]]},{"exp":15,"names":["daemon","devil"],"chance":0.25,"dmg":23,"hp":50,"terrain":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35],"img":110,"armor":3,"gold":25,"attackcolors":[[9,10],[8,9],[10,7]]},{"chance":0,"exp":4,"terrain":[17,22],"thief":true,"img":92,"moveallowance":0,"gold":12,"name":"mimic"},{"exp":5,"moveallowance":0,"flipimg":true,"chance":0,"terrain":[17,22],"hp":30,"img":124,"armor":5,"gold":8,"name":"reaper"}]')
 -- give our base objects names for convenience & efficiency.
 creature,towntype,dungeontype,ankhtype,shiptype,chesttype,fountaintype,ladderuptype,ladderdowntype,human,orc,undead,animal,fighter,guard,merchant,lady,shepherd,jester,mage,ranger,villain,grocer,armorer,smith,medic,barkeep=basetypes[1],basetypes[2],basetypes[3],basetypes[4],basetypes[5],basetypes[6],basetypes[7],basetypes[8],basetypes[9],basetypes[10],basetypes[11],basetypes[12],basetypes[13],basetypes[14],basetypes[15],basetypes[16],basetypes[17],basetypes[18],basetypes[19],basetypes[20],basetypes[21],basetypes[22],basetypes[23],basetypes[24],basetypes[25],basetypes[26],basetypes[27]
 
@@ -146,24 +146,24 @@ for basetypenum=1,#basetypes do
     basetype=creature
   elseif basetypenum<23 then
     basetype=human
-  elseif basetypenum<27 then
-    basetype=merchant
   elseif basetypenum<28 then
+    basetype=merchant
+  elseif basetypenum<29 then
     basetype=lady
-  elseif basetypenum<34 then
+  elseif basetypenum<35 then
     basetype=orc
-  elseif basetypenum<37 then
+  elseif basetypenum<38 then
     basetype=undead
-  elseif basetypenum<40 then
+  elseif basetypenum<41 then
     basetype=villain
-  elseif basetypenum<47 then
+  elseif basetypenum<48 then
     basetype=animal
   else
     basetype=creature
   end
   objecttype.idtype=basetypenum
   makemetaobj(objecttype,basetype)
-  if basetypenum>27 then
+  if basetypenum>28 then
     for terrain in all(objecttype.terrain) do
       add(terrainmonsters[terrain],objecttype)
     end
@@ -275,14 +275,38 @@ shop={
         return '"'..rumors[flr(rnd(8)+1)]..'"'
       end
     )
+  end,
+  guild=function()
+    return checkpurchase({"buy \139torches (5) for $12 or","\145skeleton key (1) for $23: "},
+      function(cmd)
+        if cmd=='west' then
+          return hero.gold>=12 and 'torches'
+        elseif cmd=='east' then
+          return hero.gold>=23 and 'key'
+        else
+          return nil
+        end
+      end,
+      function(desireditem)
+        if desireditem=='torches' then
+          hero.gold-=12
+          hero.torches+=5
+          return "you purchase 5 torches."
+        elseif desireditem=='key' then
+          hero.gold-=23
+          hero.keys+=1
+          return "you purchase a skeleton key."
+        end
+      end
+    )
   end
 }
 
 -- the maps structure holds information about all of the regular
 -- places in the game, dungeons as well as towns.
-maps=json_parse('[{"name":"saugus","starty":23,"entery":4,"creatures":[{"xeno":89,"idtype":15,"yako":21},{"xeno":84,"idtype":26,"yako":9},{"xeno":95,"idtype":24,"yako":3},{"xeno":97,"idtype":23,"yako":13},{"xeno":82,"idtype":14,"yako":21},{"xeno":101,"idtype":21,"yako":5},{"xeno":103,"idtype":21,"talk":["faxon is in a tower.","volcanoes mark it."],"yako":18},{"xeno":85,"idtype":17,"talk":["poynter has a ship.","poynter is in lynn."],"yako":16},{"xeno":95,"idtype":15,"yako":21}],"items":[{"xeno":84,"idtype":4,"yako":4}],"enterx":13,"signs":[{"xeno":92,"msg":"welcome to saugus!","yako":19}],"maxy":24,"startx":92,"maxx":105},{"name":"lynn","starty":23,"entery":4,"creatures":[{"xeno":118,"idtype":15,"yako":22},{"xeno":106,"idtype":25,"yako":1},{"xeno":118,"idtype":27,"yako":2},{"xeno":107,"idtype":23,"yako":9},{"xeno":106,"idtype":19,"yako":16},{"xeno":122,"idtype":26,"yako":12},{"xeno":106,"idtype":17,"talk":["griswold knows dungeons.","griswold is in salem."],"yako":7},{"xeno":119,"idtype":16,"talk":["i\'m rich! i have a yacht!","ho ho! i\'m the best!"],"yako":6},{"xeno":114,"idtype":15,"yako":22}],"items":[{"xeno":125,"idtype":5,"yako":5}],"enterx":17,"signs":[{"xeno":125,"msg":"marina for members only.","yako":9}],"maxy":24,"startx":116,"minx":104},{"name":"boston","starty":54,"entery":19,"creatures":[{"xeno":94,"idtype":15,"yako":49},{"xeno":103,"idtype":25,"yako":39},{"xeno":92,"idtype":24,"yako":30},{"xeno":88,"idtype":23,"yako":38},{"xeno":100,"idtype":26,"yako":30},{"xeno":96,"idtype":19,"yako":44},{"xeno":83,"idtype":14,"yako":27},{"xeno":81,"idtype":16,"yako":44},{"xeno":104,"idtype":20,"talk":["each shrine has a caretaker.","seek their wisdom."],"yako":26},{"xeno":110,"idtype":16,"talk":["i\'ve seen the magic sword.","search south of the shrine."],"yako":40},{"xeno":105,"idtype":15,"moveallowance":1,"yako":35},{"xeno":98,"idtype":15,"yako":49}],"items":[{"xeno":96,"idtype":7,"yako":40}],"enterx":45,"maxx":112,"maxy":56,"startx":96,"miny":24},{"name":"salem","starty":62,"entery":36,"items":[{"xeno":116,"idtype":4,"yako":53}],"enterx":7,"creatures":[{"xeno":118,"idtype":15,"yako":63},{"xeno":125,"idtype":25,"yako":44},{"xeno":114,"idtype":27,"yako":44},{"xeno":122,"idtype":23,"yako":51},{"xeno":118,"idtype":17,"yako":58},{"xeno":113,"idtype":21,"talk":["faxon is a blight.","daemons work for faxon."],"yako":50},{"xeno":123,"idtype":14,"talk":["increase stats in dungeons!","only severe injuries work."],"yako":57},{"xeno":120,"idtype":15,"yako":63}],"miny":43,"startx":119,"minx":112},{"maxx":103,"name":"great misery","creatures":[{"xeno":93,"idtype":23,"yako":57},{"xeno":100,"idtype":27,"yako":57},{"xeno":91,"idtype":14,"talk":["i saw a dragon once.","it was deep in a dungeon."],"yako":60},{"xeno":82,"idtype":18,"yako":57},{"xeno":102,"idtype":18,"talk":["gilly is in boston.","gilly knows of the sword."],"yako":63}],"enterx":27,"starty":59,"entery":35,"startx":82,"miny":56},{"name":"western shrine","starty":62,"entery":28,"creatures":[{"xeno":107,"idtype":20,"talk":["magic serves good or evil.","swords cut both ways."],"yako":59}],"enterx":1,"miny":56,"maxx":112,"startx":107,"minx":103},{"name":"eastern shrine","starty":62,"entery":6,"creatures":[{"xeno":107,"idtype":18,"talk":["some fountains have secrets.","learn of dungeon fountains."],"yako":59}],"enterx":49,"miny":56,"maxx":112,"startx":107,"minx":103},{"name":"the dark tower","creatures":[{"xeno":119,"idtype":52,"yako":41},{"xeno":126,"idtype":52,"yako":40},{"xeno":123,"idtype":52,"yako":38},{"xeno":113,"idtype":52,"yako":40},{"xeno":121,"idtype":51,"yako":37},{"xeno":119,"idtype":51,"yako":38},{"xeno":120,"idtype":44,"yako":34},{"xeno":118,"idtype":44,"yako":35},{"xeno":118,"idtype":49,"dmg":50,"img":126,"armor":25,"hp":255,"propername":"faxon","yako":30}],"starty":41,"entery":44,"newmonsters":35,"songstart":17,"friendly":false,"maxmonsters":23,"items":[{"xeno":117,"idtype":8,"targetz":3,"targetmap":12,"targetx":3,"targety":8,"yako":41},{"xeno":119,"idtype":6,"yako":37},{"xeno":119,"idtype":6,"yako":39},{"xeno":120,"idtype":6,"yako":37},{"xeno":120,"idtype":6,"yako":38},{"xeno":120,"idtype":6,"yako":39},{"xeno":121,"idtype":6,"yako":38},{"xeno":121,"idtype":6,"yako":39}],"enterx":56,"miny":24,"maxy":43,"startx":120,"minx":112},{"creatures":[{"xeno":8,"idtype":49,"zabo":4,"yako":5},{"xeno":3,"idtype":51,"zabo":4,"yako":1},{"xeno":1,"idtype":51,"zabo":4,"yako":5},{"xeno":5,"idtype":51,"zabo":4,"yako":1},{"xeno":3,"idtype":52,"zabo":4,"yako":3}],"name":"nibiru","items":[{"xeno":1,"idtype":8,"zabo":1,"yako":8},{"xeno":8,"idtype":8,"zabo":2,"yako":2},{"xeno":4,"idtype":8,"zabo":3,"yako":8},{"xeno":1,"idtype":8,"zabo":4,"yako":1},{"xeno":1,"idtype":6,"zabo":4,"yako":8},{"xeno":7,"idtype":6,"zabo":4,"yako":1},{"xeno":3,"idtype":6,"zabo":4,"yako":8},{"xeno":5,"idtype":6,"zabo":4,"yako":8},{"xeno":8,"idtype":6,"zabo":4,"yako":8},{"xeno":6,"idtype":7,"zabo":3,"yako":8}],"enterx":4,"starty":8,"entery":11,"levels":[[0,16382,768,12336,16380,13056,13308,192],[0,-13107,816,12336,15612,768,16332,704],[-32768,-3316,1020,12300,13116,13056,-3076,448],[29488,13116,0,-3073,0,-3124,780,13116]],"attr":"int"},{"name":"purgatory","items":[{"xeno":1,"idtype":8,"zabo":1,"yako":1},{"xeno":7,"idtype":8,"zabo":2,"yako":1},{"xeno":3,"idtype":8,"zabo":3,"yako":7},{"xeno":1,"idtype":8,"zabo":4,"yako":3},{"xeno":1,"idtype":6,"zabo":4,"yako":1},{"xeno":1,"idtype":6,"zabo":4,"yako":8},{"xeno":1,"idtype":6,"zabo":4,"yako":7},{"xeno":2,"idtype":6,"zabo":4,"yako":8},{"xeno":8,"idtype":6,"zabo":4,"yako":8},{"xeno":7,"idtype":7,"zabo":3,"yako":5}],"enterx":32,"attr":"str","entery":5,"creatures":[{"xeno":3,"idtype":49,"zabo":4,"yako":5},{"xeno":1,"idtype":51,"zabo":4,"yako":5},{"xeno":7,"idtype":51,"zabo":4,"yako":5},{"xeno":5,"idtype":52,"zabo":4,"yako":3},{"xeno":5,"idtype":52,"zabo":4,"yako":7}],"levels":[[824,16188,768,13296,-4036,13056,13308,768],[13060,13116,12,16332,12540,15360,15311,768],[768,13116,-20432,-196,48,16140,14140,816],[0,-13108,19468,-13108,192,-13108,3084,-13108]]},{"name":"sheol","items":[{"xeno":1,"idtype":8,"zabo":1,"yako":1},{"xeno":5,"idtype":8,"zabo":2,"yako":2},{"xeno":8,"idtype":8,"zabo":3,"yako":4},{"xeno":4,"idtype":8,"zabo":4,"yako":8},{"xeno":5,"idtype":6,"zabo":4,"yako":5},{"xeno":3,"idtype":6,"zabo":4,"yako":6},{"xeno":4,"idtype":6,"zabo":4,"yako":6},{"xeno":5,"idtype":6,"zabo":4,"yako":6},{"xeno":6,"idtype":6,"zabo":4,"yako":6},{"xeno":6,"idtype":7,"zabo":3,"yako":6}],"enterx":33,"attr":"dex","entery":58,"creatures":[{"xeno":3,"idtype":49,"zabo":4,"yako":1},{"xeno":4,"idtype":51,"zabo":4,"yako":5},{"xeno":5,"idtype":51,"zabo":4,"yako":2},{"xeno":3,"idtype":52,"zabo":4,"yako":4},{"xeno":6,"idtype":52,"zabo":4,"yako":4}],"levels":[[768,16304,1020,13056,13299,12288,-4,0],[768,13180,12303,16382,252,15360,13263,12288],[768,13116,12348,13105,13119,13068,13116,512],[0,16188,12300,13260,12300,12300,16380,256]]},{"name":"the upper levels","startz":3,"entery":26,"items":[{"xeno":8,"idtype":9,"zabo":3,"yako":1},{"xeno":3,"idtype":9,"targetz":0,"zabo":3,"targetx":117,"targetmap":8,"targety":41,"yako":8},{"xeno":8,"idtype":8,"zabo":3,"yako":7},{"xeno":3,"idtype":8,"zabo":3,"yako":4},{"xeno":1,"idtype":8,"zabo":2,"yako":2},{"xeno":8,"idtype":8,"zabo":2,"yako":2}],"enterx":124,"creatures":[{"xeno":4,"idtype":50,"zabo":1,"yako":6},{"xeno":4,"idtype":50,"zabo":2,"yako":7},{"xeno":1,"idtype":50,"zabo":3,"yako":7},{"xeno":6,"idtype":52,"zabo":3,"yako":8},{"xeno":8,"idtype":52,"zabo":3,"yako":4},{"xeno":3,"idtype":52,"zabo":3,"yako":1},{"xeno":6,"idtype":52,"zabo":2,"yako":6},{"xeno":6,"idtype":52,"zabo":1,"yako":8}],"levels":[[192,-17202,-817,204,16332,3276,204,3072],[192,31949,16323,14576,15555,3276,15566,192],[192,-13105,3264,13564,16320,207,13261,15104]],"startx":8,"mapnum":8}]')
+maps=json_parse('[{"startx":92,"starty":23,"enterx":13,"creatures":[{"idtype":15,"yako":21,"xeno":89},{"idtype":26,"yako":9,"xeno":84},{"idtype":24,"yako":3,"xeno":95},{"idtype":23,"yako":13,"xeno":97},{"idtype":14,"yako":21,"xeno":82},{"idtype":21,"yako":5,"xeno":101},{"talk":["faxon is in a tower.","volcanoes mark it."],"idtype":21,"yako":18,"xeno":103},{"talk":["poynter has a ship.","poynter is in lynn."],"idtype":17,"yako":16,"xeno":85},{"idtype":15,"yako":21,"xeno":95}],"name":"saugus","items":[{"idtype":4,"yako":4,"xeno":84}],"signs":[{"yako":19,"msg":"welcome to saugus!","xeno":92}],"entery":4,"maxy":24,"maxx":105},{"startx":116,"starty":23,"enterx":17,"minx":104,"name":"lynn","creatures":[{"idtype":15,"yako":22,"xeno":118},{"idtype":25,"yako":1,"xeno":106},{"idtype":28,"yako":2,"xeno":118},{"idtype":23,"yako":9,"xeno":107},{"idtype":19,"yako":16,"xeno":106},{"idtype":26,"yako":12,"xeno":122},{"talk":["griswold knows dungeons.","griswold is in salem."],"idtype":17,"yako":7,"xeno":106},{"talk":["i\'m rich! i have a yacht!","ho ho! i\'m the best!"],"idtype":16,"yako":6,"xeno":119},{"idtype":15,"yako":22,"xeno":114}],"items":[{"idtype":5,"yako":5,"xeno":125}],"entery":4,"signs":[{"yako":9,"msg":"marina for members only.","xeno":125}],"maxy":24},{"startx":96,"miny":24,"starty":54,"enterx":45,"name":"boston","creatures":[{"idtype":15,"yako":49,"xeno":94},{"idtype":25,"yako":39,"xeno":103},{"idtype":24,"yako":30,"xeno":92},{"idtype":23,"yako":38,"xeno":88},{"idtype":26,"yako":30,"xeno":100},{"idtype":19,"yako":44,"xeno":96},{"talk":["zanders has good tools.","be prepared!"],"idtype":14,"yako":27,"xeno":83},{"idtype":16,"yako":44,"xeno":81},{"talk":["each shrine has a caretaker.","seek their wisdom."],"idtype":20,"yako":26,"xeno":104},{"talk":["i\'ve seen the magic sword.","search south of the shrine."],"idtype":16,"yako":40,"xeno":110},{"moveallowance":1,"idtype":15,"yako":35,"xeno":105},{"idtype":15,"yako":49,"xeno":98}],"items":[{"idtype":7,"yako":40,"xeno":96}],"entery":19,"maxy":56,"maxx":112},{"startx":119,"miny":43,"starty":62,"enterx":7,"minx":112,"name":"salem","entery":36,"creatures":[{"idtype":15,"yako":63,"xeno":118},{"idtype":27,"yako":44,"xeno":125},{"idtype":28,"yako":44,"xeno":114},{"idtype":23,"yako":51,"xeno":122},{"idtype":17,"yako":58,"xeno":118},{"talk":["faxon is a blight.","daemons work for faxon."],"idtype":21,"yako":50,"xeno":113},{"talk":["increase stats in dungeons!","only severe injuries work."],"idtype":14,"yako":57,"xeno":123},{"idtype":15,"yako":63,"xeno":120}],"items":[{"idtype":4,"yako":53,"xeno":116}]},{"creatures":[{"idtype":23,"yako":57,"xeno":93},{"idtype":28,"yako":57,"xeno":100},{"talk":["i saw a dragon once.","it was deep in a dungeon."],"idtype":14,"yako":60,"xeno":91},{"idtype":18,"yako":57,"xeno":82},{"talk":["gilly is in boston.","gilly knows of the sword."],"idtype":18,"yako":63,"xeno":102}],"maxx":103,"name":"great misery","startx":82,"miny":56,"entery":35,"starty":59,"enterx":27},{"startx":107,"miny":56,"starty":62,"enterx":1,"minx":103,"name":"western shrine","entery":28,"creatures":[{"talk":["magic serves good or evil.","swords cut both ways."],"idtype":20,"yako":59,"xeno":107}],"maxx":112},{"startx":107,"miny":56,"starty":62,"enterx":49,"minx":103,"name":"eastern shrine","entery":6,"creatures":[{"talk":["some fountains have secrets.","learn of dungeon fountains."],"idtype":18,"yako":59,"xeno":107}],"maxx":112},{"creatures":[{"idtype":53,"yako":41,"xeno":119},{"idtype":53,"yako":40,"xeno":126},{"idtype":53,"yako":38,"xeno":123},{"idtype":53,"yako":40,"xeno":113},{"idtype":52,"yako":37,"xeno":121},{"idtype":52,"yako":38,"xeno":119},{"idtype":45,"yako":34,"xeno":120},{"idtype":45,"yako":35,"xeno":118},{"armor":25,"dmg":50,"hp":255,"yako":30,"img":126,"idtype":50,"propername":"faxon","xeno":118}],"startx":120,"miny":24,"items":[{"targetz":3,"targety":8,"yako":41,"targetx":3,"idtype":8,"targetmap":12,"xeno":117},{"idtype":6,"yako":37,"xeno":119},{"idtype":6,"yako":39,"xeno":119},{"idtype":6,"yako":37,"xeno":120},{"idtype":6,"yako":38,"xeno":120},{"idtype":6,"yako":39,"xeno":120},{"idtype":6,"yako":38,"xeno":121},{"idtype":6,"yako":39,"xeno":121}],"starty":41,"enterx":56,"songstart":17,"minx":112,"name":"the dark tower","friendly":false,"newmonsters":35,"entery":44,"maxmonsters":23,"maxy":43},{"creatures":[{"zabo":4,"idtype":50,"yako":5,"xeno":8},{"zabo":4,"idtype":52,"yako":1,"xeno":3},{"zabo":4,"idtype":52,"yako":5,"xeno":1},{"zabo":4,"idtype":52,"yako":1,"xeno":5},{"zabo":4,"idtype":53,"yako":3,"xeno":3}],"items":[{"zabo":1,"idtype":8,"yako":8,"xeno":1},{"zabo":2,"idtype":8,"yako":2,"xeno":8},{"zabo":3,"idtype":8,"yako":8,"xeno":4},{"zabo":4,"idtype":8,"yako":1,"xeno":1},{"zabo":4,"idtype":6,"yako":8,"xeno":1},{"zabo":4,"idtype":6,"yako":1,"xeno":7},{"zabo":4,"idtype":6,"yako":8,"xeno":3},{"zabo":4,"idtype":6,"yako":8,"xeno":5},{"zabo":4,"idtype":6,"yako":8,"xeno":8},{"zabo":3,"idtype":7,"yako":8,"xeno":6}],"name":"nibiru","levels":[[0,16382,768,12336,16380,13056,13308,192],[0,-13107,816,12336,15612,768,16332,704],[-32768,-3316,1020,12300,13116,13056,-3076,448],[29488,13116,0,-3073,0,-3124,780,13116]],"attr":"int","entery":11,"starty":8,"enterx":4},{"creatures":[{"zabo":4,"idtype":50,"yako":5,"xeno":3},{"zabo":4,"idtype":52,"yako":5,"xeno":1},{"zabo":4,"idtype":52,"yako":5,"xeno":7},{"zabo":4,"idtype":53,"yako":3,"xeno":5},{"zabo":4,"idtype":53,"yako":7,"xeno":5}],"name":"purgatory","items":[{"zabo":1,"idtype":8,"yako":1,"xeno":1},{"zabo":2,"idtype":8,"yako":1,"xeno":7},{"zabo":3,"idtype":8,"yako":7,"xeno":3},{"zabo":4,"idtype":8,"yako":3,"xeno":1},{"zabo":4,"idtype":6,"yako":1,"xeno":1},{"zabo":4,"idtype":6,"yako":8,"xeno":1},{"zabo":4,"idtype":6,"yako":7,"xeno":1},{"zabo":4,"idtype":6,"yako":8,"xeno":2},{"zabo":4,"idtype":6,"yako":8,"xeno":8},{"zabo":3,"idtype":7,"yako":5,"xeno":7}],"levels":[[824,16188,768,13296,-4036,13056,13308,768],[13060,13116,12,16332,12540,15360,15311,768],[768,13116,-20432,-196,48,16140,14140,816],[0,-13108,19468,-13108,192,-13108,3084,-13108]],"entery":5,"attr":"str","enterx":32},{"creatures":[{"zabo":4,"idtype":50,"yako":1,"xeno":3},{"zabo":4,"idtype":52,"yako":5,"xeno":4},{"zabo":4,"idtype":52,"yako":2,"xeno":5},{"zabo":4,"idtype":53,"yako":4,"xeno":3},{"zabo":4,"idtype":53,"yako":4,"xeno":6}],"name":"sheol","items":[{"zabo":1,"idtype":8,"yako":1,"xeno":1},{"zabo":2,"idtype":8,"yako":2,"xeno":5},{"zabo":3,"idtype":8,"yako":4,"xeno":8},{"zabo":4,"idtype":8,"yako":8,"xeno":4},{"zabo":4,"idtype":6,"yako":5,"xeno":5},{"zabo":4,"idtype":6,"yako":6,"xeno":3},{"zabo":4,"idtype":6,"yako":6,"xeno":4},{"zabo":4,"idtype":6,"yako":6,"xeno":5},{"zabo":4,"idtype":6,"yako":6,"xeno":6},{"zabo":3,"idtype":7,"yako":6,"xeno":6}],"levels":[[768,16304,1020,13056,13299,12288,-4,0],[768,13180,12303,16382,252,15360,13263,12288],[768,13116,12348,13105,13119,13068,13116,512],[0,16188,12300,13260,12300,12300,16380,256]],"entery":58,"attr":"dex","enterx":33},{"startx":8,"enterx":124,"creatures":[{"zabo":1,"idtype":51,"yako":6,"xeno":4},{"zabo":2,"idtype":51,"yako":7,"xeno":4},{"zabo":3,"idtype":51,"yako":7,"xeno":1},{"zabo":3,"idtype":53,"yako":8,"xeno":6},{"zabo":3,"idtype":53,"yako":4,"xeno":8},{"zabo":3,"idtype":53,"yako":1,"xeno":3},{"zabo":2,"idtype":53,"yako":6,"xeno":6},{"zabo":1,"idtype":53,"yako":8,"xeno":6}],"name":"the upper levels","items":[{"zabo":3,"idtype":9,"yako":1,"xeno":8},{"targetz":0,"targety":41,"targetx":117,"yako":8,"targetmap":8,"idtype":9,"zabo":3,"xeno":3},{"zabo":3,"idtype":8,"yako":7,"xeno":8},{"zabo":3,"idtype":8,"yako":4,"xeno":3},{"zabo":2,"idtype":8,"yako":2,"xeno":1},{"zabo":2,"idtype":8,"yako":2,"xeno":8}],"levels":[[192,-17202,-817,204,16332,3276,204,3072],[192,31949,16323,14576,15555,3276,15566,192],[192,-13105,3264,13564,16320,207,13261,15104]],"entery":26,"mapnum":8,"startz":3}]')
 -- map 0 is special; it's the world map, the overview map.
-maps[0]=json_parse('{"name":"world","minx":0,"miny":0,"maxx":80,"maxy":64,"wrap":true,"newmonsters":10,"maxmonsters":10,"friendly":false,"songstart":0}')
+maps[0]=json_parse('{"name":"world","minx":0,"miny":0,"maxx":80,"maxy":64,"wrap":true,"newmonsters":10,"maxmonsters":12,"friendly":false,"songstart":0}')
 
 -- add numerical references to names by amounts
 function makenameforamount(itemtype)
@@ -295,12 +319,13 @@ function makenameforamount(itemtype)
 end
 
 -- armor definitions
-armors=json_parse('{"south":{"name":"cloth","amount":8,"price":12},"west":{"name":"leather","amount":23,"price":99},"east":{"name":"chain","amount":40,"price":300},"north":{"name":"plate","amount":90,"price":950}}')
+armors=json_parse('{"south":{"name":"cloth","amount":8,"price":12},"west":{"name":"leather","amount":23,"price":99},"east":{"name":"chain","amount":40,"price":300},"north":{"name":"plate","amount":70,"price":950}}')
 armornames=makenameforamount(armors)
 
 -- weapon definitions
 weapons=json_parse('{"d":{"name":"dagger","amount":8,"price":8},"c":{"name":"club","amount":12,"price":40},"a":{"name":"axe","amount":18,"price":75},"s":{"name":"sword","amount":30,"price":150},"t":{"name":"magic sword","amount":40}}')
 weaponnames=makenameforamount(weapons)
+weaponnames[40]='magic swd'
 
 -- spell definitions
 spells=json_parse('{"a":{"name":"attack","cost":3,"amount":1},"x":{"name":"medic","cost":5,"amount":1,"price":8},"c":{"name":"cure","cost":7,"price":10},"w":{"name":"wound","cost":11,"amount":5},"e":{"name":"exit","cost":13},"s":{"name":"savior","cost":17,"amount":6,"price":25}}')
@@ -321,7 +346,7 @@ function initobjs()
   creatures={}
 
   -- perform the per-map data structure initializations.
-  for mapnum=0,12 do
+  for mapnum=0,#maps do
     local maptype
     curmap=maps[mapnum]
     if mapnum>0 then
@@ -359,7 +384,8 @@ function initobjs()
   -- the hero is the player character. although human, it has
   -- enough differences that there is no advantage to inheriting
   -- the human type.
-  hero=json_parse('{"img":0,"armor":0,"dmg":0,"xeno":7,"yako":7,"zabo":0,"exp":0,"lvl":0,"str":8,"int":8,"dex":8,"status":0,"hitdisplay":0,"facing":0,"gold":20,"food":25,"movepayment":0,"mp":8,"hp":24}')
+  hero=json_parse('{"img":0,"armor":0,"dmg":0,"xeno":7,"yako":7,"zabo":0,"exp":0,"lvl":0,"str":8,"int":8,"dex":8,"status":0,"hitdisplay":0,"facing":0,"gold":20,"food":25,"movepayment":0,"mp":8,"hp":24,"keys":0,"torches":5,"torchburning":0}')
+  hero.color=rnd(10)>6 and 4 or 15
  
   -- make the map info global for efficiency
   mapnum=0
@@ -405,7 +431,11 @@ function listcommands()
   end
 end
 
-attrlist={'armor','dmg','xeno','yako','exp','lvl','str','int','dex','status','gold','food','mp','hp','img','facing'}
+attrlist={'armor','dmg','xeno','yako','str','int','dex','status','img','color','facing','keys','torches','exp','lvl','gold','food','mp','hp'}
+
+function combinevalues(highval,lowval)
+  return bor(shl(highval,8),lowval)
+end
 
 function savegame()
   if mapnum~=0 then
@@ -417,19 +447,23 @@ function savegame()
       dset(storagenum,hero[heroattr])
       storagenum+=1
     end
-    for creaturenum=1,10 do
+    for creaturenum=1,12 do
       local creature=creatures[0][creaturenum]
       if creature then
         dset(storagenum,creature.idtype)
-        dset(storagenum+1,creature.xeno)
-        dset(storagenum+2,creature.yako)
+        --logit(creature.name..' '..creature.xeno..' '..creature.yako..' '..combinevalues(creature.xeno,creature.yako))
+        dset(storagenum+1,combinevalues(creature.xeno,creature.yako))
       else
         dset(storagenum,0)
       end
-      storagenum+=3
+      storagenum+=2
     end
     update_lines{"game saved."}
   end
+end
+
+function separatevalues(comboval)
+  return lshr(band(comboval,0xff00),8),band(comboval,0xff)
 end
 
 function loadgame()
@@ -443,8 +477,9 @@ function loadgame()
   for creaturenum=1,10 do
     creaturenum=dget(storagenum)
     if creaturenum~=0 then
-      definemonster{objtype=basetypes[creaturenum],xeno=dget(storagenum+1),yako=dget(storagenum+2),mapnum=0}
-      storagenum+=3
+      creaturexeno,creatureyako=separatevalues(dget(storagenum+1))
+      definemonster{objtype=basetypes[creaturenum],xeno=creaturexeno,yako=creatureyako,mapnum=0}
+      storagenum+=2
     else
       break
     end
@@ -535,6 +570,9 @@ function inputprocessor(cmd)
         hero.xeno,hero.yako,hero.zabo=checkdungeonmove(1)
       else
         hero.xeno,hero.yako=checkmove(xcoord,spots[1],"north")
+        if hero.xeno==121 and hero.yako==36 then
+          mset(116,41,22)
+        end
       end
       --logit('hero '..hero.xeno..','..hero.yako..','..hero.zabo)
     elseif cmd=='south' then
@@ -590,7 +628,7 @@ function inputprocessor(cmd)
           elseif xcoord==1 and ycoord==38 and hero.dmg<50 then
             -- search response
             response[2]="you find the magic sword!"
-            hero.dmg=50
+            hero.dmg=40
           end
           update_lines(response)
         else
@@ -619,6 +657,14 @@ function inputprocessor(cmd)
         hero.gold+=chestgold
         update_lines{"you find "..chestgold.." gp."}
         contents[xcoord][ycoord][zcoord]=nil
+      elseif curmap.dungeon and hero.torchburning<1 then
+        if hero.torches>1 then
+          hero.torchburning=50
+          hero.torches-=1
+          update_lines{"the torch is now aflame."}
+        else
+          update_lines{"you have no torches."}
+        end
       else
         update_lines{"nothing here."}
       end
@@ -669,7 +715,8 @@ function inputprocessor(cmd)
       turnmade=true
     elseif cmd=='w' then
       update_lines{
-        "worn: "..armornames[hero.armor].."; wield: "..weaponnames[hero.dmg]
+        "worn: "..armornames[hero.armor].."; wield: "..weaponnames[hero.dmg],
+        hero.torches..' torches & '..hero.keys..' skeleton keys.'
       }
     elseif cmd=='a' then
       if hero.img>0 then
@@ -681,6 +728,15 @@ function inputprocessor(cmd)
         update_lines{"attack: huh?"}
       end
       turnmade=true
+    end
+    if hero.torchburning>1 then
+      hero.torchburning-=1
+      if hero.torchburning<1 then
+        update_lines{"the torch burnt out."}
+      end
+    end
+    if _draw==dungeon_draw and hero.torchburning<1 then
+      update_lines{"it's dark!"}
     end
     cmd=yield()
   end
@@ -833,6 +889,7 @@ function checkdungeonmove(direction)
     iscreature=true
   end
   if result==3 or iscreature then
+    sfx(5)
     update_lines{cmd,"blocked!"}
   else
     xcoord,ycoord=newx,newy
@@ -880,6 +937,7 @@ function checkmove(xcoord,ycoord,cmd)
         update_lines{cmd,"maelstrom! yikes!"}
         deducthp(ceil(rnd(25)))
       else
+        sfx(5)
         movesuccess=false
         update_lines{cmd,"blocked!"}
       end
@@ -895,6 +953,7 @@ function checkmove(xcoord,ycoord,cmd)
       setmap()
     elseif content then
       if not content.passable then
+        sfx(5)
         movesuccess=false
         update_lines{cmd,"blocked!"}
       end
@@ -903,9 +962,16 @@ function checkmove(xcoord,ycoord,cmd)
       movesuccess=false
       mset(xcoord,ycoord,30)
     elseif newloc==29 then
-      update_lines{cmd,"the door is locked."}
+      if hero.keys>0 then
+        update_lines{cmd,"you jimmy the door."}
+        hero.keys-=1
+        mset(xcoord,ycoord,30)
+      else
+        update_lines{cmd,"the door is locked."}
+      end
       movesuccess=false
     elseif impassable then
+      sfx(5)
       movesuccess=false
       update_lines{cmd,"blocked!"}
     elseif water then
@@ -994,6 +1060,13 @@ function attack_results(adir,xcoord,ycoord,magic)
   if creature and creature.hp then
     if magic or rnd(hero.dex+hero.lvl*8)>rnd(creature.dex+creature.armor) then
       damage-=rnd(creature.armor)
+      if magic then
+        creature.hitcolors=json_parse('[[9,6],[8,13],[10,12]]')
+      elseif hero.img>0 then
+        creature.hitcolors=json_parse('[[9,8],[8,9],[10,1]]')
+      else
+        creature.hitcolors=nil
+      end
       creature.hitdisplay=3
       sfx(1)
       creature.hp-=damage
@@ -1034,7 +1107,7 @@ function attack_results(adir,xcoord,ycoord,magic)
     -- bash locked door
     sfx(1)
     if(not magic)deducthp(1)
-    if rnd(damage)>8 then
+    if rnd(damage)>9 then
       update_lines{cmd,'you break open the door!'}
       mset(xcoord,ycoord,30)
     else
@@ -1101,15 +1174,15 @@ function movecreatures(hero)
             else
               currentdistance=squaredistance(spots[facing],creature.yako,xcoord,ycoord)
             end
-            if currentdistance<bestdistance then
+            if currentdistance<bestdistance or (currentdistance==bestdistance and rnd(10)<5) then
               --logit(creature.name..' best distance (cur): '..currentdistance..' (old): '..bestdistance..' facing: '..facing)
               bestdistance,bestfacing=currentdistance,facing
             else
              --logit(creature.name..' worse distance (cur): '..currentdistance..' (old): '..bestdistance..' facing: '..facing)
             end
           end
-          if bestfacing and bestfacing%2==1 then
-            desiredy=spots[bestfacing]
+          if bestfacing%2==1 then
+              desiredy=spots[bestfacing]
           else
             desiredx=spots[bestfacing]
           end
@@ -1185,6 +1258,7 @@ function movecreatures(hero)
             gothit=true
             delay(3)
             hero.hitdisplay=3
+            hero.hitcolors=creature.attackcolors
           else
             update_lines{creature_msg.." misses."}
           end
@@ -1290,6 +1364,14 @@ function draw_stats()
   end
 end
 
+function substitutecolors(colorsubs)
+  if colorsubs then
+    for colorsub in all(colorsubs) do
+      pal(colorsub[1],colorsub[2])
+    end
+  end
+end
+
 function itemdrawprep(item)
   local flipped=false
   if item.imgseq then
@@ -1311,11 +1393,7 @@ function itemdrawprep(item)
     end
   end
   palt(0,false)
-  if item.colorsub then
-    for colorsub in all(item.colorsub) do
-      pal(colorsub[1],colorsub[2])
-    end
-  end
+  substitutecolors(item.colorsub)
   return flipped
 end
 
@@ -1330,7 +1408,9 @@ function draw_map(x,y,scrtx,scrty,width,height)
         spr(item.img+facing,(contentsx-x+scrtx)*8,(contentsy-y+scrty)*8,1,1,flipped)
         pal()
         if item.hitdisplay>0 then
+          substitutecolors(item.hitcolors)
           spr(127,(contentsx-x+scrtx)*8,(contentsy-y+scrty)*8)
+          pal()
           item.hitdisplay-=1
         end
       end
@@ -1413,56 +1493,58 @@ end
 
 function dungeon_draw()
   cls()
-  local view=getdungeonview(hero.xeno,hero.yako,hero.zabo,hero.facing)
-  for depthindex,row in pairs(view) do
-    local depthin,depthout=(depthindex-1)*10,depthindex*10
-    local topouter,topinner,bottomouter,bottominner=30-depthout,30-depthin,52+depthout,52+depthin
-    local lowextreme,highextreme,middle,lowerase,higherase=30-depthout*2,52+depthout*2,42,31-depthin,51+depthin
-    if row[1].block==3 then
-      rectfill(topouter,topouter,topinner,bottomouter,0)
-      line(lowextreme,topouter,topouter,topouter,5)
-      line(topouter,topouter,topinner,topinner)
-      line(topouter,bottomouter,topinner,bottominner)
-      line(lowextreme,bottomouter,topouter,bottomouter)
+  if hero.torchburning>0 then
+    local view=getdungeonview(hero.xeno,hero.yako,hero.zabo,hero.facing)
+    for depthindex,row in pairs(view) do
+      local depthin,depthout=(depthindex-1)*10,depthindex*10
+      local topouter,topinner,bottomouter,bottominner=30-depthout,30-depthin,52+depthout,52+depthin
+      local lowextreme,highextreme,middle,lowerase,higherase=30-depthout*2,52+depthout*2,42,31-depthin,51+depthin
+      if row[1].block==3 then
+        rectfill(topouter,topouter,topinner,bottomouter,0)
+        line(lowextreme,topouter,topouter,topouter,5)
+        line(topouter,topouter,topinner,topinner)
+        line(topouter,bottomouter,topinner,bottominner)
+        line(lowextreme,bottomouter,topouter,bottomouter)
+      end
+      if row[3].block==3 then
+        rectfill(bottominner,topinner,bottomouter,bottomouter,0)
+        line(bottomouter,topouter,highextreme,topouter,5)
+        line(bottominner,topinner,bottomouter,topouter)
+        line(bottominner,bottominner,bottomouter,bottomouter)
+        line(bottomouter,bottomouter,highextreme,bottomouter)
+      end
+      if depthindex>1 then
+        local leftoneback,centeroneback,rightoneback=view[depthindex-1][1].block,view[depthindex-1][2].block,view[depthindex-1][3].block
+        if (row[1].block==centeroneback and row[1].block==3) or
+          (row[1].block~=leftoneback) then
+          line(topinner,topinner,topinner,bottominner,5)
+        end
+        if (row[3].block==centeroneback and row[3].block==3) or
+          (row[3].block~=rightoneback) then
+          line(bottominner,topinner,bottominner,bottominner,5)
+        end
+        if centeroneback==3 and leftoneback==3 and row[1].block~=3 then
+          line(topinner,lowerase,topinner,higherase,0)
+        end
+        if centeroneback==3 and rightoneback==3 and row[3].block~=3 then
+          line(bottominner,lowerase,bottominner,higherase,0)
+        end
+      end
+      if row[2].block==3 then
+        rectfill(topouter,topouter,bottomouter,bottomouter,0)
+        line(topouter,topouter,bottomouter,topouter,5)
+        line(topouter,bottomouter,bottomouter,bottomouter)
+        if row[1].block<3 then
+          line(topouter,topouter,topouter,bottomouter)
+        end
+        if row[3].block<3 then
+          line(bottomouter,topouter,bottomouter,bottomouter)
+        end
+      end
+      dungeondrawobject(row[2].xeno,row[2].yako,hero.zabo,3-depthindex)
     end
-    if row[3].block==3 then
-      rectfill(bottominner,topinner,bottomouter,bottomouter,0)
-      line(bottomouter,topouter,highextreme,topouter,5)
-      line(bottominner,topinner,bottomouter,topouter)
-      line(bottominner,bottominner,bottomouter,bottomouter)
-      line(bottomouter,bottomouter,highextreme,bottomouter)
-    end
-    if depthindex>1 then
-      local leftoneback,centeroneback,rightoneback=view[depthindex-1][1].block,view[depthindex-1][2].block,view[depthindex-1][3].block
-      if (row[1].block==centeroneback and row[1].block==3) or
-        (row[1].block~=leftoneback) then
-        line(topinner,topinner,topinner,bottominner,5)
-      end
-      if (row[3].block==centeroneback and row[3].block==3) or
-        (row[3].block~=rightoneback) then
-        line(bottominner,topinner,bottominner,bottominner,5)
-      end
-      if centeroneback==3 and leftoneback==3 and row[1].block~=3 then
-        line(topinner,lowerase,topinner,higherase,0)
-      end
-      if centeroneback==3 and rightoneback==3 and row[3].block~=3 then
-        line(bottominner,lowerase,bottominner,higherase,0)
-      end
-    end
-    if row[2].block==3 then
-      rectfill(topouter,topouter,bottomouter,bottomouter,0)
-      line(topouter,topouter,bottomouter,topouter,5)
-      line(topouter,bottomouter,bottomouter,bottomouter)
-      if row[1].block<3 then
-        line(topouter,topouter,topouter,bottomouter)
-      end
-      if row[3].block<3 then
-        line(bottomouter,topouter,bottomouter,bottomouter)
-      end
-    end
-    dungeondrawobject(row[2].xeno,row[2].yako,hero.zabo,3-depthindex)
+    rectfill(82,0,112,82,0)
   end
-  rectfill(82,0,112,82,0)
   draw_stats()
 end
 
@@ -1478,7 +1560,9 @@ function dungeondrawobject(xcoord,ycoord,zcoord,distance)
       pal()
       if item.hitdisplay>0 then
         palt(0,true)
+        substitutecolors(item.hitcolors)
         sspr(120,56,8,8,xoffset,yoffset,imgsize,imgsize)
+        pal()
         item.hitdisplay-=1
         palt(0,false)
       end
@@ -1557,10 +1641,16 @@ function world_draw()
   draw_map(left,top,scrtx,scrty,mainwidth,mainheight)
   --update_lines{"lt"..left..","..top.." h("..hero.xeno..","..hero.yako..") x("..xtrawidth..","..xtraheight..") m("..fullwidth-xtrawidth..","..fullheight-xtraheight..")"}
   palt(0,false)
+  if hero.color==4 and hero.img==0 then
+    substitutecolors{{4,1},{15,4}}
+  end
   spr(hero.img+hero.facing,48,40)
+  pal()
   palt()
   if hero.hitdisplay>0 then
+    substitutecolors(hero.hitcolors)
     spr(127,48,40)
+    pal()
     hero.hitdisplay-=1
   end
   draw_stats()
@@ -1650,7 +1740,7 @@ e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e01010011101110192c2825301111010c0c0c0101011011111
 c0c0c0e0e0e0e0c0c01010c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0e0e0e0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e01010011101110111111111011110c0c061c0c01011018293430111011101101041614141414141414171414141416141
 e0c0c0e0e0e0e0c0c0c0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c080c0e0e0e0e0e0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110111011111111101111010c061c010101101111111011101110110104161616161b141616161616161616141
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110111011111111101111010c061c010101101111111011101110110104161616141b141616161616161616141
 e0e0e0e0e0e0e0e0e0c0c0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0e0e0c080a080c0c0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e010100111011101111111110111104010611040101111111111011101110110104141414141414141c141414141414141
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c080c0e0c070807070c0e0e0e0e0
@@ -1658,7 +1748,7 @@ e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110111011111111111111010106110101011011111
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c080a080c07070328070c0e0e0e0e0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110111011111111101111111111111111111011111110111011101101001111111110111011111111111111101
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c080c0c070808070c0e0e0e0c0e0
-e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e010100111011101a3b363730111111111111111111101111111011101110110100192c2c29301110163c3a2f203c2a301
+e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e010100111011101a3b363730111111111111111111101111111011101110110100192c2c293011101148253b2c293a301
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0e0e0c07070c0e0e0e0c080c0
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0101001110111010101010101110111111111110111010101c1011101110110100111111111c111011111111111111101
 e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0c0c0e0e0e0c080a080
@@ -1867,7 +1957,7 @@ __sfx__
 0001000017070160601505016050170501a06021060290702f0700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00020000276432f4732f4732f4732f4732f4732f4733b1733b2733b2733b2733b2733b2733b2733b2733b2733b2733b2333851500000000000000000000000000000000000000000000000000000000000000000
 0002000002643024730347305473074730a4730d47311173162731b2731f27324273292732d27331273362733b2733e2333f51500000000000000000000000000000000000000000000000000000000000000000
-001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000100001263113341164511335117451133511544111341144310e331114210b3210c411073110a41104611236011f6002f50029500235001e5001e500225002750029500255001f5001e500000000000000000
 01200000134201342013420134200e4200e4200e4200e420134201342013420134200e4200e4200e4200e420134201342013420134200e4200e4200e4200e420134201342013420134200e4200e4200e4200e420
 01200000134201342013420134200e4200e4200e4200e420134201342013420134200e4200e4200e4200e42013420134201a4201a4200e4200e4201a4201a42013420134201a4201a4200e4200e4201a4201a420
 0120000013420134201a4201a4200e4200e4201a4201a42013420134201a4201a4200e4200e4200e4200e42013420134201a4201a4200e4200e4201a4201a42013420134201a4201a4200e4200e4201a4201a420
@@ -1925,7 +2015,7 @@ __sfx__
 01180000000002d4102d41034410344103941039410344103441035410354103541035410000000000000000000002d4102d410344103441039410394103c4103c41034410344103441034410000000000000000
 01180000000002d4102d4103441034410394103941034410344103541035410354103541000000000000000000000344103441035410354103441032410304102f4102d4102d4102d4102d410000000000000000
 011000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-011000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000100001050112501195012050124501000010e50111501165011b501235012a50100001000010c5010e501155011d50122501255010000100001095010c50111501175011d5012450129501000010000100001
 __music__
 00 06114344
 00 07124344

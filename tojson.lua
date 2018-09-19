@@ -156,6 +156,7 @@ basetypes={
     talk={"ho ho ho!","ha ha ha!"}
   },{
     img=84,
+    attackcolors={{9,6},{8,13},{10,12}},
     name="mage",
     talk={"a mage is always on time.","brain over brawn."}
   },{
@@ -182,6 +183,9 @@ basetypes={
   },{
     name="medic",
     merch='hospital'
+  },{
+    name="guildkeeper",
+    merch='guild'
   },{
     name="barkeep",
     merch='bar'
@@ -235,6 +239,7 @@ basetypes={
   },{
     img=84,
     colorsubs={{},{{2,8},{15,4}}},
+    attackcolors={{9,6},{8,13},{10,12}},
     names={"warlock","necromancer","sorcerer"},
     dmg=18,
     exp=10,
@@ -316,6 +321,7 @@ basetypes={
   },{
     img=70,
     colorsubs={{{6,5},{7,6}}},
+    attackcolors={{9,8},{8,9},{10,1}},
     flipimg=false,
     name="pirate",
     facingmatters=true,
@@ -333,6 +339,7 @@ basetypes={
     img=121,
     flipimg=true,
     names={"dragon","drake","wyvern"},
+    attackcolors={{9,6},{8,13},{10,12}},
     hp=50,
     armor=7,
     dmg=28,
@@ -341,6 +348,7 @@ basetypes={
   },{
     img=110,
     names={"daemon","devil"},
+    attackcolors={{9,10},{8,9},{10,7}},
     hp=50,
     armor=3,
     dmg=23,
@@ -459,7 +467,7 @@ maps={
       {idtype=thing['grocer'],xeno=88,yako=38},
       {idtype=thing['medic'],xeno=100,yako=30},
       {idtype=thing['jester'],xeno=96,yako=44},
-      {idtype=thing['fighter'],xeno=83,yako=27},
+      {idtype=thing['fighter'],xeno=83,yako=27,talk={"zanders has good tools.","be prepared!"}},
       {idtype=thing['merchant'],xeno=81,yako=44},
       {idtype=thing['mage'],xeno=104,yako=26,talk={"each shrine has a caretaker.","seek their wisdom."}},
       {idtype=thing['merchant'],xeno=110,yako=40,talk={"i\'ve seen the magic sword.","search south of the shrine."}},
@@ -479,7 +487,7 @@ maps={
     },
     creatures={
       {idtype=thing['guard'],xeno=118,yako=63},
-      {idtype=thing['smith'],xeno=125,yako=44},
+      {idtype=thing['guildkeeper'],xeno=125,yako=44},
       {idtype=thing['barkeep'],xeno=114,yako=44},
       {idtype=thing['grocer'],xeno=122,yako=51},
       {idtype=thing['lady'],xeno=118,yako=58},
