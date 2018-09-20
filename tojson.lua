@@ -419,6 +419,7 @@ maps={
       {idtype=thing['grocer'],xeno=97,yako=13},
       {idtype=thing['fighter'],xeno=82,yako=21},
       {idtype=thing['ranger'],xeno=101,yako=5},
+      {idtype=thing['mage'],xeno=84,yako=5,talk={"the secret room is key.","the way must be clear."}},
       {idtype=thing['ranger'],xeno=103,yako=18,talk={"faxon is in a tower.","volcanoes mark it."}},
       {idtype=thing['lady'],xeno=85,yako=16,talk={"poynter has a ship.","poynter is in lynn."}},
       {idtype=thing['guard'],xeno=95,yako=21}
@@ -444,6 +445,7 @@ maps={
       {idtype=thing['grocer'],xeno=107,yako=9},
       {idtype=thing['jester'],xeno=106,yako=16},
       {idtype=thing['medic'],xeno=122,yako=12},
+      {idtype=thing['fighter'],xeno=105,yako=4,talk={"i\'ve seen faxon\'s tower.","south of the eastern shrine."}},
       {idtype=thing['lady'],xeno=106,yako=7,talk={"griswold knows dungeons.","griswold is in salem."}},
       {idtype=thing['merchant'],xeno=119,yako=6,talk={"i\'m rich! i have a yacht!","ho ho! i\'m the best!"}},
       {idtype=thing['guard'],xeno=114,yako=22}
@@ -491,7 +493,7 @@ maps={
       {idtype=thing['barkeep'],xeno=114,yako=44},
       {idtype=thing['grocer'],xeno=122,yako=51},
       {idtype=thing['lady'],xeno=118,yako=58},
-      {idtype=thing['ranger'],xeno=113,yako=50,talk={"faxon is a blight.","daemons work for faxon."}},
+      {idtype=thing['ranger'],xeno=113,yako=50,talk={"faxon is a blight.","daemons serve faxon."}},
       {idtype=thing['fighter'],xeno=123,yako=57,talk={"increase stats in dungeons!","only severe injuries work."}},
       {idtype=thing['guard'],xeno=120,yako=63}
     }
@@ -520,7 +522,7 @@ maps={
     maxx=112,
     miny=56,
     creatures={
-      {idtype=thing['mage'],xeno=107,yako=59,talk={"magic serves good or evil.","swords cut both ways."}}
+      {idtype=thing['mage'],xeno=107,yako=59,talk={"magic serves good or evil.","swords cut both ways.","even faxon has fears."}}
     }
   },{
     name="eastern shrine",
@@ -532,7 +534,7 @@ maps={
     maxx=112,
     miny=56,
     creatures={
-      {idtype=thing['shepherd'],xeno=107,yako=59,talk={"some fountains have secrets.","learn of dungeon fountains."}}
+      {idtype=thing['shepherd'],xeno=107,yako=59,talk={"some fountains have secrets.","learn of dungeon fountains.","know when to be humble."}}
     }
   },{
     name="the dark tower",
