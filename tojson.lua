@@ -18,565 +18,564 @@ end
 basetypes={
   {
     hp=10,
-    armor=1,
+    ar=1,
     dmg=13,
     dex=8,
-    hostile=true,
-    terrain={1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35},
-    moveallowance=1,
-    gold=10,
+    hos=1,
+    t={1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35},
+    mva=1,
+    gp=10,
     exp=2,
-    chance=1
+    ch=1
   },{
-    mapnum=0,
-    minx=80,
-    maxx=128,
-    miny=0,
-    maxy=64,
-    newmonsters=0,
-    maxmonsters=0,
-    friendly=true
+    mn=0,
+    mnx=80,
+    mxx=128,
+    mny=0,
+    mxy=64,
+    newm=0,
+    mxm=0,
+    fri=1
   },{
-    mapnum=0,
-    dungeon=true,
-    startx=1,
-    starty=1,
-    startz=1,
-    startfacing=1,
-    minx=1,
-    miny=1,
-    maxx=9,
-    maxy=9,
-    newmonsters=25,
-    maxmonsters=27,
-    friendly=false,
-    creatures={},
-    songstart=17
+    mn=0,
+    dg=1,
+    sx=1,
+    sy=1,
+    sz=1,
+    sf=1,
+    mnx=1,
+    mny=1,
+    mxx=9,
+    mxy=9,
+    newm=25,
+    mxm=27,
+    fri=false,
+    c={},
+    ss=17
   },{
-    img=38,
-    imgalt=38,
-    name="ankh",
-    talk={"yes, ankhs can talk.","shrines make good landmarks."}
+    i=38,
+    ia=38,
+    n="ankh",
+    d={"yes, ankhs can talk.","shrines make good landmarks."}
   },{
-    img=70,
-    imgalt=70,
-    name="ship",
-    facingmatters=true,
-    facing=2,
-    passable=true
+    i=70,
+    ia=70,
+    n="ship",
+    fm=1,
+    f=2,
+    p=1
   },{
-    img=92,
-    imgalt=92,
-    name="chest",
-    sizemod=12,
-    passable=true
+    i=92,
+    ia=92,
+    n="chest",
+    szm=12,
+    p=1
   },{
-    img=39,
-    flipimg=true,
-    imgseq=12,
-    name="fountain",
-    sizemod=15,
-    passable=true
+    i=39,
+    fi=1,
+    iseq=12,
+    n="fountain",
+    szm=15,
+    p=1
   },{
-    img=27,
-    imgalt=27,
-    name="ladder up",
-    shiftmod=12,
-    sizemod=20,
-    passable=true
+    i=27,
+    ia=27,
+    n="ladder up",
+    shm=12,
+    szm=20,
+    p=1
   },{
-    img=26,
-    imgalt=26,
-    name="ladder down",
-    shiftmod=-3,
-    sizemod=20,
-    passable=true
+    i=26,
+    ia=26,
+    n="ladder down",
+    shm=-3,
+    szm=20,
+    p=1
   },{
-    name="human",
-    img=80,
-    armor=0,
-    hostile=false,
-    gold=5,
+    i=80,
+    ar=0,
+    hos=false,
+    gp=5,
     exp=1
   },{
-    name="orc",
-    chance=8,
-    talk={"urg!","grar!"}
+    n="orc",
+    ch=8,
+    d={"urg!","grar!"}
   },{
-    name="undead",
     dmg=14,
     dex=6,
-    gold=5,
-    chance=5
+    gp=5,
+    ch=5
   },{
-    name="animal",
     dex=10,
-    armor=0,
-    gold=0,
-    chance=3
+    ar=0,
+    gp=0,
+    ch=3
   },{
-    img=82,
-    colorsubs={{},{{1,12},{14,2},{15,4}}},
-    name="fighter",
+    i=82,
+    cs={{},{{1,12},{14,2},{15,4}}},
+    n="fighter",
     hp=12,
-    armor=3,
+    ar=3,
     dmg=20,
     dex=9,
-    talk={"check out these pecs!","i\'m jacked!"}
+    d={"check out these pecs!","i\'m jacked!"}
   },{
-    img=90,
-    colorsubs={{},{{15,4}}},
-    name="guard",
-    moveallowance=0,
+    i=90,
+    cs={{},{{15,4}}},
+    n="guard",
+    mva=0,
     hp=85,
     dmg=60,
-    armor=12,
-    talk={"behave yourself.","i protect good citizens."}
+    ar=12,
+    d={"behave yourself.","i protect good citizens."}
   },{
-    img=75,
-    flipimg=true,
-    colorsubs={{},{{1,4},{4,15},{6,1},{14,13}},{{1,4},{6,5},{14,10}},{{1,4},{4,15},{6,1},{14,3}}},
-    name="merchant",
-    talk={"buy my wares!","consume!","stuff makes you happy!"}
+    i=75,
+    fi=1,
+    cs={{},{{1,4},{4,15},{6,1},{14,13}},{{1,4},{6,5},{14,10}},{{1,4},{4,15},{6,1},{14,3}}},
+    n="merchant",
+    d={"consume!","stuff makes you happy!"}
   },{
-    img=81,
-    flipimg=true,
-    colorsubs={{},{{2,9},{4,15},{13,14}},{{2,10},{4,15},{13,9}},{{2,11},{13,3}}},
-    name="lady",
-    talk={"pardon me.","well i never."}
+    i=81,
+    fi=1,
+    cs={{},{{2,9},{4,15},{13,14}},{{2,10},{4,15},{13,9}},{{2,11},{13,3}}},
+    n="lady",
+    d={"pardon me.","well i never."}
   },{
-    img=76,
-    name="shepherd",
-    colorsubs={{},{{6,5},{15,4}},{{6,5}},{{15,4}}},
-    talk={"i like sheep.","the open air is nice."}
+    i=76,
+    n="shepherd",
+    cs={{},{{6,5},{15,4}},{{6,5}},{{15,4}}},
+    d={"i like sheep.","the open air is nice."}
   },{
-    img=78,
-    name="jester",
+    i=78,
+    n="jester",
     dex=12,
-    talk={"ho ho ho!","ha ha ha!"}
+    d={"ho ho ho!","ha ha ha!"}
   },{
-    img=84,
-    attackcolors={{9,6},{8,13},{10,12}},
-    name="mage",
-    talk={"a mage is always on time.","brain over brawn."}
+    i=84,
+    ac={{9,6},{8,13},{10,12}},
+    n="mage",
+    d={"a mage is always on time.","brain over brawn."}
   },{
-    name="ranger",
-    flipimg=true,
-    colorsubs={{},{{9,11},{1,3},{15,4}},{{9,11},{1,3}},{{15,4}}},
-    talk={"i travel the land.","my home is the range."}
+    n="ranger",
+    fi=1,
+    cs={{},{{9,11},{1,3},{15,4}},{{9,11},{1,3}},{{15,4}}},
+    d={"i travel the land.","my home is the range."}
   },{
-    name="villain",
-    armor=1,
-    hostile=true,
-    gold=15,
+    n="villain",
+    ar=1,
+    hos=1,
+    gp=15,
     exp=5,
-    talk={"stand and deliver!","you shall die!"}
+    d={"stand and deliver!","you shall die!"}
   },{
-    name="grocer",
-    merch='food'
+    n="grocer",
+    mch='food'
   },{
-    name="armorer",
-    merch='armor'
+    n="armorer",
+    mch='armor'
   },{
-    name="smith",
-    merch='weapons'
+    n="smith",
+    mch='weapons'
   },{
-    name="medic",
-    merch='hospital'
+    n="medic",
+    mch='hospital'
   },{
-    name="guildkeeper",
-    merch='guild'
+    n="guildkeeper",
+    mch='guild'
   },{
-    name="barkeep",
-    merch='bar'
+    n="barkeep",
+    mch='bar'
   },{
-    img=96
+    i=96
   },{
-    img=102,
-    name="troll",
+    i=102,
+    n="troll",
     hp=15,
     dmg=16,
-    gold=10,
+    gp=10,
     exp=4
   },{
-    img=104,
-    names={"hobgoblin","bugbear"},
+    i=104,
+    ns={"hobgoblin","bugbear"},
     hp=15,
     dmg=14,
-    gold=8,
+    gp=8,
     exp=3
   },{
-    img=114,
-    names={"goblin","kobold"},
+    i=114,
+    ns={"goblin","kobold"},
     hp=8,
     dmg=10,
-    gold=5,
+    gp=5,
     exp=1
   },{
-    img=118,
-    flipimg=true,
-    name="ettin",
+    i=118,
+    fi=1,
+    n="ettin",
     hp=20,
     dmg=18,
     exp=6,
-    chance=1
+    ch=1
   },{
-    img=98,
-    name="skeleton",
-    gold=12
+    i=98,
+    n="skeleton",
+    gp=12
   },{
-    img=100,
-    names={"zombie","wight","ghoul"},
+    i=100,
+    ns={"zombie","wight","ghoul"},
     hp=10
   },{
-    img=123,
-    flipimg=true,
-    names={"phantom","ghost","wraith"},
+    i=123,
+    fi=1,
+    ns={"phantom","ghost","wraith"},
     hp=15,
-    terrain={1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35},
+    t={1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35},
     exp=7,
-    talk={'boooo!','feeear me!'}
+    d={'boooo!','feeear me!'}
   },{
-    img=84,
-    colorsubs={{},{{2,8},{15,4}}},
-    attackcolors={{9,6},{8,13},{10,12}},
-    names={"warlock","necromancer","sorcerer"},
+    i=84,
+    cs={{},{{2,8},{15,4}}},
+    ac={{9,6},{8,13},{10,12}},
+    ns={"warlock","necromancer","sorcerer"},
     dmg=18,
     exp=10,
-    talk={"i hex you!","a curse on you!"}
+    d={"i hex you!","a curse on you!"}
   },{
-    img=88,
-    colorsubs={{},{{1,5},{8,2},{4,1},{2,12},{15,4}}},
-    names={"rogue","bandit","cutpurse"},
+    i=88,
+    cs={{},{{1,5},{8,2},{4,1},{2,12},{15,4}}},
+    ns={"rogue","bandit","cutpurse"},
     dex=10,
-    thief=true,
-    chance=2
+    th=1,
+    ch=2
   },{
-    img=86,
-    colorsubs={{},{{1,5},{15,4}}},
-    names={"ninja","assassin"},
-    poison=true,
-    gold=10,
+    i=86,
+    cs={{},{{1,5},{15,4}}},
+    ns={"ninja","assassin"},
+    po=1,
+    gp=10,
     exp=8,
-    talk={"you shall die at my hands.","you are no match for me."}
+    d={"you shall die at my hands.","you are no match for me."}
   },{
-    img=106,
-    name="giant spider",
+    i=106,
+    n="giant spider",
     hp=18,
-    poison=true,
-    gold=8,
+    po=1,
+    gp=8,
     exp=5
   },{
-    img=108,
-    name="giant rat",
+    i=108,
+    n="giant rat",
     hp=5,
     dmg=10,
-    poison=true,
-    eat=true,
+    po=1,
+    eat=1,
     exp=2
   },{
-    img=112,
-    names={"giant snake","serpent"},
+    i=112,
+    ns={"giant snake","serpent"},
     hp=20,
-    poison=true,
-    terrain={4,5,6,7},
+    po=1,
+    t={4,5,6,7},
     exp=6,
-    chance=1
+    ch=1
   },{
-    img=116,
-    name="sea serpent",
+    i=116,
+    n="sea serpent",
     hp=45,
-    terrain={5,12,13,14,15,25},
+    t={5,12,13,14,15,25},
     exp=10
   },{
-    img=125,
-    flipimg=true,
-    name="megascorpion",
+    i=125,
+    fi=1,
+    n="megascorpion",
     hp=12,
-    poison=true,
+    po=1,
     exp=5,
-    chance=1
+    ch=1
   },{
-    img=122,
-    colorsubs={{},{{3,9},{11,10}},{{3,14},{11,15}}},
-    flipimg=true,
-    names={"slime","jelly","blob"},
-    gold=5,
-    terrain={17,22,23},
-    eat=true,
+    i=122,
+    cs={{},{{3,9},{11,10}},{{3,14},{11,15}}},
+    fi=1,
+    ns={"slime","jelly","blob"},
+    gp=5,
+    t={17,22,23},
+    eat=1,
     exp=2
   },{
-    img=94,
-    names={"kraken","giant squid"},
+    i=94,
+    ns={"kraken","giant squid"},
     hp=50,
-    terrain={12,13,14,15},
+    t={12,13,14,15},
     exp=8,
-    chance=2
+    ch=2
   },{
-    img=120,
-    flipimg=true,
-    name="wisp",
-    terrain={4,5,6},
+    i=120,
+    fi=1,
+    n="wisp",
+    t={4,5,6},
     exp=3
   },{
-    img=70,
-    colorsubs={{{6,5},{7,6}}},
-    attackcolors={{9,8},{8,9},{10,1}},
-    flipimg=false,
-    name="pirate",
-    facingmatters=true,
-    facing=1,
-    terrain={12,13,14,15},
+    i=70,
+    cs={{{6,5},{7,6}}},
+    ac={{9,8},{8,9},{10,1}},
+    fi=false,
+    n="pirate",
+    fm=1,
+    f=1,
+    t={12,13,14,15},
     exp=8
   },{
-    img=119,
-    colorsubs={{},{{2,14},{1,4}}},
-    flipimg=true,
-    names={"gazer","beholder"},
-    terrain={17,22},
+    i=119,
+    cs={{},{{2,14},{1,4}}},
+    fi=1,
+    ns={"gazer","beholder"},
+    t={17,22},
     exp=4
   },{
-    img=121,
-    flipimg=true,
-    names={"dragon","drake","wyvern"},
-    attackcolors={{9,6},{8,13},{10,12}},
+    i=121,
+    fi=1,
+    ns={"dragon","drake","wyvern"},
+    ac={{9,6},{8,13},{10,12}},
     hp=50,
-    armor=7,
+    ar=7,
     dmg=28,
-    gold=20,
+    gp=20,
     exp=17
   },{
-    img=110,
-    names={"daemon","devil"},
-    attackcolors={{9,10},{8,9},{10,7}},
+    i=110,
+    ns={"daemon","devil"},
+    ac={{9,10},{8,9},{10,7}},
     hp=50,
-    armor=3,
+    ar=3,
     dmg=23,
-    terrain={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35},
-    gold=25,
+    t={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35},
+    gp=25,
     exp=15,
-    chance=.25
+    ch=.25
   },{
-    img=92,
-    name="mimic",
-    moveallowance=0,
-    thief=true,
-    gold=12,
-    terrain={17,22},
+    i=92,
+    n="mimic",
+    mva=0,
+    th=1,
+    gp=12,
+    t={17,22},
     exp=4,
-    chance=0
+    ch=0
   },{
-    img=124,
-    flipimg=true,
-    name="reaper",
-    moveallowance=0,
-    armor=5,
+    i=124,
+    fi=1,
+    n="reaper",
+    mva=0,
+    ar=5,
     hp=30,
-    gold=8,
-    terrain={17,22},
+    gp=8,
+    t={17,22},
     exp=5,
-    chance=0
+    ch=0
   }
 }
--- We want to make a table of named items so we can refer to them easily
+-- We want to make a table of nd i so we can refer to them easily
 -- in the next section in such a way that they automatically get converted
 -- to raw numbers for the final PICO-8 version.
 thing = {}
 for basetypeIdx, basetype in pairs(basetypes) do
-  -- We don't always have a name; when we do, use it. If we have a list of
+  -- We don't always have a n; when we do, use it. If we have a list of
   -- possible ones, use the first.
-  local name = basetype.name or (basetype.names and basetype.names[1])
+  local n = basetype.n or (basetype.ns and basetype.ns[1])
   -- Otherwise just ignore it.
-  if name then
-    thing[name] = basetypeIdx
+  if n then
+    thing[n] = basetypeIdx
   end
 end
 -- write out the resulting basetypes & bestiary structure string for copying &
 -- pasting into PICO-8 source
 outputStructure('basetypes', basetypes)
+-- copying is easier with a blank line between
+print()
 
 -- Our maps structure includes all of our communities and dungeons.
 -- We can use the thing table defined above to make desired objects explicit.
 maps={
   {
-    name="saugus",
-    enterx=13,
-    entery=4,
-    startx=92,
-    starty=23,
-    maxx=105,
-    maxy=24,
+    n="saugus",
+    ex=13,
+    ey=4,
+    sx=92,
+    sy=23,
+    mxx=105,
+    mxy=24,
     signs={
-      {xeno=92,yako=19,msg="welcome to saugus!"}
+      {x=92,y=19,msg="welcome to saugus!"}
     },
-    items={
-      {idtype=thing['ankh'],xeno=84,yako=4}
+    i={
+      {id=thing['ankh'],x=84,y=4}
     },
-    creatures={
-      {idtype=thing['guard'],xeno=89,yako=21},
-      {idtype=thing['medic'],xeno=84,yako=9},
-      {idtype=thing['armorer'],xeno=95,yako=3},
-      {idtype=thing['grocer'],xeno=97,yako=13},
-      {idtype=thing['fighter'],xeno=82,yako=21},
-      {idtype=thing['ranger'],xeno=101,yako=5},
-      {idtype=thing['mage'],xeno=84,yako=5,talk={"the secret room is key.","the way must be clear."}},
-      {idtype=thing['ranger'],xeno=103,yako=18,talk={"faxon is in a tower.","volcanoes mark it."}},
-      {idtype=thing['lady'],xeno=85,yako=16,talk={"poynter has a ship.","poynter is in lynn."}},
-      {idtype=thing['guard'],xeno=95,yako=21}
+    c={
+      {id=thing['guard'],x=89,y=21},
+      {id=thing['medic'],x=84,y=9},
+      {id=thing['armorer'],x=95,y=3},
+      {id=thing['grocer'],x=97,y=13},
+      {id=thing['fighter'],x=82,y=21},
+      {id=thing['ranger'],x=101,y=5},
+      {id=thing['mage'],x=84,y=5,d={"the secret room is key.","the way must be clear."}},
+      {id=thing['ranger'],x=103,y=18,d={"faxon is in a tower.","volcanoes mark it."}},
+      {id=thing['lady'],x=85,y=16,d={"poynter has a ship.","poynter is in lynn."}},
+      {id=thing['guard'],x=95,y=21}
     }
   },{
-    name="lynn",
-    enterx=17,
-    entery=4,
-    startx=116,
-    starty=23,
-    minx=104,
-    maxy=24,
+    n="lynn",
+    ex=17,
+    ey=4,
+    sx=116,
+    sy=23,
+    mnx=104,
+    mxy=24,
     signs={
-      {xeno=125,yako=9,msg="marina for members only."}
+      {x=125,y=9,msg="marina for members only."}
     },
-    items={
-      {idtype=thing['ship'],xeno=125,yako=5}
+    i={
+      {id=thing['ship'],x=125,y=5}
     },
-    creatures={
-      {idtype=thing['guard'],xeno=118,yako=22},
-      {idtype=thing['smith'],xeno=106,yako=1},
-      {idtype=thing['barkeep'],xeno=118,yako=2},
-      {idtype=thing['grocer'],xeno=107,yako=9},
-      {idtype=thing['jester'],xeno=106,yako=16},
-      {idtype=thing['medic'],xeno=122,yako=12},
-      {idtype=thing['fighter'],xeno=105,yako=4,talk={"i\'ve seen faxon\'s tower.","south of the eastern shrine."}},
-      {idtype=thing['lady'],xeno=106,yako=7,talk={"griswold knows dungeons.","griswold is in salem."}},
-      {idtype=thing['merchant'],xeno=119,yako=6,talk={"i\'m rich! i have a yacht!","ho ho! i\'m the best!"}},
-      {idtype=thing['guard'],xeno=114,yako=22}
+    c={
+      {id=thing['guard'],x=118,y=22},
+      {id=thing['smith'],x=106,y=1},
+      {id=thing['barkeep'],x=118,y=2},
+      {id=thing['grocer'],x=107,y=9},
+      {id=thing['jester'],x=106,y=16},
+      {id=thing['medic'],x=122,y=12},
+      {id=thing['fighter'],x=105,y=4,d={"i\'ve seen faxon\'s tower.","south of the eastern shrine."}},
+      {id=thing['lady'],x=106,y=7,d={"griswold knows dungeons.","griswold is in salem."}},
+      {id=thing['merchant'],x=119,y=6,d={"i\'m rich! i have a yacht!","ho ho! i\'m the best!"}},
+      {id=thing['guard'],x=114,y=22}
     }
   },{
-    name="boston",
-    enterx=45,
-    entery=19,
-    startx=96,
-    starty=54,
-    miny=24,
-    maxx=112,
-    maxy=56,
-    items={
-      {idtype=thing['fountain'],xeno=96,yako=40}
+    n="boston",
+    ex=45,
+    ey=19,
+    sx=96,
+    sy=54,
+    mny=24,
+    mxx=112,
+    mxy=56,
+    i={
+      {id=thing['fountain'],x=96,y=40}
     },
-    creatures={
-      {idtype=thing['guard'],xeno=94,yako=49},
-      {idtype=thing['smith'],xeno=103,yako=39},
-      {idtype=thing['armorer'],xeno=92,yako=30},
-      {idtype=thing['grocer'],xeno=88,yako=38},
-      {idtype=thing['medic'],xeno=100,yako=30},
-      {idtype=thing['jester'],xeno=96,yako=44},
-      {idtype=thing['fighter'],xeno=83,yako=27,talk={"zanders has good tools.","be prepared!"}},
-      {idtype=thing['merchant'],xeno=81,yako=44},
-      {idtype=thing['mage'],xeno=104,yako=26,talk={"each shrine has a caretaker.","seek their wisdom."}},
-      {idtype=thing['merchant'],xeno=110,yako=40,talk={"i\'ve seen the magic sword.","search south of the shrine."}},
-      {idtype=thing['guard'],xeno=105,yako=35,moveallowance=1},
-      {idtype=thing['guard'],xeno=98,yako=49}
+    c={
+      {id=thing['guard'],x=94,y=49},
+      {id=thing['smith'],x=103,y=39},
+      {id=thing['armorer'],x=92,y=30},
+      {id=thing['grocer'],x=88,y=38},
+      {id=thing['medic'],x=100,y=30},
+      {id=thing['jester'],x=96,y=44},
+      {id=thing['fighter'],x=83,y=27,d={"zanders has good tools.","be prepared!"}},
+      {id=thing['merchant'],x=81,y=44},
+      {id=thing['mage'],x=104,y=26,d={"each shrine has a caretaker.","seek their wisdom."}},
+      {id=thing['merchant'],x=110,y=40,d={"i\'ve seen the magic sword.","search south of the shrine."}},
+      {id=thing['guard'],x=105,y=35,mva=1},
+      {id=thing['guard'],x=98,y=49}
     }
   },{
-    name="salem",
-    enterx=7,
-    entery=36,
-    startx=119,
-    starty=62,
-    minx=112,
-    miny=43,
-    items={
-      {idtype=thing['ankh'],xeno=116,yako=53}
+    n="salem",
+    ex=7,
+    ey=36,
+    sx=119,
+    sy=62,
+    mnx=112,
+    mny=43,
+    i={
+      {id=thing['ankh'],x=116,y=53}
     },
-    creatures={
-      {idtype=thing['guard'],xeno=118,yako=63},
-      {idtype=thing['guildkeeper'],xeno=125,yako=44},
-      {idtype=thing['barkeep'],xeno=114,yako=44},
-      {idtype=thing['grocer'],xeno=122,yako=51},
-      {idtype=thing['lady'],xeno=118,yako=58},
-      {idtype=thing['ranger'],xeno=113,yako=50,talk={"faxon is a blight.","daemons serve faxon."}},
-      {idtype=thing['fighter'],xeno=123,yako=57,talk={"increase stats in dungeons!","only severe injuries work."}},
-      {idtype=thing['guard'],xeno=120,yako=63}
+    c={
+      {id=thing['guard'],x=118,y=63},
+      {id=thing['guildkeeper'],x=125,y=44},
+      {id=thing['barkeep'],x=114,y=44},
+      {id=thing['grocer'],x=122,y=51},
+      {id=thing['lady'],x=118,y=58},
+      {id=thing['ranger'],x=113,y=50,d={"faxon is a blight.","daemons serve faxon."}},
+      {id=thing['fighter'],x=123,y=57,d={"increase stats in dungeons!","only severe injuries work."}},
+      {id=thing['guard'],x=120,y=63}
     }
   },{
-    name="great misery",
-    enterx=27,
-    entery=35,
-    startx=82,
-    starty=59,
-    miny=56,
-    maxx=103,
-    creatures={
-      {idtype=thing['grocer'],xeno=93,yako=57},
-      {idtype=thing['barkeep'],xeno=100,yako=57},
-      {idtype=thing['fighter'],xeno=91,yako=60,talk={"i saw a dragon once.","it was deep in a dungeon."}},
-      {idtype=thing['shepherd'],xeno=82,yako=57},
-      {idtype=thing['shepherd'],xeno=102,yako=63,talk={"gilly is in boston.","gilly knows of the sword."}}
+    n="great misery",
+    ex=27,
+    ey=35,
+    sx=82,
+    sy=59,
+    mny=56,
+    mxx=103,
+    c={
+      {id=thing['grocer'],x=93,y=57},
+      {id=thing['barkeep'],x=100,y=57},
+      {id=thing['fighter'],x=91,y=60,d={"even faxon has fears.","lalla knows who to see."}},
+      {id=thing['shepherd'],x=82,y=57},
+      {id=thing['shepherd'],x=102,y=63,d={"gilly is in boston.","gilly knows of the sword."}}
     }
   },{
-    name="western shrine",
-    enterx=1,
-    entery=28,
-    startx=107,
-    starty=62,
-    minx=103,
-    maxx=112,
-    miny=56,
-    creatures={
-      {idtype=thing['mage'],xeno=107,yako=59,talk={"magic serves good or evil.","swords cut both ways.","even faxon has fears."}}
+    n="western shrine",
+    ex=1,
+    ey=28,
+    sx=107,
+    sy=62,
+    mnx=103,
+    mxx=112,
+    mny=56,
+    c={
+      {id=thing['mage'],x=107,y=59,d={"magic serves good or evil.","swords cut both ways."}}
     }
   },{
-    name="eastern shrine",
-    enterx=49,
-    entery=6,
-    startx=107,
-    starty=62,
-    minx=103,
-    maxx=112,
-    miny=56,
-    creatures={
-      {idtype=thing['shepherd'],xeno=107,yako=59,talk={"some fountains have secrets.","learn of dungeon fountains.","know when to be humble."}}
+    n="eastern shrine",
+    ex=49,
+    ey=6,
+    sx=107,
+    sy=62,
+    mnx=103,
+    mxx=112,
+    mny=56,
+    c={
+      {id=thing['shepherd'],x=107,y=59,d={"some fountains have secrets.","know when to be humble."}}
     }
   },{
-    name="the dark tower",
-    enterx=56,
-    entery=44,
-    startx=120,
-    starty=41,
-    minx=112,
-    miny=24,
-    maxy=43,
-    friendly=false,
-    newmonsters=35,
-    maxmonsters=23,
-    songstart=17,
-    items={
-      {idtype=thing['ladder up'],xeno=117,yako=41,targetmap=12,targetx=3,targety=8,targetz=3},
-      {idtype=thing['chest'],xeno=119,yako=37},
-      {idtype=thing['chest'],xeno=119,yako=39},
-      {idtype=thing['chest'],xeno=120,yako=37},
-      {idtype=thing['chest'],xeno=120,yako=38},
-      {idtype=thing['chest'],xeno=120,yako=39},
-      {idtype=thing['chest'],xeno=121,yako=38},
-      {idtype=thing['chest'],xeno=121,yako=39}
+    n="the dark tower",
+    ex=56,
+    ey=44,
+    sx=120,
+    sy=41,
+    mnx=112,
+    mny=24,
+    mxy=43,
+    fri=false,
+    newm=35,
+    mxm=23,
+    ss=17,
+    i={
+      {id=thing['ladder up'],x=117,y=41,tm=12,tx=3,ty=8,tz=3},
+      {id=thing['chest'],x=119,y=37},
+      {id=thing['chest'],x=119,y=39},
+      {id=thing['chest'],x=120,y=37},
+      {id=thing['chest'],x=120,y=38},
+      {id=thing['chest'],x=120,y=39},
+      {id=thing['chest'],x=121,y=38},
+      {id=thing['chest'],x=121,y=39}
     },
-    creatures={
-      {idtype=thing['reaper'],xeno=119,yako=41},
-      {idtype=thing['reaper'],xeno=126,yako=40},
-      {idtype=thing['reaper'],xeno=123,yako=38},
-      {idtype=thing['reaper'],xeno=113,yako=40},
-      {idtype=thing['mimic'],xeno=121,yako=37},
-      {idtype=thing['mimic'],xeno=119,yako=38},
-      {idtype=thing['slime'],xeno=120,yako=34},
-      {idtype=thing['slime'],xeno=118,yako=35},
-      {idtype=thing['dragon'],xeno=118,yako=30,propername="faxon",img=126,hp=255,armor=25,dmg=50}
+    c={
+      {id=thing['reaper'],x=119,y=41},
+      {id=thing['reaper'],x=126,y=40},
+      {id=thing['reaper'],x=123,y=38},
+      {id=thing['reaper'],x=113,y=40},
+      {id=thing['mimic'],x=121,y=37},
+      {id=thing['mimic'],x=119,y=38},
+      {id=thing['slime'],x=120,y=34},
+      {id=thing['slime'],x=118,y=35},
+      {id=thing['dragon'],x=118,y=30,pn="faxon",i=126,hp=255,ar=25,dmg=50}
     }
   },{
-    name="nibiru",
-    enterx=4,
-    entery=11,
-    starty=8,
+    n="nibiru",
+    ex=4,
+    ey=11,
+    sy=8,
     attr='int',
-    levels={
+    l={
       {
         0x0000,
         0x3ffe,
@@ -615,31 +614,31 @@ maps={
         0x333c
       }
     },
-    items={
-      {idtype=thing['ladder up'],xeno=1,yako=8,zabo=1},
-      {idtype=thing['ladder up'],xeno=8,yako=2,zabo=2},
-      {idtype=thing['ladder up'],xeno=4,yako=8,zabo=3},
-      {idtype=thing['ladder up'],xeno=1,yako=1,zabo=4},
-      {idtype=thing['chest'],xeno=1,yako=8,zabo=4},
-      {idtype=thing['chest'],xeno=7,yako=1,zabo=4},
-      {idtype=thing['chest'],xeno=3,yako=8,zabo=4},
-      {idtype=thing['chest'],xeno=5,yako=8,zabo=4},
-      {idtype=thing['chest'],xeno=8,yako=8,zabo=4},
-      {idtype=thing['fountain'],xeno=6,yako=8,zabo=3}
+    i={
+      {id=thing['ladder up'],x=1,y=8,z=1},
+      {id=thing['ladder up'],x=8,y=2,z=2},
+      {id=thing['ladder up'],x=4,y=8,z=3},
+      {id=thing['ladder up'],x=1,y=1,z=4},
+      {id=thing['chest'],x=1,y=8,z=4},
+      {id=thing['chest'],x=7,y=1,z=4},
+      {id=thing['chest'],x=3,y=8,z=4},
+      {id=thing['chest'],x=5,y=8,z=4},
+      {id=thing['chest'],x=8,y=8,z=4},
+      {id=thing['fountain'],x=6,y=8,z=3}
     },
-    creatures={
-      {idtype=thing['dragon'],xeno=8,yako=5,zabo=4},
-      {idtype=thing['mimic'],xeno=3,yako=1,zabo=4},
-      {idtype=thing['mimic'],xeno=1,yako=5,zabo=4},
-      {idtype=thing['mimic'],xeno=5,yako=1,zabo=4},
-      {idtype=thing['reaper'],xeno=3,yako=3,zabo=4}
+    c={
+      {id=thing['dragon'],x=8,y=5,z=4},
+      {id=thing['mimic'],x=3,y=1,z=4},
+      {id=thing['mimic'],x=1,y=5,z=4},
+      {id=thing['mimic'],x=5,y=1,z=4},
+      {id=thing['reaper'],x=3,y=3,z=4}
     }
   },{
-    name="purgatory",
-    enterx=32,
-    entery=5,
+    n="purgatory",
+    ex=32,
+    ey=5,
     attr='str',
-    levels={
+    l={
       {
         0x0338,
         0x3f3c,
@@ -678,31 +677,31 @@ maps={
         0xcccc
       }
     },
-    items={
-      {idtype=thing['ladder up'],xeno=1,yako=1,zabo=1},
-      {idtype=thing['ladder up'],xeno=7,yako=1,zabo=2},
-      {idtype=thing['ladder up'],xeno=3,yako=7,zabo=3},
-      {idtype=thing['ladder up'],xeno=1,yako=3,zabo=4},
-      {idtype=thing['chest'],xeno=1,yako=1,zabo=4},
-      {idtype=thing['chest'],xeno=1,yako=8,zabo=4},
-      {idtype=thing['chest'],xeno=1,yako=7,zabo=4},
-      {idtype=thing['chest'],xeno=2,yako=8,zabo=4},
-      {idtype=thing['chest'],xeno=8,yako=8,zabo=4},
-      {idtype=thing['fountain'],xeno=7,yako=5,zabo=3}
+    i={
+      {id=thing['ladder up'],x=1,y=1,z=1},
+      {id=thing['ladder up'],x=7,y=1,z=2},
+      {id=thing['ladder up'],x=3,y=7,z=3},
+      {id=thing['ladder up'],x=1,y=3,z=4},
+      {id=thing['chest'],x=1,y=1,z=4},
+      {id=thing['chest'],x=1,y=8,z=4},
+      {id=thing['chest'],x=1,y=7,z=4},
+      {id=thing['chest'],x=2,y=8,z=4},
+      {id=thing['chest'],x=8,y=8,z=4},
+      {id=thing['fountain'],x=7,y=5,z=3}
     },
-    creatures={
-      {idtype=thing['dragon'],xeno=3,yako=5,zabo=4},
-      {idtype=thing['mimic'],xeno=1,yako=5,zabo=4},
-      {idtype=thing['mimic'],xeno=7,yako=5,zabo=4},
-      {idtype=thing['reaper'],xeno=5,yako=3,zabo=4},
-      {idtype=thing['reaper'],xeno=5,yako=7,zabo=4}
+    c={
+      {id=thing['dragon'],x=3,y=5,z=4},
+      {id=thing['mimic'],x=1,y=5,z=4},
+      {id=thing['mimic'],x=7,y=5,z=4},
+      {id=thing['reaper'],x=5,y=3,z=4},
+      {id=thing['reaper'],x=5,y=7,z=4}
     }
   },{
-    name="sheol",
-    enterx=33,
-    entery=58,
+    n="sheol",
+    ex=33,
+    ey=58,
     attr='dex',
-    levels={
+    l={
       {
         0x0300,
         0x3fb0,
@@ -741,33 +740,33 @@ maps={
         0x0100
       }
     },
-    items={
-      {idtype=thing['ladder up'],xeno=1,yako=1,zabo=1},
-      {idtype=thing['ladder up'],xeno=5,yako=2,zabo=2},
-      {idtype=thing['ladder up'],xeno=8,yako=4,zabo=3},
-      {idtype=thing['ladder up'],xeno=4,yako=8,zabo=4},
-      {idtype=thing['chest'],xeno=5,yako=5,zabo=4},
-      {idtype=thing['chest'],xeno=3,yako=6,zabo=4},
-      {idtype=thing['chest'],xeno=4,yako=6,zabo=4},
-      {idtype=thing['chest'],xeno=5,yako=6,zabo=4},
-      {idtype=thing['chest'],xeno=6,yako=6,zabo=4},
-      {idtype=thing['fountain'],xeno=6,yako=6,zabo=3}
+    i={
+      {id=thing['ladder up'],x=1,y=1,z=1},
+      {id=thing['ladder up'],x=5,y=2,z=2},
+      {id=thing['ladder up'],x=8,y=4,z=3},
+      {id=thing['ladder up'],x=4,y=8,z=4},
+      {id=thing['chest'],x=5,y=5,z=4},
+      {id=thing['chest'],x=3,y=6,z=4},
+      {id=thing['chest'],x=4,y=6,z=4},
+      {id=thing['chest'],x=5,y=6,z=4},
+      {id=thing['chest'],x=6,y=6,z=4},
+      {id=thing['fountain'],x=6,y=6,z=3}
     },
-    creatures={
-      {idtype=thing['dragon'],xeno=3,yako=1,zabo=4},
-      {idtype=thing['mimic'],xeno=4,yako=5,zabo=4},
-      {idtype=thing['mimic'],xeno=5,yako=2,zabo=4},
-      {idtype=thing['reaper'],xeno=3,yako=4,zabo=4},
-      {idtype=thing['reaper'],xeno=6,yako=4,zabo=4}
+    c={
+      {id=thing['dragon'],x=3,y=1,z=4},
+      {id=thing['mimic'],x=4,y=5,z=4},
+      {id=thing['mimic'],x=5,y=2,z=4},
+      {id=thing['reaper'],x=3,y=4,z=4},
+      {id=thing['reaper'],x=6,y=4,z=4}
     }
   },{
-    name="the upper levels",
-    enterx=124,
-    entery=26,
-    startx=8,
-    startz=3,
-    mapnum=8,
-    levels={
+    n="the upper levels",
+    ex=124,
+    ey=26,
+    sx=8,
+    sz=3,
+    mn=8,
+    l={
       {
         0x00c0,
         0xbcce,
@@ -797,32 +796,32 @@ maps={
         0x3b00
       }
     },
-    items={
-      {idtype=thing['ladder down'],xeno=8,yako=1,zabo=3},
-      {idtype=thing['ladder down'],xeno=3,yako=8,zabo=3,targetmap=8,targetx=117,targety=41,targetz=0},
-      {idtype=thing['ladder up'],xeno=8,yako=7,zabo=3},
-      {idtype=thing['ladder up'],xeno=3,yako=4,zabo=3},
-      {idtype=thing['ladder up'],xeno=1,yako=2,zabo=2},
-      {idtype=thing['ladder up'],xeno=8,yako=2,zabo=2}
+    i={
+      {id=thing['ladder down'],x=8,y=1,z=3},
+      {id=thing['ladder down'],x=3,y=8,z=3,tm=8,tx=117,ty=41,tz=0},
+      {id=thing['ladder up'],x=8,y=7,z=3},
+      {id=thing['ladder up'],x=3,y=4,z=3},
+      {id=thing['ladder up'],x=1,y=2,z=2},
+      {id=thing['ladder up'],x=8,y=2,z=2}
     },
-    creatures={
-      {idtype=thing['daemon'],xeno=4,yako=6,zabo=1},
-      {idtype=thing['daemon'],xeno=4,yako=7,zabo=2},
-      {idtype=thing['daemon'],xeno=1,yako=7,zabo=3},
-      {idtype=thing['reaper'],xeno=6,yako=8,zabo=3},
-      {idtype=thing['reaper'],xeno=8,yako=4,zabo=3},
-      {idtype=thing['reaper'],xeno=3,yako=1,zabo=3},
-      {idtype=thing['reaper'],xeno=6,yako=6,zabo=2},
-      {idtype=thing['reaper'],xeno=6,yako=8,zabo=1}
+    c={
+      {id=thing['daemon'],x=4,y=6,z=1},
+      {id=thing['daemon'],x=4,y=7,z=2},
+      {id=thing['daemon'],x=1,y=7,z=3},
+      {id=thing['reaper'],x=6,y=8,z=3},
+      {id=thing['reaper'],x=8,y=4,z=3},
+      {id=thing['reaper'],x=3,y=1,z=3},
+      {id=thing['reaper'],x=6,y=6,z=2},
+      {id=thing['reaper'],x=6,y=8,z=1}
     }
   }
 }
 -- Map by map...
 for mapIdx, map in pairs(maps) do
   -- Only for dungeons...
-  if map.levels then
+  if map.l then
     -- Level by level...
-    for levelIdx, level in pairs(map.levels) do
+    for levelIdx, level in pairs(map.l) do
       -- Row by row...
       for rowIdx, row in pairs(level) do
         -- We need to convert values outside PICO-8's range.

@@ -5,9 +5,9 @@ __lua__
 -- by feneric
 
 -- a function for logging to an output log file.
--- function logit(entry)
---   printh(entry,'minima.out')
--- end
+function logit(entry)
+  printh(entry,'minima.out')
+end
 
 -- register json context here
 _tok={
@@ -103,10 +103,10 @@ msg=helpmsg
 
 -- anyobj is our root object. all others inherit from it to
 -- save space and reduce redundancy.
-anyobj=json_parse('{"facing":1,"moveallowance":0,"nummoves":0,"movepayment":0,"hd":0,"chance":0,"zabo":0}')
+anyobj=json_parse('{"f":1,"mva":0,"nm":0,"mvp":0,"hd":0,"ch":0,"z":0}')
 
 function makemetaobj(base,basetype)
-  return setmetatable(base,{__index=base.objtype or basetype})
+  return setmetatable(base,{__index=base.ot or basetype})
 end
 
 -- the types of terrain that exist in the game. each is
@@ -126,8 +126,8 @@ end
 
 -- basetypes are the objects we mean to use to make objects.
 -- they inherit (often indirectly) from our root object.
-basetypes=json_parse('[{"dmg":13,"hp":10,"hostile":true,"dex":8,"terrain":[1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35],"chance":1,"armor":1,"gp":10,"moveallowance":1,"exp":2},{"maxx":128,"friendly":true,"maxmonsters":0,"mn":0,"newmonsters":0,"miny":0,"minx":80,"maxy":64},{"friendly":false,"maxmonsters":27,"maxx":9,"songstart":17,"starty":1,"dungeon":true,"maxy":9,"startx":1,"creatures":{},"startz":1,"mn":0,"miny":1,"startfacing":1,"minx":1,"newmonsters":25},{"talk":["yes, ankhs can talk.","shrines make good landmarks."],"imgalt":38,"name":"ankh","img":38},{"passable":true,"facingmatters":true,"facing":2,"imgalt":70,"name":"ship","img":70},{"sizemod":12,"passable":true,"imgalt":92,"name":"chest","img":92},{"sizemod":15,"imgseq":12,"flipimg":true,"passable":true,"name":"fountain","img":39},{"sizemod":20,"shiftmod":12,"passable":true,"imgalt":27,"name":"ladder up","img":27},{"sizemod":20,"shiftmod":-3,"passable":true,"imgalt":26,"name":"ladder down","img":26},{"exp":1,"gp":5,"armor":0,"hostile":false,"img":80,"name":"human"},{"talk":["urg!","grar!"],"chance":8,"name":"orc"},{"dmg":14,"chance":5,"gp":5,"dex":6,"name":"undead"},{"chance":3,"armor":0,"gp":0,"dex":10,"name":"animal"},{"dmg":20,"talk":["check out these pecs!","i\'m jacked!"],"hp":12,"colorsubs":[{},[[1,12],[14,2],[15,4]]],"armor":3,"name":"fighter","dex":9,"img":82},{"dmg":60,"talk":["behave yourself.","i protect good citizens."],"hp":85,"colorsubs":[{},[[15,4]]],"armor":12,"name":"guard","moveallowance":0,"img":90},{"flipimg":true,"talk":["buy my wares!","consume!","stuff makes you happy!"],"name":"merchant","colorsubs":[{},[[1,4],[4,15],[6,1],[14,13]],[[1,4],[6,5],[14,10]],[[1,4],[4,15],[6,1],[14,3]]],"img":75},{"flipimg":true,"talk":["pardon me.","well i never."],"name":"lady","colorsubs":[{},[[2,9],[4,15],[13,14]],[[2,10],[4,15],[13,9]],[[2,11],[13,3]]],"img":81},{"talk":["i like sheep.","the open air is nice."],"colorsubs":[{},[[6,5],[15,4]],[[6,5]],[[15,4]]],"name":"shepherd","img":76},{"talk":["ho ho ho!","ha ha ha!"],"name":"jester","dex":12,"img":78},{"attackcolors":[[9,6],[8,13],[10,12]],"talk":["a mage is always on time.","brain over brawn."],"name":"mage","img":84},{"talk":["i travel the land.","my home is the range."],"colorsubs":[{},[[9,11],[1,3],[15,4]],[[9,11],[1,3]],[[15,4]]],"flipimg":true,"name":"ranger"},{"exp":5,"talk":["stand and deliver!","you shall die!"],"armor":1,"hostile":true,"gp":15,"name":"villain"},{"merch":"food","name":"grocer"},{"merch":"armor","name":"armorer"},{"merch":"weapons","name":"smith"},{"merch":"hospital","name":"medic"},{"merch":"guild","name":"guildkeeper"},{"merch":"bar","name":"barkeep"},{"img":96},{"dmg":16,"hp":15,"exp":4,"gp":10,"name":"troll","img":102},{"names":["hobgoblin","bugbear"],"hp":15,"exp":3,"gp":8,"dmg":14,"img":104},{"names":["goblin","kobold"],"hp":8,"exp":1,"gp":5,"dmg":10,"img":114},{"dmg":18,"chance":1,"hp":20,"flipimg":true,"exp":6,"name":"ettin","img":118},{"gp":12,"name":"skeleton","img":98},{"names":["zombie","wight","ghoul"],"hp":10,"img":100},{"names":["phantom","ghost","wraith"],"hp":15,"flipimg":true,"talk":["boooo!","feeear me!"],"exp":7,"terrain":[1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35],"img":123},{"names":["warlock","necromancer","sorcerer"],"talk":["i hex you!","a curse on you!"],"exp":10,"attackcolors":[[9,6],[8,13],[10,12]],"dmg":18,"colorsubs":[{},[[2,8],[15,4]]],"img":84},{"names":["rogue","bandit","cutpurse"],"chance":2,"thief":true,"colorsubs":[{},[[1,5],[8,2],[4,1],[2,12],[15,4]]],"dex":10,"img":88},{"names":["ninja","assassin"],"poison":true,"exp":8,"talk":["you shall die at my hands.","you are no match for me."],"gp":10,"colorsubs":[{},[[1,5],[15,4]]],"img":86},{"exp":5,"hp":18,"poison":true,"gp":8,"name":"giant spider","img":106},{"dmg":10,"hp":5,"exp":2,"name":"giant rat","poison":true,"eat":true,"img":108},{"names":["giant snake","serpent"],"chance":1,"hp":20,"exp":6,"terrain":[4,5,6,7],"poison":true,"img":112},{"terrain":[5,12,13,14,15,25],"hp":45,"exp":10,"name":"sea serpent","img":116},{"exp":5,"chance":1,"hp":12,"flipimg":true,"poison":true,"name":"megascorpion","img":125},{"names":["slime","jelly","blob"],"exp":2,"colorsubs":[{},[[3,9],[11,10]],[[3,14],[11,15]]],"flipimg":true,"terrain":[17,22,23],"gp":5,"eat":true,"img":122},{"names":["kraken","giant squid"],"chance":2,"hp":50,"exp":8,"terrain":[12,13,14,15],"img":94},{"terrain":[4,5,6],"flipimg":true,"exp":3,"name":"wisp","img":120},{"flipimg":false,"colorsubs":[[[6,5],[7,6]]],"terrain":[12,13,14,15],"exp":8,"facingmatters":true,"attackcolors":[[9,8],[8,9],[10,1]],"facing":1,"name":"pirate","img":70},{"names":["gazer","beholder"],"flipimg":true,"exp":4,"terrain":[17,22],"colorsubs":[{},[[2,14],[1,4]]],"img":119},{"dmg":28,"hp":50,"flipimg":true,"names":["dragon","drake","wyvern"],"exp":17,"attackcolors":[[9,6],[8,13],[10,12]],"gp":20,"armor":7,"img":121},{"dmg":23,"hp":50,"names":["daemon","devil"],"chance":0.25,"exp":15,"terrain":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35],"attackcolors":[[9,10],[8,9],[10,7]],"gp":25,"armor":3,"img":110},{"terrain":[17,22],"chance":0,"exp":4,"name":"mimic","thief":true,"gp":12,"moveallowance":0,"img":92},{"hp":30,"flipimg":true,"terrain":[17,22],"chance":0,"exp":5,"name":"reaper","armor":5,"gp":8,"moveallowance":0,"img":124}]')
--- give our base objects names for convenience & efficiency.
+basetypes=json_parse('[{"ar":1,"hos":1,"dmg":13,"exp":2,"ch":1,"t":[1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35],"dex":8,"mva":1,"hp":10,"gp":10},{"fri":1,"mxm":0,"mxx":128,"mn":0,"newm":0,"mxy":64,"mnx":80,"mny":0},{"sz":1,"sy":1,"mxx":9,"mny":1,"sx":1,"fri":false,"ss":17,"c":{},"dg":1,"mxm":27,"mn":0,"newm":25,"mxy":9,"mnx":1,"sf":1},{"d":["yes, ankhs can talk.","shrines make good landmarks."],"ia":38,"n":"ankh","i":38},{"f":2,"i":70,"p":1,"ia":70,"n":"ship","fm":1},{"szm":12,"i":92,"p":1,"ia":92,"n":"chest"},{"fi":1,"szm":15,"i":39,"p":1,"n":"fountain","iseq":12},{"szm":20,"i":27,"shm":12,"ia":27,"n":"ladder up","p":1},{"szm":20,"i":26,"shm":-3,"ia":26,"n":"ladder down","p":1},{"ar":0,"hos":false,"i":80,"exp":1,"gp":5},{"d":["urg!","grar!"],"ch":8,"n":"orc"},{"dex":6,"ch":5,"dmg":14,"gp":5},{"dex":10,"ch":3,"ar":0,"gp":0},{"ar":3,"cs":[{},[[1,12],[14,2],[15,4]]],"d":["check out these pecs!","i\'m jacked!"],"i":82,"dex":9,"dmg":20,"n":"fighter","hp":12},{"mva":0,"cs":[{},[[15,4]]],"d":["behave yourself.","i protect good citizens."],"i":90,"ar":12,"dmg":60,"n":"guard","hp":85},{"fi":1,"cs":[{},[[1,4],[4,15],[6,1],[14,13]],[[1,4],[6,5],[14,10]],[[1,4],[4,15],[6,1],[14,3]]],"i":75,"n":"merchant","d":["consume!","stuff makes you happy!"]},{"fi":1,"cs":[{},[[2,9],[4,15],[13,14]],[[2,10],[4,15],[13,9]],[[2,11],[13,3]]],"i":81,"n":"lady","d":["pardon me.","well i never."]},{"d":["i like sheep.","the open air is nice."],"cs":[{},[[6,5],[15,4]],[[6,5]],[[15,4]]],"n":"shepherd","i":76},{"dex":12,"d":["ho ho ho!","ha ha ha!"],"n":"jester","i":78},{"d":["a mage is always on time.","brain over brawn."],"ac":[[9,6],[8,13],[10,12]],"n":"mage","i":84},{"fi":1,"cs":[{},[[9,11],[1,3],[15,4]],[[9,11],[1,3]],[[15,4]]],"n":"ranger","d":["i travel the land.","my home is the range."]},{"ar":1,"hos":1,"d":["stand and deliver!","you shall die!"],"exp":5,"n":"villain","gp":15},{"n":"grocer","mch":"food"},{"n":"armorer","mch":"armor"},{"n":"smith","mch":"weapons"},{"n":"medic","mch":"hospital"},{"n":"guildkeeper","mch":"guild"},{"n":"barkeep","mch":"bar"},{"i":96},{"exp":4,"i":102,"hp":15,"dmg":16,"n":"troll","gp":10},{"exp":3,"i":104,"ns":["hobgoblin","bugbear"],"dmg":14,"hp":15,"gp":8},{"exp":1,"i":114,"ns":["goblin","kobold"],"dmg":10,"hp":8,"gp":5},{"fi":1,"exp":6,"i":118,"ch":1,"dmg":18,"n":"ettin","hp":20},{"gp":12,"n":"skeleton","i":98},{"ns":["zombie","wight","ghoul"],"hp":10,"i":100},{"fi":1,"exp":7,"i":123,"ns":["phantom","ghost","wraith"],"d":["boooo!","feeear me!"],"hp":15,"t":[1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35]},{"d":["i hex you!","a curse on you!"],"cs":[{},[[2,8],[15,4]]],"i":84,"ns":["warlock","necromancer","sorcerer"],"exp":10,"dmg":18,"ac":[[9,6],[8,13],[10,12]]},{"th":1,"cs":[{},[[1,5],[8,2],[4,1],[2,12],[15,4]]],"i":88,"ns":["rogue","bandit","cutpurse"],"ch":2,"dex":10},{"d":["you shall die at my hands.","you are no match for me."],"cs":[{},[[1,5],[15,4]]],"i":86,"ns":["ninja","assassin"],"exp":8,"gp":10,"po":1},{"exp":5,"i":106,"gp":8,"hp":18,"n":"giant spider","po":1},{"exp":2,"hp":5,"i":108,"eat":1,"dmg":10,"n":"giant rat","po":1},{"t":[4,5,6,7],"exp":6,"i":112,"ns":["giant snake","serpent"],"ch":1,"hp":20,"po":1},{"t":[5,12,13,14,15,25],"exp":10,"i":116,"n":"sea serpent","hp":45},{"fi":1,"exp":5,"i":125,"ch":1,"hp":12,"n":"megascorpion","po":1},{"fi":1,"cs":[{},[[3,9],[11,10]],[[3,14],[11,15]]],"exp":2,"i":122,"ns":["slime","jelly","blob"],"eat":1,"t":[17,22,23],"gp":5},{"t":[12,13,14,15],"exp":8,"i":94,"ns":["kraken","giant squid"],"hp":50,"ch":2},{"fi":1,"exp":3,"i":120,"n":"wisp","t":[4,5,6]},{"fi":false,"cs":[[[6,5],[7,6]]],"fm":1,"n":"pirate","exp":8,"i":70,"t":[12,13,14,15],"f":1,"ac":[[9,8],[8,9],[10,1]]},{"fi":1,"cs":[{},[[2,14],[1,4]]],"i":119,"ns":["gazer","beholder"],"exp":4,"t":[17,22]},{"fi":1,"dmg":28,"exp":17,"gp":20,"i":121,"ns":["dragon","drake","wyvern"],"ar":7,"hp":50,"ac":[[9,6],[8,13],[10,12]]},{"ar":3,"dmg":23,"ch":0.25,"exp":15,"gp":25,"i":110,"ns":["daemon","devil"],"t":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35],"hp":50,"ac":[[9,10],[8,9],[10,7]]},{"mva":0,"exp":4,"ch":0,"i":92,"t":[17,22],"th":1,"n":"mimic","gp":12},{"fi":1,"n":"reaper","ch":0,"exp":5,"t":[17,22],"i":124,"mva":0,"ar":5,"hp":30,"gp":8}]')
+-- give our base objects ns for convenience & efficiency.
 creature,shiptype=basetypes[1],basetypes[5]
 
 -- set our base objects base values. the latter portion is
@@ -160,10 +160,10 @@ for basetypenum=1,#basetypes do
   else
     basetype=creature
   end
-  objecttype.idtype=basetypenum
+  objecttype.id=basetypenum
   makemetaobj(objecttype,basetype)
   if basetypenum>28 then
-    for terrain in all(objecttype.terrain) do
+    for terrain in all(objecttype.t) do
       add(terrainmonsters[terrain],objecttype)
     end
   end
@@ -190,18 +190,18 @@ function purchase(prompt,itemtype,attribute)
     function(cmd)
       desireditem=itemtype[cmd]
       if desireditem then
-        return hero.gp>=desireditem.price and desireditem
+        return hero.gp>=desireditem.p and desireditem
       else
         return nil
       end
     end,
     function(desireditem)
-      if hero[attribute]>=desireditem.amount then
+      if hero[attribute]>=desireditem.a then
         return "that is not an upgrade."
       else
-        hero.gp-=desireditem.price
-        hero[attribute]=desireditem.amount
-        return "the "..desireditem.name.." is yours."
+        hero.gp-=desireditem.p
+        hero[attribute]=desireditem.a
+        return "the "..desireditem.n.." is yours."
       end
     end
   )
@@ -222,13 +222,13 @@ shop={
       end,
       function()
         hero.gp-=15
-        hero.food=not_over_32767(hero.food+25)
+        hero.fd=not_over_32767(hero.fd+25)
         return "you got more food."
       end
     )
   end,
   armor=function()
-    return purchase({"buy \131cloth $12, \139leather $99,","\145chain $300, or \148plate $950: "},armors,'armor')
+    return purchase({"buy \131cloth $12, \139leather $99,","\145chain $300, or \148plate $950: "},armors,'ar')
   end,
   weapons=function()
     return purchase({"buy d\65\71\71\69\82 $8, c\76\85\66 $40,","a\88\69 $75, or s\87\79\82\68 $150: "},weapons,'dmg')
@@ -237,23 +237,23 @@ shop={
     return checkpurchase({"choose m\69\68\73\67 ($8), c\85\82\69 ($10),","or s\65\86\73\79\82 ($25): "},
       function(cmd)
         desiredspell=spells[cmd]
-        if desiredspell and desiredspell.price then
-          return hero.gp>=desiredspell.price and desiredspell
+        if desiredspell and desiredspell.p then
+          return hero.gp>=desiredspell.p and desiredspell
         else
           return nil
         end
       end,
       function(desiredspell)
         sfx(3)
-        hero.gp-=desiredspell.price
-        if desiredspell.name=='cure' then
+        hero.gp-=desiredspell.p
+        if desiredspell.n=='cure' then
           -- perform cure
-          hero.status=band(hero.status,14)
+          hero.st=band(hero.st,14)
         else
           -- perform healing
-          increasehp(desiredspell.amount)
+          increasehp(desiredspell.a)
         end
-        return desiredspell.name.." is cast!"
+        return desiredspell.n.." is cast!"
       end
     )
   end,
@@ -275,26 +275,14 @@ shop={
     )
   end,
   guild=function()
-    return checkpurchase({"buy \139torches (5) for $12 or","\145skeleton key (1) for $23: "},
+    return checkpurchase({"5 \139torches $12 or a \145key $23: "},
       function(cmd)
-        if cmd=='west' then
-          return hero.gp>=12 and 'torches'
-        elseif cmd=='east' then
-          return hero.gp>=23 and 'key'
-        else
-          return nil
-        end
+        return hero.gp>=tools[cmd].p and tools[cmd] or nil
       end,
       function(desireditem)
-        if desireditem=='torches' then
-          hero.gp-=12
-          hero.torches+=5
-          return "you purchase 5 torches."
-        elseif desireditem=='key' then
-          hero.gp-=23
-          hero.keys+=1
-          return "you purchase a skeleton key."
-        end
+        hero.gp-=desireditem.p
+        hero[desireditem.attr]+=desireditem.q
+        return "you purchase "..desireditem.n
       end
     )
   end
@@ -302,36 +290,39 @@ shop={
 
 -- the maps structure holds information about all of the regular
 -- places in the game, dungeons as well as towns.
-maps=json_parse('[{"creatures":[{"idtype":15,"xeno":89,"yako":21},{"idtype":26,"xeno":84,"yako":9},{"idtype":24,"xeno":95,"yako":3},{"idtype":23,"xeno":97,"yako":13},{"idtype":14,"xeno":82,"yako":21},{"idtype":21,"xeno":101,"yako":5},{"idtype":20,"xeno":84,"talk":["the secret room is key.","the way must be clear."],"yako":5},{"idtype":21,"xeno":103,"talk":["faxon is in a tower.","volcanoes mark it."],"yako":18},{"idtype":17,"xeno":85,"talk":["poynter has a ship.","poynter is in lynn."],"yako":16},{"idtype":15,"xeno":95,"yako":21}],"enterx":13,"items":[{"idtype":4,"xeno":84,"yako":4}],"signs":[{"xeno":92,"msg":"welcome to saugus!","yako":19}],"entery":4,"name":"saugus","maxx":105,"starty":23,"startx":92,"maxy":24},{"creatures":[{"idtype":15,"xeno":118,"yako":22},{"idtype":25,"xeno":106,"yako":1},{"idtype":28,"xeno":118,"yako":2},{"idtype":23,"xeno":107,"yako":9},{"idtype":19,"xeno":106,"yako":16},{"idtype":26,"xeno":122,"yako":12},{"idtype":14,"xeno":105,"talk":["i\'ve seen faxon\'s tower.","south of the eastern shrine."],"yako":4},{"idtype":17,"xeno":106,"talk":["griswold knows dungeons.","griswold is in salem."],"yako":7},{"idtype":16,"xeno":119,"talk":["i\'m rich! i have a yacht!","ho ho! i\'m the best!"],"yako":6},{"idtype":15,"xeno":114,"yako":22}],"minx":104,"enterx":17,"items":[{"idtype":5,"xeno":125,"yako":5}],"entery":4,"name":"lynn","signs":[{"xeno":125,"msg":"marina for members only.","yako":9}],"starty":23,"startx":116,"maxy":24},{"creatures":[{"idtype":15,"xeno":94,"yako":49},{"idtype":25,"xeno":103,"yako":39},{"idtype":24,"xeno":92,"yako":30},{"idtype":23,"xeno":88,"yako":38},{"idtype":26,"xeno":100,"yako":30},{"idtype":19,"xeno":96,"yako":44},{"idtype":14,"xeno":83,"talk":["zanders has good tools.","be prepared!"],"yako":27},{"idtype":16,"xeno":81,"yako":44},{"idtype":20,"xeno":104,"talk":["each shrine has a caretaker.","seek their wisdom."],"yako":26},{"idtype":16,"xeno":110,"talk":["i\'ve seen the magic sword.","search south of the shrine."],"yako":40},{"idtype":15,"xeno":105,"moveallowance":1,"yako":35},{"idtype":15,"xeno":98,"yako":49}],"enterx":45,"miny":24,"items":[{"idtype":7,"xeno":96,"yako":40}],"entery":19,"name":"boston","maxx":112,"starty":54,"startx":96,"maxy":56},{"creatures":[{"idtype":15,"xeno":118,"yako":63},{"idtype":27,"xeno":125,"yako":44},{"idtype":28,"xeno":114,"yako":44},{"idtype":23,"xeno":122,"yako":51},{"idtype":17,"xeno":118,"yako":58},{"idtype":21,"xeno":113,"talk":["faxon is a blight.","daemons serve faxon."],"yako":50},{"idtype":14,"xeno":123,"talk":["increase stats in dungeons!","only severe injuries work."],"yako":57},{"idtype":15,"xeno":120,"yako":63}],"minx":112,"enterx":7,"miny":43,"name":"salem","items":[{"idtype":4,"xeno":116,"yako":53}],"starty":62,"startx":119,"entery":36},{"creatures":[{"idtype":23,"xeno":93,"yako":57},{"idtype":28,"xeno":100,"yako":57},{"idtype":14,"xeno":91,"talk":["i saw a dragon once.","it was deep in a dungeon."],"yako":60},{"idtype":18,"xeno":82,"yako":57},{"idtype":18,"xeno":102,"talk":["gilly is in boston.","gilly knows of the sword."],"yako":63}],"starty":59,"entery":35,"name":"great misery","maxx":103,"startx":82,"enterx":27,"miny":56},{"creatures":[{"idtype":20,"xeno":107,"talk":["magic serves good or evil.","swords cut both ways.","even faxon has fears."],"yako":59}],"minx":103,"enterx":1,"miny":56,"name":"western shrine","maxx":112,"starty":62,"startx":107,"entery":28},{"creatures":[{"idtype":18,"xeno":107,"talk":["some fountains have secrets.","learn of dungeon fountains.","know when to be humble."],"yako":59}],"minx":103,"enterx":49,"miny":56,"name":"eastern shrine","maxx":112,"starty":62,"startx":107,"entery":6},{"maxmonsters":23,"songstart":17,"minx":112,"creatures":[{"idtype":53,"xeno":119,"yako":41},{"idtype":53,"xeno":126,"yako":40},{"idtype":53,"xeno":123,"yako":38},{"idtype":53,"xeno":113,"yako":40},{"idtype":52,"xeno":121,"yako":37},{"idtype":52,"xeno":119,"yako":38},{"idtype":45,"xeno":120,"yako":34},{"idtype":45,"xeno":118,"yako":35},{"dmg":50,"hp":255,"img":126,"yako":30,"idtype":50,"xeno":118,"armor":25,"propername":"faxon"}],"enterx":56,"miny":24,"items":[{"targetx":3,"targety":8,"yako":41,"idtype":8,"xeno":117,"targetmap":12,"targetz":3},{"idtype":6,"xeno":119,"yako":37},{"idtype":6,"xeno":119,"yako":39},{"idtype":6,"xeno":120,"yako":37},{"idtype":6,"xeno":120,"yako":38},{"idtype":6,"xeno":120,"yako":39},{"idtype":6,"xeno":121,"yako":38},{"idtype":6,"xeno":121,"yako":39}],"friendly":false,"newmonsters":35,"name":"the dark tower","entery":44,"starty":41,"startx":120,"maxy":43},{"creatures":[{"idtype":50,"xeno":8,"zabo":4,"yako":5},{"idtype":52,"xeno":3,"zabo":4,"yako":1},{"idtype":52,"xeno":1,"zabo":4,"yako":5},{"idtype":52,"xeno":5,"zabo":4,"yako":1},{"idtype":53,"xeno":3,"zabo":4,"yako":3}],"items":[{"idtype":8,"xeno":1,"zabo":1,"yako":8},{"idtype":8,"xeno":8,"zabo":2,"yako":2},{"idtype":8,"xeno":4,"zabo":3,"yako":8},{"idtype":8,"xeno":1,"zabo":4,"yako":1},{"idtype":6,"xeno":1,"zabo":4,"yako":8},{"idtype":6,"xeno":7,"zabo":4,"yako":1},{"idtype":6,"xeno":3,"zabo":4,"yako":8},{"idtype":6,"xeno":5,"zabo":4,"yako":8},{"idtype":6,"xeno":8,"zabo":4,"yako":8},{"idtype":7,"xeno":6,"zabo":3,"yako":8}],"entery":11,"name":"nibiru","levels":[[0,16382,768,12336,16380,13056,13308,192],[0,-13107,816,12336,15612,768,16332,704],[-32768,-3316,1020,12300,13116,13056,-3076,448],[29488,13116,0,-3073,0,-3124,780,13116]],"starty":8,"enterx":4,"attr":"int"},{"creatures":[{"idtype":50,"xeno":3,"zabo":4,"yako":5},{"idtype":52,"xeno":1,"zabo":4,"yako":5},{"idtype":52,"xeno":7,"zabo":4,"yako":5},{"idtype":53,"xeno":5,"zabo":4,"yako":3},{"idtype":53,"xeno":5,"zabo":4,"yako":7}],"items":[{"idtype":8,"xeno":1,"zabo":1,"yako":1},{"idtype":8,"xeno":7,"zabo":2,"yako":1},{"idtype":8,"xeno":3,"zabo":3,"yako":7},{"idtype":8,"xeno":1,"zabo":4,"yako":3},{"idtype":6,"xeno":1,"zabo":4,"yako":1},{"idtype":6,"xeno":1,"zabo":4,"yako":8},{"idtype":6,"xeno":1,"zabo":4,"yako":7},{"idtype":6,"xeno":2,"zabo":4,"yako":8},{"idtype":6,"xeno":8,"zabo":4,"yako":8},{"idtype":7,"xeno":7,"zabo":3,"yako":5}],"name":"purgatory","levels":[[824,16188,768,13296,-4036,13056,13308,768],[13060,13116,12,16332,12540,15360,15311,768],[768,13116,-20432,-196,48,16140,14140,816],[0,-13108,19468,-13108,192,-13108,3084,-13108]],"entery":5,"enterx":32,"attr":"str"},{"creatures":[{"idtype":50,"xeno":3,"zabo":4,"yako":1},{"idtype":52,"xeno":4,"zabo":4,"yako":5},{"idtype":52,"xeno":5,"zabo":4,"yako":2},{"idtype":53,"xeno":3,"zabo":4,"yako":4},{"idtype":53,"xeno":6,"zabo":4,"yako":4}],"items":[{"idtype":8,"xeno":1,"zabo":1,"yako":1},{"idtype":8,"xeno":5,"zabo":2,"yako":2},{"idtype":8,"xeno":8,"zabo":3,"yako":4},{"idtype":8,"xeno":4,"zabo":4,"yako":8},{"idtype":6,"xeno":5,"zabo":4,"yako":5},{"idtype":6,"xeno":3,"zabo":4,"yako":6},{"idtype":6,"xeno":4,"zabo":4,"yako":6},{"idtype":6,"xeno":5,"zabo":4,"yako":6},{"idtype":6,"xeno":6,"zabo":4,"yako":6},{"idtype":7,"xeno":6,"zabo":3,"yako":6}],"name":"sheol","levels":[[768,16304,1020,13056,13299,12288,-4,0],[768,13180,12303,16382,252,15360,13263,12288],[768,13116,12348,13105,13119,13068,13116,512],[0,16188,12300,13260,12300,12300,16380,256]],"entery":58,"enterx":33,"attr":"dex"},{"creatures":[{"idtype":51,"xeno":4,"zabo":1,"yako":6},{"idtype":51,"xeno":4,"zabo":2,"yako":7},{"idtype":51,"xeno":1,"zabo":3,"yako":7},{"idtype":53,"xeno":6,"zabo":3,"yako":8},{"idtype":53,"xeno":8,"zabo":3,"yako":4},{"idtype":53,"xeno":3,"zabo":3,"yako":1},{"idtype":53,"xeno":6,"zabo":2,"yako":6},{"idtype":53,"xeno":6,"zabo":1,"yako":8}],"startz":3,"enterx":124,"items":[{"idtype":9,"xeno":8,"zabo":3,"yako":1},{"zabo":3,"targetx":117,"targety":41,"yako":8,"idtype":9,"xeno":3,"targetmap":8,"targetz":0},{"idtype":8,"xeno":8,"zabo":3,"yako":7},{"idtype":8,"xeno":3,"zabo":3,"yako":4},{"idtype":8,"xeno":1,"zabo":2,"yako":2},{"idtype":8,"xeno":8,"zabo":2,"yako":2}],"name":"the upper levels","levels":[[192,-17202,-817,204,16332,3276,204,3072],[192,31949,16323,14576,15555,3276,15566,192],[192,-13105,3264,13564,16320,207,13261,15104]],"mn":8,"startx":8,"entery":26}]')
+maps=json_parse('[{"sy":23,"mxx":105,"ex":13,"sx":92,"n":"saugus","signs":[{"x":92,"msg":"welcome to saugus!","y":19}],"mxy":24,"c":[{"x":89,"id":15,"y":21},{"x":84,"id":26,"y":9},{"x":95,"id":24,"y":3},{"x":97,"id":23,"y":13},{"x":82,"id":14,"y":21},{"x":101,"id":21,"y":5},{"x":84,"d":["the secret room is key.","the way must be clear."],"id":20,"y":5},{"x":103,"d":["faxon is in a tower.","volcanoes mark it."],"id":21,"y":18},{"x":85,"d":["poynter has a ship.","poynter is in lynn."],"id":17,"y":16},{"x":95,"id":15,"y":21}],"i":[{"x":84,"id":4,"y":4}],"ey":4},{"sy":23,"ex":17,"sx":116,"n":"lynn","signs":[{"x":125,"msg":"marina for members only.","y":9}],"mxy":24,"c":[{"x":118,"id":15,"y":22},{"x":106,"id":25,"y":1},{"x":118,"id":28,"y":2},{"x":107,"id":23,"y":9},{"x":106,"id":19,"y":16},{"x":122,"id":26,"y":12},{"x":105,"d":["i\'ve seen faxon\'s tower.","south of the eastern shrine."],"id":14,"y":4},{"x":106,"d":["griswold knows dungeons.","griswold is in salem."],"id":17,"y":7},{"x":119,"d":["i\'m rich! i have a yacht!","ho ho! i\'m the best!"],"id":16,"y":6},{"x":114,"id":15,"y":22}],"i":[{"x":125,"id":5,"y":5}],"mnx":104,"ey":4},{"sy":54,"mxx":112,"ex":45,"sx":96,"n":"boston","mxy":56,"c":[{"x":94,"id":15,"y":49},{"x":103,"id":25,"y":39},{"x":92,"id":24,"y":30},{"x":88,"id":23,"y":38},{"x":100,"id":26,"y":30},{"x":96,"id":19,"y":44},{"x":83,"d":["zanders has good tools.","be prepared!"],"id":14,"y":27},{"x":81,"id":16,"y":44},{"x":104,"d":["each shrine has a caretaker.","seek their wisdom."],"id":20,"y":26},{"x":110,"d":["i\'ve seen the magic sword.","search south of the shrine."],"id":16,"y":40},{"x":105,"mva":1,"id":15,"y":35},{"x":98,"id":15,"y":49}],"i":[{"x":96,"id":7,"y":40}],"mny":24,"ey":19},{"sy":62,"ex":7,"sx":119,"n":"salem","i":[{"x":116,"id":4,"y":53}],"c":[{"x":118,"id":15,"y":63},{"x":125,"id":27,"y":44},{"x":114,"id":28,"y":44},{"x":122,"id":23,"y":51},{"x":118,"id":17,"y":58},{"x":113,"d":["faxon is a blight.","daemons serve faxon."],"id":21,"y":50},{"x":123,"d":["increase stats in dungeons!","only severe injuries work."],"id":14,"y":57},{"x":120,"id":15,"y":63}],"mny":43,"mnx":112,"ey":36},{"c":[{"x":93,"id":23,"y":57},{"x":100,"id":28,"y":57},{"x":91,"d":["even faxon has fears.","lalla knows who to see."],"id":14,"y":60},{"x":82,"id":18,"y":57},{"x":102,"d":["gilly is in boston.","gilly knows of the sword."],"id":18,"y":63}],"sy":59,"mxx":103,"ex":27,"mny":56,"sx":82,"n":"great misery","ey":35},{"sy":62,"mxx":112,"ex":1,"sx":107,"n":"western shrine","c":[{"x":107,"d":["magic serves good or evil.","swords cut both ways."],"id":20,"y":59}],"mny":56,"mnx":103,"ey":28},{"sy":62,"mxx":112,"ex":49,"sx":107,"n":"eastern shrine","c":[{"x":107,"d":["some fountains have secrets.","know when to be humble."],"id":18,"y":59}],"mny":56,"mnx":103,"ey":6},{"sy":41,"newm":35,"ex":56,"sx":120,"n":"the dark tower","c":[{"x":119,"id":53,"y":41},{"x":126,"id":53,"y":40},{"x":123,"id":53,"y":38},{"x":113,"id":53,"y":40},{"x":121,"id":52,"y":37},{"x":119,"id":52,"y":38},{"x":120,"id":45,"y":34},{"x":118,"id":45,"y":35},{"ar":25,"dmg":50,"hp":255,"y":30,"x":118,"i":126,"id":50,"pn":"faxon"}],"i":[{"tm":12,"ty":8,"y":41,"x":117,"tz":3,"id":8,"tx":3},{"x":119,"id":6,"y":37},{"x":119,"id":6,"y":39},{"x":120,"id":6,"y":37},{"x":120,"id":6,"y":38},{"x":120,"id":6,"y":39},{"x":121,"id":6,"y":38},{"x":121,"id":6,"y":39}],"ss":17,"mxm":23,"mxy":43,"fri":false,"mny":24,"mnx":112,"ey":44},{"l":[[0,16382,768,12336,16380,13056,13308,192],[0,-13107,816,12336,15612,768,16332,704],[-32768,-3316,1020,12300,13116,13056,-3076,448],[29488,13116,0,-3073,0,-3124,780,13116]],"sy":8,"c":[{"x":8,"z":4,"id":50,"y":5},{"x":3,"z":4,"id":52,"y":1},{"x":1,"z":4,"id":52,"y":5},{"x":5,"z":4,"id":52,"y":1},{"x":3,"z":4,"id":53,"y":3}],"ex":4,"attr":"int","i":[{"x":1,"z":1,"id":8,"y":8},{"x":8,"z":2,"id":8,"y":2},{"x":4,"z":3,"id":8,"y":8},{"x":1,"z":4,"id":8,"y":1},{"x":1,"z":4,"id":6,"y":8},{"x":7,"z":4,"id":6,"y":1},{"x":3,"z":4,"id":6,"y":8},{"x":5,"z":4,"id":6,"y":8},{"x":8,"z":4,"id":6,"y":8},{"x":6,"z":3,"id":7,"y":8}],"n":"nibiru","ey":11},{"l":[[824,16188,768,13296,-4036,13056,13308,768],[13060,13116,12,16332,12540,15360,15311,768],[768,13116,-20432,-196,48,16140,14140,816],[0,-13108,19468,-13108,192,-13108,3084,-13108]],"c":[{"x":3,"z":4,"id":50,"y":5},{"x":1,"z":4,"id":52,"y":5},{"x":7,"z":4,"id":52,"y":5},{"x":5,"z":4,"id":53,"y":3},{"x":5,"z":4,"id":53,"y":7}],"ex":32,"attr":"str","i":[{"x":1,"z":1,"id":8,"y":1},{"x":7,"z":2,"id":8,"y":1},{"x":3,"z":3,"id":8,"y":7},{"x":1,"z":4,"id":8,"y":3},{"x":1,"z":4,"id":6,"y":1},{"x":1,"z":4,"id":6,"y":8},{"x":1,"z":4,"id":6,"y":7},{"x":2,"z":4,"id":6,"y":8},{"x":8,"z":4,"id":6,"y":8},{"x":7,"z":3,"id":7,"y":5}],"n":"purgatory","ey":5},{"l":[[768,16304,1020,13056,13299,12288,-4,0],[768,13180,12303,16382,252,15360,13263,12288],[768,13116,12348,13105,13119,13068,13116,512],[0,16188,12300,13260,12300,12300,16380,256]],"c":[{"x":3,"z":4,"id":50,"y":1},{"x":4,"z":4,"id":52,"y":5},{"x":5,"z":4,"id":52,"y":2},{"x":3,"z":4,"id":53,"y":4},{"x":6,"z":4,"id":53,"y":4}],"ex":33,"attr":"dex","i":[{"x":1,"z":1,"id":8,"y":1},{"x":5,"z":2,"id":8,"y":2},{"x":8,"z":3,"id":8,"y":4},{"x":4,"z":4,"id":8,"y":8},{"x":5,"z":4,"id":6,"y":5},{"x":3,"z":4,"id":6,"y":6},{"x":4,"z":4,"id":6,"y":6},{"x":5,"z":4,"id":6,"y":6},{"x":6,"z":4,"id":6,"y":6},{"x":6,"z":3,"id":7,"y":6}],"n":"sheol","ey":58},{"sz":3,"c":[{"x":4,"z":1,"id":51,"y":6},{"x":4,"z":2,"id":51,"y":7},{"x":1,"z":3,"id":51,"y":7},{"x":6,"z":3,"id":53,"y":8},{"x":8,"z":3,"id":53,"y":4},{"x":3,"z":3,"id":53,"y":1},{"x":6,"z":2,"id":53,"y":6},{"x":6,"z":1,"id":53,"y":8}],"ex":124,"sx":8,"n":"the upper levels","l":[[192,-17202,-817,204,16332,3276,204,3072],[192,31949,16323,14576,15555,3276,15566,192],[192,-13105,3264,13564,16320,207,13261,15104]],"mn":8,"i":[{"x":8,"z":3,"id":9,"y":1},{"tz":0,"tm":8,"z":3,"y":8,"x":3,"ty":41,"id":9,"tx":117},{"x":8,"z":3,"id":8,"y":7},{"x":3,"z":3,"id":8,"y":4},{"x":1,"z":2,"id":8,"y":2},{"x":8,"z":2,"id":8,"y":2}],"ey":26}]')
 -- map 0 is special; it's the world map, the overview map.
-maps[0]=json_parse('{"name":"world","minx":0,"miny":0,"maxx":80,"maxy":64,"wrap":true,"newmonsters":10,"maxmonsters":12,"friendly":false,"songstart":0}')
+maps[0]=json_parse('{"n":"world","mnx":0,"mny":0,"mxx":80,"mxy":64,"wrap":1,"newm":10,"mxm":12,"fri":false,"ss":0}')
 
 -- add numerical references to names by amounts
 function makenameforamount(itemtype)
   nameforamount={}
   for itemcmd,item in pairs(itemtype) do
-    nameforamount[item.amount]=item.name
+    nameforamount[item.a]=item.n
   end
   nameforamount[0]='none'
   return nameforamount
 end
 
 -- armor definitions
-armors=json_parse('{"south":{"name":"cloth","amount":8,"price":12},"west":{"name":"leather","amount":23,"price":99},"east":{"name":"chain","amount":40,"price":300},"north":{"name":"plate","amount":70,"price":950}}')
+armors=json_parse('{"south":{"n":"cloth","a":8,"p":12},"west":{"n":"leather","a":23,"p":99},"east":{"n":"chain","a":40,"p":300},"north":{"n":"plate","a":70,"p":950}}')
 armornames=makenameforamount(armors)
 
 -- weapon definitions
-weapons=json_parse('{"d":{"name":"dagger","amount":8,"price":8},"c":{"name":"club","amount":12,"price":40},"a":{"name":"axe","amount":18,"price":75},"s":{"name":"sword","amount":30,"price":150},"t":{"name":"magic swd","amount":40}}')
+weapons=json_parse('{"d":{"n":"dagger","a":8,"p":8},"c":{"n":"club","a":12,"p":40},"a":{"n":"axe","a":18,"p":75},"s":{"n":"sword","a":30,"p":150},"t":{"n":"magic swd","a":40}}')
 weaponnames=makenameforamount(weapons)
 
 -- spell definitions
-spells=json_parse('{"a":{"name":"attack","cost":3,"amount":1},"x":{"name":"medic","cost":5,"amount":1,"price":8},"c":{"name":"cure","cost":7,"price":10},"w":{"name":"wound","cost":11,"amount":5},"e":{"name":"exit","cost":13},"s":{"name":"savior","cost":17,"amount":6,"price":25}}')
+spells=json_parse('{"a":{"n":"attack","c":3,"a":1},"x":{"n":"medic","c":5,"a":1,"p":8},"c":{"n":"cure","c":7,"p":10},"w":{"n":"wound","c":11,"a":5},"e":{"n":"exit","c":13},"s":{"n":"savior","c":17,"a":6,"p":25}}')
+
+-- tool definitions
+tools=json_parse('{"west":{"n":"5 torches","attr":"ts","p":12,"q":1},"east":{"n":"a key","attr":"keys","p":23,"q":1}}')
 
 function setmap()
-  local songstrt=curmap.songstart
+  local songstrt=curmap.ss
   curmap=maps[mapnum]
   contents=curmap.contents
-  if(songstrt and curmap.songstart)music(curmap.songstart)
+  if(songstrt and curmap.ss)music(curmap.ss)
   hero.hd=0
 end
 
@@ -347,33 +338,33 @@ function initobjs()
     local maptype
     curmap=maps[mapnum]
     if mapnum>0 then
-      if curmap.levels then
+      if curmap.l then
         maptype=basetypes[3]
       else
         maptype=basetypes[2]
       end
       makemetaobj(curmap,maptype)
     end
-    curmap.width,curmap.height=curmap.maxx-curmap.minx,curmap.maxy-curmap.miny
+    curmap.w,curmap.h=curmap.mxx-curmap.mnx,curmap.mxy-curmap.mny
     creatures[mapnum],curmap.contents={},{}
-    for num=curmap.minx-1,curmap.maxx+1 do
+    for num=curmap.mnx-1,curmap.mxx+1 do
       curmap.contents[num]={}
-      for inner=curmap.miny-1,curmap.maxy+1 do
+      for inner=curmap.mny-1,curmap.mxy+1 do
         curmap.contents[num][inner]={}
       end
     end
-    for item in all(curmap.items) do
-      item.objtype,xcoord,ycoord,zcoord=basetypes[item.idtype],item.xeno,item.yako,item.zabo or 0
+    for item in all(curmap.i) do
+      item.ot,xcoord,ycoord,zcoord=basetypes[item.id],item.x,item.y,item.z or 0
       curmap.contents[xcoord][ycoord][zcoord]=makemetaobj(item)
       -- automatically make a corresponding ladder down for every ladder up
-      if item.objtype.name=='ladder up' and maptype==dungeontype then
+      if item.ot.n=='ladder up' and curmap.dg then
         zcoord-=1
-        curmap.contents[xcoord][ycoord][zcoord]=makemetaobj{objtype=basetypes[9]}
+        curmap.contents[xcoord][ycoord][zcoord]=makemetaobj{ot=basetypes[9]}
       end
     end
-    for creature in all(curmap.creatures) do
+    for creature in all(curmap.c) do
       creature.mn=mapnum
-      creature.objtype=basetypes[creature.idtype]
+      creature.ot=basetypes[creature.id]
       definemonster(creature)
     end
   end
@@ -381,7 +372,7 @@ function initobjs()
   -- the hero is the player character. although human, it has
   -- enough differences that there is no advantage to inheriting
   -- the human type.
-  hero=json_parse('{"img":0,"armor":0,"dmg":0,"xeno":7,"yako":7,"zabo":0,"exp":0,"lvl":0,"str":8,"int":8,"dex":8,"status":0,"hd":0,"facing":0,"gp":20,"food":25,"movepayment":0,"mp":8,"hp":24,"keys":0,"torches":5,"lit":0}')
+  hero=json_parse('{"i":0,"ar":0,"dmg":0,"x":7,"y":7,"z":0,"exp":0,"lvl":0,"str":8,"int":8,"dex":8,"st":0,"hd":0,"f":0,"gp":20,"fd":25,"mvp":0,"mp":8,"hp":24,"keys":0,"ts":5,"lit":0}')
   hero.color=rnd(10)>6 and 4 or 15
  
   -- make the map info global for efficiency
@@ -391,7 +382,7 @@ function initobjs()
   -- creature 0 is the maelstrom and not really a creature at all,
   -- although it shares most creature behaviors.
   creatures[0]={}
-  maelstrom=makemetaobj(json_parse('{"img":69,"imgseq":23,"name":"maelstrom","terrain":[12,13,14,15],"moveallowance":1,"xeno":13,"yako":61}'),anyobj)
+  maelstrom=makemetaobj(json_parse('{"i":69,"iseq":23,"n":"maelstrom","t":[12,13,14,15],"mva":1,"x":13,"y":61}'),anyobj)
   creatures[0][0]=maelstrom
   contents[13][61][0]=maelstrom
 
@@ -428,7 +419,7 @@ function listcommands()
   end
 end
 
-attrlist={'armor','dmg','xeno','yako','str','int','dex','status','img','color','facing','keys','torches','exp','lvl','gp','food','mp','hp'}
+attrlist={'ar','dmg','x','y','str','int','dex','st','i','color','f','keys','ts','exp','lvl','gp','fd','mp','hp'}
 
 function combinevalues(highval,lowval)
   return bor(shl(highval,8),lowval)
@@ -446,8 +437,8 @@ function savegame()
     for creaturenum=1,12 do
       local creature=creatures[0][creaturenum]
       if creature then
-        dset(storagenum,creature.idtype)
-        dset(storagenum+1,combinevalues(creature.xeno,creature.yako))
+        dset(storagenum,creature.id)
+        dset(storagenum+1,combinevalues(creature.x,creature.y))
       else
         dset(storagenum,0)
       end
@@ -471,8 +462,8 @@ function loadgame()
   for creaturenum=1,10 do
     creaturenum=dget(storagenum)
     if creaturenum~=0 then
-      creaturexeno,creatureyako=separatevalues(dget(storagenum+1))
-      definemonster{objtype=basetypes[creaturenum],xeno=creaturexeno,yako=creatureyako,mn=0}
+      creaturex,creaturey=separatevalues(dget(storagenum+1))
+      definemonster{ot=basetypes[creaturenum],x=creaturex,y=creaturey,mn=0}
       storagenum+=2
     else
       break
@@ -497,9 +488,9 @@ end
 
 function checkspell(cmd,extra)
   local spell=spells[cmd]
-  if hero.mp>=spell.cost then
-    hero.mp-=spell.cost
-    update_lines{spell.name.." is cast! "..(extra or '')}
+  if hero.mp>=spell.c then
+    hero.mp-=spell.c
+    update_lines{spell.n.." is cast! "..(extra or '')}
     return true
   else
     update_lines{"not enough mp."}
@@ -508,69 +499,69 @@ function checkspell(cmd,extra)
 end
 
 function exitdungeon(targx,targy,targmapnum)
-  hero.xeno,hero.yako,hero.zabo,hero.facing,mapnum=targx or curmap.enterx,targy or curmap.entery,0,0,targmapnum or curmap.mn
+  hero.x,hero.y,hero.z,hero.f,mapnum=targx or curmap.ex,targy or curmap.ey,0,0,targmapnum or curmap.mn
   setmap()
   _draw=world_draw
 end
 
 function entermap(targmap,targmapnum,targx,targy,targz)
-  hero.xeno,hero.yako=targx or targmap.startx,targy or targmap.starty
+  hero.x,hero.y=targx or targmap.sx,targy or targmap.sy
   mapnum=targmapnum
   setmap()
-  if targmap.dungeon then
+  if targmap.dg then
      _draw=dungeon_draw
-     hero.facing,hero.zabo=targmap.startfacing,targmap.startz
+     hero.f,hero.z=targmap.sf,targmap.sz
   end
-  return "entering "..targmap.name.."."
+  return "entering "..targmap.n.."."
 end
 
 function inputprocessor(cmd)
   while true do
     local spots=calculatemoves(hero)
-    local xcoord,ycoord,zcoord=hero.xeno,hero.yako,hero.zabo
+    local xcoord,ycoord,zcoord=hero.x,hero.y,hero.z
     local curobj=contents[xcoord][ycoord][zcoord]
-    local curobjname=curobj and curobj.name or nil
+    local curobjname=curobj and curobj.n or nil
     if _draw==msg_draw then
       if cmd!='p' and hero.hp>0 then
         _draw=draw_state
       end
     elseif cmd=='west' then
-      if curmap.dungeon then
-        hero.facing-=1
-        if hero.facing<1 then
-          hero.facing=4
+      if curmap.dg then
+        hero.f-=1
+        if hero.f<1 then
+          hero.f=4
         end
         update_lines{"turn left"}
         turnmade=true
       else
-        hero.xeno,hero.yako=checkmove(spots[2],ycoord,"west")
+        hero.x,hero.y=checkmove(spots[2],ycoord,cmd)
       end
     elseif cmd=='east' then
-      if curmap.dungeon then
-        hero.facing+=1
-        if hero.facing>4 then
-          hero.facing=1
+      if curmap.dg then
+        hero.f+=1
+        if hero.f>4 then
+          hero.f=1
         end
         update_lines{"turn right."}
         turnmade=true
       else
-        hero.xeno,hero.yako=checkmove(spots[4],ycoord,"east")
+        hero.x,hero.y=checkmove(spots[4],ycoord,cmd)
       end
     elseif cmd=='north' then
-      if curmap.dungeon then
-        hero.xeno,hero.yako,hero.zabo=checkdungeonmove(1)
+      if curmap.dg then
+        hero.x,hero.y,hero.z=checkdungeonmove(1)
       else
-        hero.xeno,hero.yako=checkmove(xcoord,spots[1],"north")
-        if hero.xeno==121 and hero.yako==36 then
+        hero.x,hero.y=checkmove(xcoord,spots[1],cmd)
+        if hero.x==121 and hero.y==36 then
           mset(116,41,22)
           update_lines{"something clicks."}
         end
       end
     elseif cmd=='south' then
-      if curmap.dungeon then
-        hero.xeno,hero.yako,hero.zabo=checkdungeonmove(-1)
+      if curmap.dg then
+        hero.x,hero.y,hero.z=checkdungeonmove(-1)
       else
-        hero.xeno,hero.yako=checkmove(xcoord,spots[3],"south")
+        hero.x,hero.y=checkmove(xcoord,spots[3],cmd)
       end
     elseif cmd=='c' then
       update_lines{"choose a\84\84\65\67\75, m\69\68\73\67, c\85\82\69,","w\79\85\78\68, e\88\73\84, s\65\86\73\79\82: "}
@@ -579,17 +570,17 @@ function inputprocessor(cmd)
         -- cast cure
         if checkspell(cmd) then
           sfx(3)
-          hero.status=band(hero.status,14)
+          hero.st=band(hero.st,14)
         end
       elseif cmd=='x' or cmd=='s' then
         -- cast healing
         if checkspell(cmd) then
           sfx(3)
-          increasehp(spells[cmd].amount*hero.int)
+          increasehp(spells[cmd].a*hero.int)
         end
       elseif cmd=='e' then
         -- cast exit dungeon
-        if not curmap.dungeon then
+        if not curmap.dg then
           update_lines{'not in a dungeon.'}
         elseif(checkspell(cmd)) then
           sfx(4)
@@ -598,7 +589,7 @@ function inputprocessor(cmd)
       elseif cmd=='w' or cmd=='a' then
         -- cast offensive spell
         if checkspell(cmd,'dir:') then
-          local spelldamage=ceil(rnd(spells[cmd].amount*hero.int))
+          local spelldamage=ceil(rnd(spells[cmd].a*hero.int))
           if not getdirection(spots,attack_results,spelldamage) then
             update_lines{'nothing to target.'}
           end
@@ -635,8 +626,8 @@ function inputprocessor(cmd)
       turnmade=true
       if curobjname=='fountain' then
         sfx(3)
-        msg="healed by the fountain!"
-        if curmap.dungeon and hero.hp<23 and hero[curmap.attr]<16 then
+        msg="healed!"
+        if curmap.dg and hero.hp<23 and hero[curmap.attr]<16 then
           hero[curmap.attr]+=1
           msg="you feel more capable!"
         end
@@ -647,10 +638,10 @@ function inputprocessor(cmd)
         hero.gp+=chestgold
         update_lines{"you find "..chestgold.." gp."}
         contents[xcoord][ycoord][zcoord]=nil
-      elseif curmap.dungeon and hero.lit<1 then
-        if hero.torches>1 then
+      elseif curmap.dg and hero.lit<1 then
+        if hero.ts>1 then
           hero.lit=50
-          hero.torches-=1
+          hero.ts-=1
           update_lines{"the torch is now aflame."}
         else
           update_lines{"you have no torches."}
@@ -662,37 +653,37 @@ function inputprocessor(cmd)
       turnmade=true
       local msg="nothing to enter."
       if curobjname=='ladder up' or curobjname=='ladder down' then
-        if curmap.dungeon then
-          if zcoord==curmap.startz and xcoord==curmap.startx and ycoord==curmap.starty then
-            msg="exiting "..curmap.name.."."
+        if curmap.dg then
+          if zcoord==curmap.sz and xcoord==curmap.sx and ycoord==curmap.sy then
+            msg="exiting "..curmap.n.."."
             exitdungeon()
           elseif curobjname=='ladder up' then
             msg="ascending."
-            hero.zabo-=1
+            hero.z-=1
           else
             msg="descending."
-            hero.zabo+=1
+            hero.z+=1
           end
         end
-        if curobj.targetmap then
-          if curmap.dungeon and not maps[curobj.targetmap].dungeon then
-            exitdungeon(curobj.targetx,curobj.targety,curobj.targetmap)
+        if curobj.tm then
+          if curmap.dg and not maps[curobj.tm].dg then
+            exitdungeon(curobj.tx,curobj.ty,curobj.tm)
           else
-            msg=entermap(maps[curobj.targetmap],curobj.targetmap,curobj.targetx,curobj.targety,curobj.targetz)
+            msg=entermap(maps[curobj.tm],curobj.tm,curobj.tx,curobj.ty,curobj.tz)
           end
         end
-      elseif hero.img>0 then
+      elseif hero.i>0 then
         msg="exiting ship."
-        contents[xcoord][ycoord][zcoord]=makemetaobj{facing=hero.facing,objtype=shiptype}
-        hero.img,hero.facing=0,0
+        contents[xcoord][ycoord][zcoord]=makemetaobj{f=hero.f,ot=shiptype}
+        hero.i,hero.f=0,0
       elseif curobjname=='ship' then
         msg="boarding ship."
-        hero.img,hero.facing=70,curobj.facing
+        hero.i,hero.f=70,curobj.f
         contents[xcoord][ycoord][zcoord]=nil
       end
       for loopmapnum=1,#maps do
         local loopmap=maps[loopmapnum]
-        if mapnum==loopmap.mn and xcoord==loopmap.enterx and ycoord==loopmap.entery then
+        if mapnum==loopmap.mn and xcoord==loopmap.ex and ycoord==loopmap.ey then
           msg=entermap(loopmap,loopmapnum)
         end
       end
@@ -705,11 +696,11 @@ function inputprocessor(cmd)
       turnmade=true
     elseif cmd=='w' then
       update_lines{
-        "worn: "..armornames[hero.armor].."; wield: "..weaponnames[hero.dmg],
-        hero.torches..' torches & '..hero.keys..' skeleton keys.'
+        "worn: "..armornames[hero.ar].."; wield: "..weaponnames[hero.dmg],
+        hero.ts..' torches & '..hero.keys..' skeleton keys.'
       }
     elseif cmd=='a' then
-      if hero.img>0 then
+      if hero.i>0 then
         update_lines{"fire dir:"}
       else
         update_lines{"attack dir:"}
@@ -733,19 +724,19 @@ function inputprocessor(cmd)
 end
 
 function getdirection(spots,resultfunc,magic,adir)
-  if curmap.dungeon then
-    adir='ahead'
+  if curmap.dg then
+    adir=dngdirections[hero.f]
   elseif not adir then
     adir=yield()
   end
-  if adir=='east' or hero.facing==2 then
-    resultfunc(adir,spots[4],hero.yako,magic)
-  elseif adir=='west' or hero.facing==4 then
-    resultfunc(adir,spots[2],hero.yako,magic)
-  elseif adir=='north' or hero.facing==1 then
-    resultfunc(adir,hero.xeno,spots[1],magic)
-  elseif adir=='south' or hero.facing==3 then
-    resultfunc(adir,hero.xeno,spots[3],magic)
+  if adir=='east' then
+    resultfunc(adir,spots[4],hero.y,magic)
+  elseif adir=='west' then
+    resultfunc(adir,spots[2],hero.y,magic)
+  elseif adir=='north' then
+    resultfunc(adir,hero.x,spots[1],magic)
+  elseif adir=='south' then
+    resultfunc(adir,hero.x,spots[3],magic)
   else
     return false
   end
@@ -764,39 +755,39 @@ function update_lines(msg)
 end
 
 function definemonster(monster)
-  local objtype,xcoord,ycoord,zcoord=monster.objtype,monster.xeno,monster.yako,monster.zabo or 0
-  monster.objtype=objtype
+  local objtype,xcoord,ycoord,zcoord=monster.ot,monster.x,monster.y,monster.z or 0
+  monster.ot=objtype
   makemetaobj(monster)
-  if objtype.propername then
-    monster.name=objtype.propername
-  elseif objtype.names then
-    monster.name=objtype.names[flr(rnd(#objtype.names)+1)]
+  if objtype.pn then
+    monster.n=objtype.pn
+  elseif objtype.ns then
+    monster.n=objtype.ns[flr(rnd(#objtype.ns)+1)]
   end
-  --if(objtype.imgs)monster.img=objtype.imgs[flr(rnd(#objtype.imgs)+1)]
-  if(objtype.colorsubs)monster.colorsub=objtype.colorsubs[flr(rnd(#objtype.colorsubs)+1)]
-  monster.imgseq=flr(rnd(30))
-  monster.imgalt=false
+  --if(objtype.is)monster.i=objtype.is[flr(rnd(#objtype.is)+1)]
+  if(objtype.cs)monster.co=objtype.cs[flr(rnd(#objtype.cs)+1)]
+  monster.iseq=flr(rnd(30))
+  monster.ia=false
   add(creatures[monster.mn],monster)
   maps[monster.mn].contents[xcoord][ycoord][zcoord]=monster
   return monster
 end
 
 function create_monster()
-  local monsterx=flr(rnd(curmap.width))+curmap.minx
-  local monstery=flr(rnd(curmap.height))+curmap.miny
-  local monsterz=curmap.dungeon and flr(rnd(#curmap.levels)+1) or 0
-  if contents[monsterx][monstery][monsterz] or monsterx==hero.xeno and monstery==hero.yako and monsterz==hero.zabo then
+  local monsterx=flr(rnd(curmap.w))+curmap.mnx
+  local monstery=flr(rnd(curmap.h))+curmap.mny
+  local monsterz=curmap.dg and flr(rnd(#curmap.l)+1) or 0
+  if contents[monsterx][monstery][monsterz] or monsterx==hero.x and monstery==hero.y and monsterz==hero.z then
     -- don't create a monster where there already is one
     monsterx=nil
   end
   if monsterx then
     local monsterspot=mget(monsterx,monstery)
-    if curmap.dungeon then
-      monsterspot=getdungeonblockterrain(monsterx,monstery,monsterz)
+    if curmap.dg then
+      monsterspot=getdungeonblock(monsterx,monstery,monsterz,1)
     end
     for objtype in all(terrainmonsters[monsterspot]) do
-      if rnd(200)<objtype.chance then
-        definemonster{objtype=objtype,xeno=monsterx,yako=monstery,zabo=monsterz,mn=mapnum}
+      if rnd(200)<objtype.ch then
+        definemonster{ot=objtype,x=monsterx,y=monstery,z=monsterz,mn=mapnum}
         break
       end
     end
@@ -813,10 +804,10 @@ function deducthp(damage)
 end
 
 function deductfood(amount)
-  hero.food-=amount
-  if hero.food<=0 then
+  hero.fd-=amount
+  if hero.fd<=0 then
     sfx(1,3,8)
-    hero.food=0
+    hero.fd=0
     update_lines{"starving!"}
     deducthp(1)
   end
@@ -850,20 +841,20 @@ end
 -- world updates
 
 function checkdungeonmove(direction)
-  local newx,newy=hero.xeno,hero.yako
-  local xcoord,ycoord,zcoord=hero.xeno,hero.yako,hero.zabo
+  local newx,newy=hero.x,hero.y
+  local xcoord,ycoord,zcoord=hero.x,hero.y,hero.z
   local cmd=direction>0 and 'advance' or 'retreat'
   local item
   local iscreature=false
-  if hero.facing==1 then
+  if hero.f==1 then
     newy-=direction
     result=getdungeonblock(xcoord,newy,zcoord)
     item=contents[xcoord][newy][zcoord]
-  elseif hero.facing==2 then
+  elseif hero.f==2 then
     newx+=direction
     result=getdungeonblock(newx,ycoord,zcoord)
     item=contents[newx][ycoord][zcoord]
-  elseif hero.facing==3 then
+  elseif hero.f==3 then
     newy+=direction
     result=getdungeonblock(xcoord,newy,zcoord)
     item=contents[xcoord][newy][zcoord]
@@ -876,8 +867,7 @@ function checkdungeonmove(direction)
     iscreature=true
   end
   if result==3 or iscreature then
-    sfx(5)
-    update_lines{cmd,"blocked!"}
+    blocked(cmd)
   else
     xcoord,ycoord=newx,newy
     sfx(0)
@@ -888,8 +878,8 @@ function checkdungeonmove(direction)
 end
 
 function checkexit(xcoord,ycoord)
-  if not curmap.wrap and(xcoord>=curmap.maxx or xcoord<curmap.minx or ycoord>=curmap.maxy or ycoord<curmap.miny) then
-    update_lines{cmd,"exiting "..curmap.name.."."}
+  if not curmap.wrap and(xcoord>=curmap.mxx or xcoord<curmap.mnx or ycoord>=curmap.mxy or ycoord<curmap.mny) then
+    update_lines{cmd,"exiting "..curmap.n.."."}
     mapnum=0
     return true
   else
@@ -897,36 +887,36 @@ function checkexit(xcoord,ycoord)
   end
 end
 
+function blocked(cmd)
+  sfx(5)
+  update_lines{cmd,"blocked!"}
+  return false
+end
+
+-- this is kind of weird; the ship icons ought to be rearranged
+directions={north=1,west=2,south=3,east=4}
+dngdirections={"north","east","south","west"}
+
 function checkmove(xcoord,ycoord,cmd)
   local movesuccess=true
   local newloc=mget(xcoord,ycoord)
   local movecost=band(fget(newloc),3)
   local water=fget(newloc,2)
   local impassable=fget(newloc,3)
-  local content=contents[xcoord][ycoord][hero.zabo]
+  local content=contents[xcoord][ycoord][hero.z]
   --update_lines(""..xcoord..","..ycoord.." "..newloc.." "..movecost.." "..fget(newloc))
-  if hero.img>0 then
-    if cmd=='north' then
-      hero.facing=1
-    elseif cmd=='west' then
-      hero.facing='2'
-    elseif cmd=='south' then
-      hero.facing='3'
-    else
-      hero.facing='4'
-    end
+  if hero.i>0 then
+    hero.f=directions[cmd]
     local terraintype=mget(xcoord,ycoord)
     if checkexit(xcoord,ycoord) then
-      xcoord,ycoord=curmap.enterx,curmap.entery
+      xcoord,ycoord=curmap.ex,curmap.ey
       setmap()
     elseif content then
-      if content.name=='maelstrom' then
+      if content.n=='maelstrom' then
         update_lines{cmd,"maelstrom! yikes!"}
         deducthp(ceil(rnd(25)))
       else
-        sfx(5)
-        movesuccess=false
-        update_lines{cmd,"blocked!"}
+        movesuccess=blocked(cmd)
       end
     elseif terraintype<12 or terraintype>15 then
       update_lines{cmd,"must exit ship first."}
@@ -936,13 +926,11 @@ function checkmove(xcoord,ycoord,cmd)
     end
   else
     if checkexit(xcoord,ycoord) then
-      xcoord,ycoord=curmap.enterx,curmap.entery
+      xcoord,ycoord=curmap.ex,curmap.ey
       setmap()
     elseif content then
-      if not content.passable then
-        sfx(5)
-        movesuccess=false
-        update_lines{cmd,"blocked!"}
+      if not content.p then
+      movesuccess=blocked(cmd)
       end
     elseif newloc==28 then
       update_lines{cmd,"open door."}
@@ -958,31 +946,29 @@ function checkmove(xcoord,ycoord,cmd)
       end
       movesuccess=false
     elseif impassable then
-      sfx(5)
-      movesuccess=false
-      update_lines{cmd,"blocked!"}
+      movesuccess=blocked(cmd)
     elseif water then
       movesuccess=false
       update_lines{cmd,"not without a boat."}
-    elseif movecost>hero.movepayment then
-      hero.movepayment+=1
+    elseif movecost>hero.mvp then
+      hero.mvp+=1
       movesuccess=false
       update_lines{cmd,"slow progress."}
     else
-      hero.movepayment=0
+      hero.mvp=0
       update_lines{cmd}
     end
   end
   if movesuccess then
-    if hero.img==0 then
+    if hero.i==0 then
       sfx(0)
     end
     if newloc==5 and rnd(10)>6 then
       update_lines{cmd,"poisoned!"}
-      hero.status=bor(hero.status,1)
+      hero.st=bor(hero.st,1)
     end
   else
-    xcoord,ycoord=hero.xeno,hero.yako
+    xcoord,ycoord=hero.x,hero.y
   end
   turnmade=true
   return xcoord,ycoord
@@ -993,7 +979,7 @@ function check_sign(xcoord,ycoord)
   if mget(xcoord,ycoord)==31 then
     -- read the sign
     for sign in all(curmap.signs) do
-      if xcoord==sign.xeno and ycoord==sign.yako then
+      if xcoord==sign.x and ycoord==sign.y then
         response=sign.msg
         break
       end
@@ -1003,13 +989,13 @@ function check_sign(xcoord,ycoord)
 end
 
 function look_results(ldir,xcoord,ycoord)
-  local cmd,signcontents,content="examine: "..ldir,check_sign(xcoord,ycoord),contents[xcoord][ycoord][hero.zabo] or nil
+  local cmd,signcontents,content="examine: "..ldir,check_sign(xcoord,ycoord),contents[xcoord][ycoord][hero.z] or nil
   if signcontents then
     update_lines{cmd.." (read sign)",signcontents}
   elseif content then
-    update_lines{cmd,content.name}
-  elseif curmap.dungeon then
-    update_lines{cmd,getdungeonblockterrain(xcoord,ycoord,hero.zabo)==20 and 'passage' or 'wall'}
+    update_lines{cmd,content.n}
+  elseif curmap.dg then
+    update_lines{cmd,getdungeonblock(xcoord,ycoord,hero.z)==20 and 'passage' or 'wall',1}
   else
     update_lines{cmd,terrains[mget(xcoord,ycoord)]}
   end
@@ -1018,14 +1004,14 @@ end
 function dialog_results(ddir,xcoord,ycoord)
   local cmd="dialog: "..ddir
   if terrains[mget(xcoord,ycoord)]=='counter' then
-    return getdirection(calculatemoves({xeno=xcoord,yako=ycoord}),dialog_results,nil,ddir)
+    return getdirection(calculatemoves({x=xcoord,y=ycoord}),dialog_results,nil,ddir)
   end
-  local dialog_target=contents[xcoord][ycoord][hero.zabo]
+  local dialog_target=contents[xcoord][ycoord][hero.z]
   if dialog_target then
-    if dialog_target.merch then
-      update_lines{shop[dialog_target.merch]()}
-    elseif dialog_target.talk then
-      update_lines{cmd,'"'..dialog_target.talk[flr(rnd(#dialog_target.talk)+1)]..'"'}
+    if dialog_target.mch then
+      update_lines{shop[dialog_target.mch]()}
+    elseif dialog_target.d then
+      update_lines{cmd,'"'..dialog_target.d[flr(rnd(#dialog_target.d)+1)]..'"'}
     else
       update_lines{cmd,'no response!'}
     end
@@ -1036,23 +1022,28 @@ end
 
 function attack_results(adir,xcoord,ycoord,magic)
   local cmd="attack: "..adir
-  local zcoord,creature=hero.zabo,contents[xcoord][ycoord][hero.zabo]
+  local zcoord,creature=hero.z,contents[xcoord][ycoord][hero.z]
   local damage=flr(rnd(hero.str+hero.lvl+hero.dmg))
   if magic then
     damage+=magic
-  elseif hero.img>0 then
+  elseif hero.i>0 then
     cmd="fire: "..adir
     damage+=rnd(50)
   end
+  --if creature then
+    --logit('creature: '..(creature.name or 'nil')..' '..(creature.x or 'nil')..','..(creature.y or 'nil')..','..(creature.z or 'nil'))
+  --else
+    --logit('creature: nil '..xcoord..','..ycoord..' '..adir)
+  --end
   if creature and creature.hp then
-    if magic or rnd(hero.dex+hero.lvl*8)>rnd(creature.dex+creature.armor) then
-      damage-=rnd(creature.armor)
+    if magic or rnd(hero.dex+hero.lvl*8)>rnd(creature.dex+creature.ar) then
+      damage-=rnd(creature.ar)
       if magic then
-        creature.hitcolors=json_parse('[[9,6],[8,13],[10,12]]')
-      elseif hero.img>0 then
-        creature.hitcolors=json_parse('[[9,8],[8,9],[10,1]]')
+        creature.hc=json_parse('[[9,6],[8,13],[10,12]]')
+      elseif hero.i>0 then
+        creature.hc=json_parse('[[9,8],[8,9],[10,1]]')
       else
-        creature.hitcolors=nil
+        creature.hc=nil
       end
       creature.hd=3
       sfx(1)
@@ -1060,34 +1051,34 @@ function attack_results(adir,xcoord,ycoord,magic)
       if creature.hp<=0 then
         increasegold(creature.gp)
         increasexp(creature.exp)
-        if creature.name=='pirate' then
+        if creature.n=='pirate' then
           contents[xcoord][ycoord][zcoord]=makemetaobj{
-            facing=creature.facing,
-            objtype=shiptype
+            f=creature.f,
+            ot=shiptype
           }
         else
           contents[xcoord][ycoord][zcoord]=nil
         end
-        update_lines{cmd,creature.name..' killed; xp+'..creature.exp..' gp+'..creature.gp}
-        if creature.name=='faxon' then
+        update_lines{cmd,creature.n..' killed; xp+'..creature.exp..' gp+'..creature.gp}
+        if creature.n=='faxon' then
           msg=winmsg
           _draw=msg_draw
         end
         del(creatures[mapnum],creature)
       else
-        update_lines{cmd,'you hit the '..creature.name..'!'}
+        update_lines{cmd,'you hit the '..creature.n..'!'}
       end
-      if curmap.friendly then
+      if curmap.fri then
         for townie in all(creatures[mapnum]) do
-          townie.hostile=true
-          townie.talk={"you're a lawbreaker!","criminal!"}
-          if townie.name=='guard' then
-            townie.moveallowance=1
+          townie.hos=1
+          townie.d={"you're a lawbreaker!","criminal!"}
+          if townie.n=='guard' then
+            townie.mva=1
           end
         end
       end
     else
-      update_lines{cmd,'you miss the '..creature.name..'!'}
+      update_lines{cmd,'you miss the '..creature.n..'!'}
     end
   elseif mget(xcoord,ycoord)==29 then
     -- bash locked door
@@ -1097,60 +1088,61 @@ function attack_results(adir,xcoord,ycoord,magic)
       update_lines{cmd,'you break open the door!'}
       mset(xcoord,ycoord,30)
     else
-      update_lines{cmd,'the door is still locked.'}
+      update_lines{cmd,'the door still holds.'}
     end
   else
     update_lines{cmd,'nothing to attack.'}
+    --logit('hero: '..hero.x..','..hero.y..','..hero.z..' '..hero.f..' target: '..xcoord..','..ycoord..' '..cmd)
   end
 end
 
 function squaredistance(x1,y1,x2,y2)
   local dx=abs(x1-x2)
-  if curmap.wrap and dx>curmap.width/2 then
-    dx=curmap.width-dx;
+  if curmap.wrap and dx>curmap.w/2 then
+    dx=curmap.w-dx;
   end
   local dy=abs(y1-y2)
-  if curmap.wrap and dy>curmap.height/2 then
-    dy=curmap.height-dy;
+  if curmap.wrap and dy>curmap.h/2 then
+    dy=curmap.h-dy;
   end
   return dx+dy
 end
 
 function calculatemoves(creature)
-  local maxx,maxy=curmap.maxx,curmap.maxy
-  local creaturex,creaturey=creature.xeno,creature.yako
-  local eastspot,westspot=(creaturex+curmap.width-1)%maxx,(creaturex+1)%maxx
-  local northspot,southspot=(creaturey+curmap.height-1)%maxy,(creaturey+1)%maxy
+  local maxx,maxy=curmap.mxx,curmap.mxy
+  local creaturex,creaturey=creature.x,creature.y
+  local eastspot,westspot=(creaturex+curmap.w-1)%maxx,(creaturex+1)%maxx
+  local northspot,southspot=(creaturey+curmap.h-1)%maxy,(creaturey+1)%maxy
   if not curmap.wrap then
     northspot,southspot,eastspot,westspot=creaturey-1,creaturey+1,creaturex-1,creaturex+1
     if creature~=hero then
-      northspot,southspot,eastspot,westspot=max(northspot,curmap.miny),min(southspot,maxy-1),max(eastspot,curmap.minx),min(westspot,maxx-1)
+      northspot,southspot,eastspot,westspot=max(northspot,curmap.mny),min(southspot,maxy-1),max(eastspot,curmap.mnx),min(westspot,maxx-1)
     end
   end
   return {northspot,eastspot,southspot,westspot}
 end
 
-function movecreatures(hero)
+function movecreatures()
   local gothit=false
   local actualdistance=500
-  local xcoord,ycoord,zcoord=hero.xeno,hero.yako,hero.zabo
+  local xcoord,ycoord,zcoord=hero.x,hero.y,hero.z
   for creaturenum,creature in pairs(creatures[mapnum]) do
-    local cfacing,desiredx,desiredy,desiredz=creature.facing,creature.xeno,creature.yako,creature.zabo
+    local cfacing,desiredx,desiredy,desiredz=creature.f,creature.x,creature.y,creature.z
     if desiredz==zcoord then
-      while creature.moveallowance>=creature.nummoves do
+      while creature.mva>=creature.nm do
         local spots=calculatemoves(creature)
         --foreach(spots,logit)
-        if creature.hostile then
+        if creature.hos then
           -- most creatures are hostile; move toward player
           local bestfacing=0
-          actualdistance=squaredistance(creature.xeno,creature.yako,xcoord,ycoord)
+          actualdistance=squaredistance(creature.x,creature.y,xcoord,ycoord)
           local currentdistance=actualdistance
           local bestdistance=currentdistance
           for facing=1,4 do
             if facing%2==1 then
-              currentdistance=squaredistance(creature.xeno,spots[facing],xcoord,ycoord)
+              currentdistance=squaredistance(creature.x,spots[facing],xcoord,ycoord)
             else
-              currentdistance=squaredistance(spots[facing],creature.yako,xcoord,ycoord)
+              currentdistance=squaredistance(spots[facing],creature.y,xcoord,ycoord)
             end
             if currentdistance<bestdistance or (currentdistance==bestdistance and rnd(10)<5) then
               bestdistance,bestfacing=currentdistance,facing
@@ -1161,7 +1153,7 @@ function movecreatures(hero)
           else
             desiredx=spots[bestfacing]
           end
-          creature.facing=bestfacing
+          creature.f=bestfacing
         else
           -- neutral & friendly creatures just do their own thing
           if rnd(10)<5 then
@@ -1173,7 +1165,7 @@ function movecreatures(hero)
               end
             else
               local facing=flr(rnd(4)+1)
-              creature.facing=facing
+              creature.f=facing
               if facing%2==1 then
                 desiredy=spots[facing]
               else
@@ -1183,27 +1175,27 @@ function movecreatures(hero)
           end
         end
         local newloc=mget(desiredx,desiredy)
-        if curmap.dungeon then
-          newloc=getdungeonblockterrain(desiredx,desiredy,desiredz)
+        if curmap.dg then
+          newloc=getdungeonblock(desiredx,desiredy,desiredz,1)
         end
         local canmove=false
-        for terrain in all(creature.terrain) do
-          if newloc==terrain and creature.moveallowance>creature.nummoves then
+        for terrain in all(creature.t) do
+          if newloc==terrain and creature.mva>creature.nm then
             canmove=true
             break
           end
         end
-        creature.nummoves+=1
-        if creature.hostile and actualdistance<=1 then
+        creature.nm+=1
+        if creature.hos and actualdistance<=1 then
           local hero_dodge=hero.dex+2*hero.lvl
-          local creature_msg="the "..creature.name
-          if creature.eat and hero.food>0 and rnd(creature.dex*23)>rnd(hero_dodge) then
+          local creature_msg="the "..creature.n
+          if creature.eat and hero.fd>0 and rnd(creature.dex*23)>rnd(hero_dodge) then
             sfx(2)
             update_lines{creature_msg.." eats!"}
             deductfood(flr(rnd(6)))
             gothit=true
             delay(9)
-          elseif creature.thief and hero.gp>0 and rnd(creature.dex*20)>rnd(hero_dodge) then
+          elseif creature.th and hero.gp>0 and rnd(creature.dex*20)>rnd(hero_dodge) then
             sfx(2)
             local amountstolen=min(ceil(rnd(5)),hero.gp)
             hero.gp-=amountstolen
@@ -1211,39 +1203,40 @@ function movecreatures(hero)
             update_lines{creature_msg.." steals!"}
             gothit=true
             delay(9)
-          elseif creature.poison and rnd(creature.dex*15)>rnd(hero_dodge) then
+          elseif creature.po and rnd(creature.dex*15)>rnd(hero_dodge) then
             sfx(1)
-            hero.status=bor(hero.status,1)
-            update_lines{"poisoned by the "..creature.name.."!"}
+            hero.st=bor(hero.st,1)
+            update_lines{"poisoned by the "..creature.n.."!"}
             gothit=true
             delay(3)
-          elseif rnd(creature.dex*64)>rnd(hero_dodge+hero.armor) then
+          elseif rnd(creature.dex*64)>rnd(hero_dodge+hero.ar) then
             hero.gothit=true
             sfx(1)
-            local damage=max(ceil(rnd(creature.dmg)-rnd(hero.armor)),0)
+            local damage=max(ceil(rnd(creature.dmg)-rnd(hero.ar)),0)
             deducthp(damage)
             update_lines{creature_msg.." hits!"}
+            --logit('hit by creature '..(creature.n or 'nil')..' '..creature.x..','..creature.y..','..creature.z)
             gothit=true
             delay(3)
             hero.hd=3
-            hero.hitcolors=creature.attackcolors
+            hero.hc=creature.ac
           else
             update_lines{creature_msg.." misses."}
           end
           break
         elseif canmove then
           local movecost=band(fget(newloc),3)
-          creature.movepayment+=1
-          if creature.movepayment>=movecost and not contents[desiredx][desiredy][zcoord] and not (desiredx==xcoord and desiredy==ycoord and desiredz==zcoord) then
-            contents[creature.xeno][creature.yako][creature.zabo]=nil
+          creature.mvp+=1
+          if creature.mvp>=movecost and not contents[desiredx][desiredy][zcoord] and not (desiredx==xcoord and desiredy==ycoord and desiredz==zcoord) then
+            contents[creature.x][creature.y][creature.z]=nil
             contents[desiredx][desiredy][desiredz]=creature
-            creature.xeno,creature.yako=desiredx,desiredy
-            creature.movepayment=0
+            creature.x,creature.y=desiredx,desiredy
+            creature.mvp=0
             break
           end
         end
       end
-      creature.nummoves=0
+      creature.nm=0
     end
   end
   return gothit
@@ -1266,13 +1259,13 @@ function world_update()
     if turn%10==0 then
       increasemp(1)
     end
-    if turn%5==0 and band(hero.status,1)==1 then
+    if turn%5==0 and band(hero.st,1)==1 then
       deducthp(1)
       sfx(1,3,8)
       update_lines{"feeling sick!"}
     end
-    gothit=movecreatures(hero)
-    if #creatures[mapnum]<curmap.maxmonsters and rnd(10)<curmap.newmonsters then
+    gothit=movecreatures()
+    if #creatures[mapnum]<curmap.mxm and rnd(10)<curmap.newm then
       create_monster()
     end
   end
@@ -1305,7 +1298,7 @@ end
 function draw_stats()
   local linestart,midlinestart,longlinestart=106,110,119
   print("cond",linestart,0,5)
-  print(band(hero.status,1)==1 and 'p' or 'g',125,0,6)
+  print(band(hero.st,1)==1 and 'p' or 'g',125,0,6)
   print("lvl",linestart,8,5)
   print(hero.lvl,125,8,6)
   print("hp",linestart,16,5)
@@ -1315,7 +1308,7 @@ function draw_stats()
   print("$",linestart,32,5)
   print(hero.gp,midlinestart,32,6)
   print("f",linestart,40,5)
-  print(hero.food,midlinestart,40,6)
+  print(hero.fd,midlinestart,40,6)
   print("exp",linestart,48,5)
   print(hero.exp,linestart,55,6)
   print("dex",linestart,63,5)
@@ -1339,26 +1332,26 @@ end
 
 function itemdrawprep(item)
   local flipped=false
-  if item.imgseq then
-    item.imgseq-=1
-    if item.imgseq<0 then
-      item.imgseq=23
-      if item.imgalt then
-        item.imgalt=false
-        --if(item.img==nil)update_lines{"item.img nil"}
-        if(item.flipimg==nil)item.img-=1
+  if item.iseq then
+    item.iseq-=1
+    if item.iseq<0 then
+      item.iseq=23
+      if item.ia then
+        item.ia=false
+        --if(item.i==nil)update_lines{"item.i nil"}
+        if(item.fi==nil)item.i-=1
       else
-        item.imgalt=true
-        --if(item.img==nil)update_lines{"item.img nil"}
-        if(item.flipimg==nil)item.img+=1
+        item.ia=true
+        --if(item.i==nil)update_lines{"item.i nil"}
+        if(item.fi==nil)item.i+=1
       end
     end
-    if item.flipimg then
-      flipped=item.imgalt
+    if item.fi then
+      flipped=item.ia
     end
   end
   palt(0,false)
-  substitutecolors(item.colorsub)
+  substitutecolors(item.co)
   return flipped
 end
 
@@ -1369,11 +1362,11 @@ function draw_map(x,y,scrtx,scrty,width,height)
       local item=contents[contentsx][contentsy][0]
       if item then
         local flipped=itemdrawprep(item)
-        local facing=item.facingmatters and item.facing or 0
-        spr(item.img+facing,(contentsx-x+scrtx)*8,(contentsy-y+scrty)*8,1,1,flipped)
+        local f=item.fm and item.f or 0
+        spr(item.i+f,(contentsx-x+scrtx)*8,(contentsy-y+scrty)*8,1,1,flipped)
         pal()
         if item.hd>0 then
-          substitutecolors(item.hitcolors)
+          substitutecolors(item.hc)
           spr(127,(contentsx-x+scrtx)*8,(contentsy-y+scrty)*8)
           pal()
           item.hd-=1
@@ -1383,20 +1376,16 @@ function draw_map(x,y,scrtx,scrty,width,height)
   end
 end
 
-function getdungeonblock(mapx,mapy,mapz)
+function getdungeonblock(mapx,mapy,mapz,asterrain)
   local block=0
-  if mapx>=curmap.maxx or mapx<curmap.minx or mapy>=curmap.maxy or mapy<curmap.miny then
+  if mapx>=curmap.mxx or mapx<curmap.mnx or mapy>=curmap.mxy or mapy<curmap.mny then
     block=3
   else
-    local row=curmap.levels[mapz][mapy]
-    row=flr(shr(row,(curmap.width-mapx)*2))
+    local row=curmap.l[mapz][mapy]
+    row=flr(shr(row,(curmap.w-mapx)*2))
     block=band(row,3)
   end
-  return block
-end
-
-function getdungeonblockterrain(mapx,mapy,mapz)
-  return getdungeonblock(mapx,mapy,mapz)>1 and 20 or 22
+  return asterrain and (block>1 and 20 or 22) or block
 end
 
 function triplereverse(triple)
@@ -1412,8 +1401,8 @@ function getdungeonblocks(mapx,mapy,mapz,facing)
     for viewy=mapy-1,mapy+1 do
       add(blocks,{
         block=getdungeonblock(mapx,viewy,mapz),
-        xeno=mapx,
-        yako=viewy
+        x=mapx,
+        y=viewy
       })
     end
     if facing==4 then
@@ -1424,8 +1413,8 @@ function getdungeonblocks(mapx,mapy,mapz,facing)
     for viewx=mapx-1,mapx+1 do
       add(blocks,{
         block=getdungeonblock(viewx,mapy,mapz),
-        xeno=viewx,
-        yako=mapy
+        x=viewx,
+        y=mapy
       })
     end
     if facing==3 then
@@ -1459,7 +1448,7 @@ end
 function dungeon_draw()
   cls()
   if hero.lit>0 then
-    local view=getdungeonview(hero.xeno,hero.yako,hero.zabo,hero.facing)
+    local view=getdungeonview(hero.x,hero.y,hero.z,hero.f)
     for depthindex,row in pairs(view) do
       local depthin,depthout=(depthindex-1)*10,depthindex*10
       local topouter,topinner,bottomouter,bottominner=30-depthout,30-depthin,52+depthout,52+depthin
@@ -1506,7 +1495,7 @@ function dungeon_draw()
           line(bottomouter,topouter,bottomouter,bottomouter)
         end
       end
-      dungeondrawobject(row[2].xeno,row[2].yako,hero.zabo,3-depthindex)
+      dungeondrawobject(row[2].x,row[2].y,hero.z,3-depthindex)
     end
     rectfill(82,0,112,82,0)
   end
@@ -1517,15 +1506,15 @@ function dungeondrawobject(xcoord,ycoord,zcoord,distance)
   if xcoord>0 and ycoord>0 then
     local item=contents[xcoord][ycoord][zcoord]
     if item then
-      local flipped,distancemod,shiftmod,sizemod=itemdrawprep(item),distance*3,item.shiftmod or 0,item.sizemod or 0
-      local xoffset,yoffset=20+distancemod+(sizemod*(distance+1)/8),35-(3-distance)*shiftmod
-      local imgsize=60-sizemod-distancemod*4
-      sspr(item.img%16*8,flr(item.img/16)*8,8,8,xoffset,yoffset,imgsize,imgsize,flipped)
+      local flipped,distancemod,shm,szm=itemdrawprep(item),distance*3,item.shm or 0,item.szm or 0
+      local xoffset,yoffset=20+distancemod+(szm*(distance+1)/8),35-(3-distance)*shm
+      local isize=60-szm-distancemod*4
+      sspr(item.i%16*8,flr(item.i/16)*8,8,8,xoffset,yoffset,isize,isize,flipped)
       pal()
       if item.hd>0 then
         palt(0,true)
-        substitutecolors(item.hitcolors)
-        sspr(120,56,8,8,xoffset,yoffset,imgsize,imgsize)
+        substitutecolors(item.hc)
+        sspr(120,56,8,8,xoffset,yoffset,isize,isize)
         pal()
         item.hd-=1
         palt(0,false)
@@ -1540,9 +1529,9 @@ function msg_draw()
 end
 
 function world_draw()
-  local maxx,maxy,minx,miny=curmap.maxx,curmap.maxy,curmap.minx,curmap.miny
-  local width,height,wrap=curmap.width,curmap.height,curmap.wrap
-  local xtraleft,xtratop,xtrawidth,xtraheight,scrtx,scrty,left,right=0,0,0,0,0,0,hero.xeno-halfwidth,hero.xeno+halfwidth
+  local maxx,maxy,minx,miny=curmap.mxx,curmap.mxy,curmap.mnx,curmap.mny
+  local width,height,wrap=curmap.w,curmap.h,curmap.wrap
+  local xtraleft,xtratop,xtrawidth,xtraheight,scrtx,scrty,left,right=0,0,0,0,0,0,hero.x-halfwidth,hero.x+halfwidth
   if left<minx then
     xtrawidth=minx-left
     scrtx=xtrawidth
@@ -1561,7 +1550,7 @@ function world_draw()
       right=maxx
     end
   end
-  local top,bottom=hero.yako-halfheight,hero.yako+halfheight
+  local top,bottom=hero.y-halfheight,hero.y+halfheight
   if top<miny then
     xtraheight=miny-top
     scrty=xtraheight
@@ -1580,7 +1569,7 @@ function world_draw()
       bottom=maxy
     end
   end
-  local mainwidth,mainheight=min(fullwidth-xtrawidth,curmap.width),min(fullheight-xtraheight,curmap.height)
+  local mainwidth,mainheight=min(fullwidth-xtrawidth,curmap.w),min(fullheight-xtraheight,curmap.h)
   if cycle%16==0 then
     for sprnum=10,14,2 do
       animatespr(sprnum)
@@ -1604,14 +1593,14 @@ function world_draw()
   end
   draw_map(left,top,scrtx,scrty,mainwidth,mainheight)
   palt(0,false)
-  if hero.color==4 and hero.img==0 then
+  if hero.color==4 and hero.i==0 then
     substitutecolors{{4,1},{15,4}}
   end
-  spr(hero.img+hero.facing,48,40)
+  spr(hero.i+hero.f,48,40)
   pal()
   palt()
   if hero.hd>0 then
-    substitutecolors(hero.hitcolors)
+    substitutecolors(hero.hc)
     spr(127,48,40)
     pal()
     hero.hd-=1
