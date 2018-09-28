@@ -80,17 +80,27 @@ homage to all the old 8-bit Ultima games, but especially numbers II through V.
 Status
 ------
 
-This project is at version one. It should be completely playable from beginning to end.
+This project is at version 1.1. It should be completely playable from beginning to end.
 
-Lots of things work. You can move around and explore the (incomplete) world map and
-enter towns and dungeons. Town views and dungeon views work. Looking at things and
-searching for things works. Checking status works. Creature movement and behavior
-works. Combat works in both world and dungeon views. Dialog with townies works.
+Many features of the Ultima series as played on the C128 work. You can move around
+and explore the world map and enter towns and dungeons. Town views and dungeon views
+both work, and dungeons require torches to see. Looking at things and searching for
+things works. Checking status works. Creature movement and behavior works. Combat
+works in both world and dungeon views. Dialog with townies works.
 Purchasing in towns works. Spells work. Capturing pirate ships works, and with one
 it's possible to explore the waters of the world map. Leveling up works. Sound effects
 are in place. The in-game help screen works. Saving and loading games works, although
 it has some unavoidable limitations. Background music works. Increasing attributes
 works. Fountains work. It's winnable.
+
+Compared to the earlier version 1.0, version 1.1 features improved creature movement,
+guild shops with working keys and torches, more townies with more clues, openable
+treasure chests, more challenging dungeons, a tower puzzle, enterable shrines, and
+many minor bugfixes.
+
+Due largely to the existence of chests and additional dungeon levels, this version
+requires less grinding; due largely to the existence of more characters, this version
+has a bit more story. It is much closer to what I had set out originally to build.
 
 Supported Platforms
 -------------------
@@ -114,17 +124,13 @@ Challenges
 ----------
 
 The constraints of building something within the PICO-8 environment make a project like
-this fairly tough. The game is pretty close to being fully playable, but there's not a
+this fairly tough. This game pretty much maxes out PICO-8 capacity; there's not a
 lot of space left and I'll likely have to trim out some already-started features to
-shoehorn in the rest of the game. I've already had to remove lots of things. I've had to
-remove a partial Ultima III+ style missile weapon implementation and go back to the
-Ultima II style "adjacent-only" type of combat. I've had to replace armor and weapon
-inventory along with related wield and wear commands with automatic switching to best
-available armor and weapons. I've had to drop enterable shrines. I've had to cut the
-concept of creatures that are neither particularly friendly nor hostile. I've had to
-remove pits in dungeons. I've had to remove findable chests in dungeons. I've had to
-remove the tower key. All of these were in order to keep within the space constraints
-we've got.
+shoehorn in anything else. All the PICO-8 graphic space (both for sprites and maps) are
+fully used. All but a couple of the sound effects slots are used. The final version here
+is a careful balance between maxing out the token count and the compressed size. The raw
+size is already too large to fit without minimization, too, and even with that many
+manual tweaks are required making the code quite ugly in places.
 
 Building Minima
 ---------------
@@ -166,6 +172,9 @@ and do some pretty clever things. They also occasionally go outside the pitch ra
 available to PICO-8. Again, it's more about capturing the spirit than being a faithful
 recreation.
 
+This version makes use of Tyler Neylon's `json.lua`_ routine to parse JSON data; thanks
+to freds72 for his reference to it.
+
 The additional `Lua`_ utility script `convert.lua` is used to make it easier to lay out
 a dungeon map and turn it into something the game can use.
 
@@ -187,4 +196,5 @@ a dungeon map and turn it into something the game can use.
 .. _PocketInstaller: https://github.com/Feneric/PocketInstaller
 .. _picotool: https://github.com/dansanderson/picotool
 .. _special branch of picotool: https://github.com/Feneric/picotool
+.. _json.lua: https://gist.github.com/tylerneylon/59f4bcf316be525b30ab
 .. _Lua: https://www.lua.org/docs.html
