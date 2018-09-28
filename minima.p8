@@ -103,7 +103,7 @@ msg=helpmsg
 
 -- anyobj is our root object. all others inherit from it to
 -- save space and reduce redundancy.
-anyobj=json_parse('{"f":1,"mva":0,"nm":0,"mvp":0,"hd":0,"ch":0,"z":0}')
+anyobj={f=1,mva=0,nm=0,mvp=0,hd=0,ch=0,z=0}
 
 function makemetaobj(base,basetype)
   return setmetatable(base,{__index=base.ot or basetype})
@@ -111,7 +111,8 @@ end
 
 -- the types of terrain that exist in the game. each is
 -- given a name and a list of allowed monster types.
-terrains=json_parse('["plains","bare ground","tundra","scrub","swamp","forest","foothills","mountains","tall mountain","volcano","volcano","water","water","deep water","deep water","brick","brick road","brick","mismatched brick","stone","stone","road","barred window","window","bridge","ladder down","ladder up","door","locked door","open door","sign","shrine","dungeon","castle","tower","town","village","ankh"]')
+terrains={"plains","bare ground","tundra","scrub","swamp","forest","foothills","mountains","tall mountain","volcano","volcano","water","water","deep water","deep water","brick","brick road","brick","mismatched brick","stone","stone","road","barred window","window","bridge","ladder down","ladder up","door","locked door","open door","sign","shrine","dungeon","castle","tower","town","village","ankh"}
+--terrains=json_parse('["plains","bare ground","tundra","scrub","swamp","forest","foothills","mountains","tall mountain","volcano","volcano","water","water","deep water","deep water","brick","brick road","brick","mismatched brick","stone","stone","road","barred window","window","bridge","ladder down","ladder up","door","locked door","open door","sign","shrine","dungeon","castle","tower","town","village","ankh"]')
 -- counter terrain types are special as they can be talked
 -- over (essential for purchasing). there are a lot of them
 -- as all the letters are represented.
@@ -126,9 +127,9 @@ end
 
 -- basetypes are the objects we mean to use to make objects.
 -- they inherit (often indirectly) from our root object.
-basetypes=json_parse('[{"ar":1,"hos":1,"dmg":13,"exp":2,"ch":1,"t":[1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35],"dex":8,"mva":1,"hp":10,"gp":10},{"fri":1,"mxm":0,"mxx":128,"mn":0,"newm":0,"mxy":64,"mnx":80,"mny":0},{"sz":1,"sy":1,"mxx":9,"mny":1,"sx":1,"fri":false,"ss":17,"c":{},"dg":1,"mxm":27,"mn":0,"newm":25,"mxy":9,"mnx":1,"sf":1},{"d":["yes, ankhs can talk.","shrines make good landmarks."],"ia":38,"n":"ankh","i":38},{"f":2,"i":70,"p":1,"ia":70,"n":"ship","fm":1},{"szm":12,"i":92,"p":1,"ia":92,"n":"chest"},{"fi":1,"szm":15,"i":39,"p":1,"n":"fountain","iseq":12},{"szm":20,"i":27,"shm":12,"ia":27,"n":"ladder up","p":1},{"szm":20,"i":26,"shm":-3,"ia":26,"n":"ladder down","p":1},{"ar":0,"hos":false,"i":80,"exp":1,"gp":5},{"d":["urg!","grar!"],"ch":8,"n":"orc"},{"dex":6,"ch":5,"dmg":14,"gp":5},{"dex":10,"ch":3,"ar":0,"gp":0},{"ar":3,"cs":[{},[[1,12],[14,2],[15,4]]],"d":["check out these pecs!","i\'m jacked!"],"i":82,"dex":9,"dmg":20,"n":"fighter","hp":12},{"mva":0,"cs":[{},[[15,4]]],"d":["behave yourself.","i protect good citizens."],"i":90,"ar":12,"dmg":60,"n":"guard","hp":85},{"fi":1,"cs":[{},[[1,4],[4,15],[6,1],[14,13]],[[1,4],[6,5],[14,10]],[[1,4],[4,15],[6,1],[14,3]]],"i":75,"n":"merchant","d":["consume!","stuff makes you happy!"]},{"fi":1,"cs":[{},[[2,9],[4,15],[13,14]],[[2,10],[4,15],[13,9]],[[2,11],[13,3]]],"i":81,"n":"lady","d":["pardon me.","well i never."]},{"d":["i like sheep.","the open air is nice."],"cs":[{},[[6,5],[15,4]],[[6,5]],[[15,4]]],"n":"shepherd","i":76},{"dex":12,"d":["ho ho ho!","ha ha ha!"],"n":"jester","i":78},{"d":["a mage is always on time.","brain over brawn."],"ac":[[9,6],[8,13],[10,12]],"n":"mage","i":84},{"fi":1,"cs":[{},[[9,11],[1,3],[15,4]],[[9,11],[1,3]],[[15,4]]],"n":"ranger","d":["i travel the land.","my home is the range."]},{"ar":1,"hos":1,"d":["stand and deliver!","you shall die!"],"exp":5,"n":"villain","gp":15},{"n":"grocer","mch":"food"},{"n":"armorer","mch":"armor"},{"n":"smith","mch":"weapons"},{"n":"medic","mch":"hospital"},{"n":"guildkeeper","mch":"guild"},{"n":"barkeep","mch":"bar"},{"i":96},{"exp":4,"i":102,"hp":15,"dmg":16,"n":"troll","gp":10},{"exp":3,"i":104,"ns":["hobgoblin","bugbear"],"dmg":14,"hp":15,"gp":8},{"exp":1,"i":114,"ns":["goblin","kobold"],"dmg":10,"hp":8,"gp":5},{"fi":1,"exp":6,"i":118,"ch":1,"dmg":18,"n":"ettin","hp":20},{"gp":12,"n":"skeleton","i":98},{"ns":["zombie","wight","ghoul"],"hp":10,"i":100},{"fi":1,"exp":7,"i":123,"ns":["phantom","ghost","wraith"],"d":["boooo!","feeear me!"],"hp":15,"t":[1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35]},{"d":["i hex you!","a curse on you!"],"cs":[{},[[2,8],[15,4]]],"i":84,"ns":["warlock","necromancer","sorcerer"],"exp":10,"dmg":18,"ac":[[9,6],[8,13],[10,12]]},{"th":1,"cs":[{},[[1,5],[8,2],[4,1],[2,12],[15,4]]],"i":88,"ns":["rogue","bandit","cutpurse"],"ch":2,"dex":10},{"d":["you shall die at my hands.","you are no match for me."],"cs":[{},[[1,5],[15,4]]],"i":86,"ns":["ninja","assassin"],"exp":8,"gp":10,"po":1},{"exp":5,"i":106,"gp":8,"hp":18,"n":"giant spider","po":1},{"exp":2,"hp":5,"i":108,"eat":1,"dmg":10,"n":"giant rat","po":1},{"t":[4,5,6,7],"exp":6,"i":112,"ns":["giant snake","serpent"],"ch":1,"hp":20,"po":1},{"t":[5,12,13,14,15,25],"exp":10,"i":116,"n":"sea serpent","hp":45},{"fi":1,"exp":5,"i":125,"ch":1,"hp":12,"n":"megascorpion","po":1},{"fi":1,"cs":[{},[[3,9],[11,10]],[[3,14],[11,15]]],"exp":2,"i":122,"ns":["slime","jelly","blob"],"eat":1,"t":[17,22,23],"gp":5},{"t":[12,13,14,15],"exp":8,"i":94,"ns":["kraken","giant squid"],"hp":50,"ch":2},{"fi":1,"exp":3,"i":120,"n":"wisp","t":[4,5,6]},{"fi":false,"cs":[[[6,5],[7,6]]],"fm":1,"n":"pirate","exp":8,"i":70,"t":[12,13,14,15],"f":1,"ac":[[9,8],[8,9],[10,1]]},{"fi":1,"cs":[{},[[2,14],[1,4]]],"i":119,"ns":["gazer","beholder"],"exp":4,"t":[17,22]},{"fi":1,"dmg":28,"exp":17,"gp":20,"i":121,"ns":["dragon","drake","wyvern"],"ar":7,"hp":50,"ac":[[9,6],[8,13],[10,12]]},{"ar":3,"dmg":23,"ch":0.25,"exp":15,"gp":25,"i":110,"ns":["daemon","devil"],"t":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35],"hp":50,"ac":[[9,10],[8,9],[10,7]]},{"mva":0,"exp":4,"ch":0,"i":92,"t":[17,22],"th":1,"n":"mimic","gp":12},{"fi":1,"n":"reaper","ch":0,"exp":5,"t":[17,22],"i":124,"mva":0,"ar":5,"hp":30,"gp":8}]')
+basetypes=json_parse('[{"dex":8,"ar":1,"t":[1,2,3,4,5,6,7,8,17,18,22,25,26,27,30,31,33,35],"hos":1,"exp":2,"gp":10,"dmg":13,"mva":1,"ch":1,"hp":10},{"mxy":64,"mxm":0,"fri":1,"mn":0,"newm":0,"mny":0,"mnx":80,"mxx":128},{"dg":1,"ss":17,"mn":0,"c":{},"mny":1,"fri":false,"sf":1,"sz":1,"sy":1,"sx":1,"mxx":9,"mxm":27,"newm":25,"mnx":1,"mxy":9},{"n":"ankh","i":38,"d":["yes, ankhs can talk.","shrines make good landmarks."],"ia":38},{"i":70,"p":1,"fm":1,"n":"ship","f":2,"ia":70},{"i":92,"p":1,"n":"chest","szm":12,"ia":92},{"fi":1,"i":39,"p":1,"n":"fountain","iseq":12,"szm":15},{"i":27,"p":1,"n":"ladder up","szm":20,"ia":27,"shm":12},{"i":26,"p":1,"n":"ladder down","szm":20,"ia":26,"shm":-3},{"hos":false,"i":80,"ar":0,"exp":1,"gp":5},{"n":"orc","ch":8,"d":["urg!","grar!"]},{"dmg":14,"gp":5,"ch":5,"dex":6},{"dex":10,"gp":0,"ch":3,"ar":0},{"cs":[{},[[1,12],[14,2],[15,4]]],"i":82,"ar":3,"dex":9,"n":"fighter","dmg":20,"d":["check out these pecs!","i\'m jacked!"],"hp":12},{"cs":[{},[[15,4]]],"i":90,"mva":0,"ar":12,"n":"guard","dmg":60,"d":["behave yourself.","i protect good citizens."],"hp":85},{"fi":1,"i":75,"n":"merchant","d":["consume!","stuff makes you happy!"],"cs":[{},[[1,4],[4,15],[6,1],[14,13]],[[1,4],[6,5],[14,10]],[[1,4],[4,15],[6,1],[14,3]]]},{"fi":1,"i":81,"n":"lady","d":["pardon me.","well i never."],"cs":[{},[[2,9],[4,15],[13,14]],[[2,10],[4,15],[13,9]],[[2,11],[13,3]]]},{"n":"shepherd","i":76,"d":["i like sheep.","the open air is nice."],"cs":[{},[[6,5],[15,4]],[[6,5]],[[15,4]]]},{"n":"jester","i":78,"d":["ho ho ho!","ha ha ha!"],"dex":12},{"n":"mage","i":84,"ac":[[9,6],[8,13],[10,12]],"d":["a mage is always on time.","brain over brawn."]},{"n":"ranger","cs":[{},[[9,11],[1,3],[15,4]],[[9,11],[1,3]],[[15,4]]],"d":["i travel the land.","my home is the range."],"fi":1},{"hos":1,"gp":15,"n":"villain","exp":5,"d":["stand and deliver!","you shall die!"],"ar":1},{"n":"grocer","mch":"food"},{"n":"armorer","mch":"armor"},{"n":"smith","mch":"weapons"},{"n":"medic","mch":"hospital"},{"n":"guildkeeper","mch":"guild"},{"n":"barkeep","mch":"bar"},{"i":96},{"exp":4,"i":102,"n":"troll","gp":10,"dmg":16,"hp":15},{"exp":3,"i":104,"ns":["hobgoblin","bugbear"],"dmg":14,"gp":8,"hp":15},{"exp":1,"i":114,"ns":["goblin","kobold"],"dmg":10,"gp":5,"hp":8},{"fi":1,"i":118,"dmg":18,"n":"ettin","exp":6,"ch":1,"hp":20},{"n":"skeleton","i":98,"gp":12},{"i":100,"hp":10,"ns":["zombie","wight","ghoul"]},{"fi":1,"i":123,"ns":["phantom","ghost","wraith"],"d":["boooo!","feeear me!"],"exp":7,"t":[1,2,3,4,5,6,7,8,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,35],"hp":15},{"cs":[{},[[2,8],[15,4]]],"i":84,"ac":[[9,6],[8,13],[10,12]],"ns":["warlock","necromancer","sorcerer"],"dmg":18,"d":["i hex you!","a curse on you!"],"exp":10},{"cs":[{},[[1,5],[8,2],[4,1],[2,12],[15,4]]],"i":88,"ns":["rogue","bandit","cutpurse"],"th":1,"ch":2,"dex":10},{"cs":[{},[[1,5],[15,4]]],"i":86,"ns":["ninja","assassin"],"gp":10,"d":["you shall die at my hands.","you are no match for me."],"po":1,"exp":8},{"exp":5,"i":106,"n":"giant spider","gp":8,"po":1,"hp":18},{"eat":1,"i":108,"exp":2,"n":"giant rat","dmg":10,"po":1,"hp":5},{"exp":6,"i":112,"ns":["giant snake","serpent"],"ch":1,"t":[4,5,6,7],"po":1,"hp":20},{"exp":10,"i":116,"n":"sea serpent","t":[5,12,13,14,15,25],"hp":45},{"fi":1,"i":125,"ch":1,"n":"megascorpion","exp":5,"po":1,"hp":12},{"cs":[{},[[3,9],[11,10]],[[3,14],[11,15]]],"i":122,"exp":2,"ns":["slime","jelly","blob"],"gp":5,"eat":1,"t":[17,22,23],"fi":1},{"exp":8,"i":94,"ns":["kraken","giant squid"],"ch":2,"t":[12,13,14,15],"hp":50},{"fi":1,"i":120,"n":"wisp","t":[4,5,6],"exp":3},{"cs":[[[6,5],[7,6]]],"i":70,"exp":8,"fm":1,"n":"pirate","f":1,"t":[12,13,14,15],"fi":false},{"cs":[{},[[2,14],[1,4]]],"i":119,"ns":["gazer","beholder"],"exp":4,"t":[17,22],"fi":1},{"fi":1,"i":121,"ns":["dragon","drake","wyvern"],"ar":7,"ac":[[9,6],[8,13],[10,12]],"dmg":28,"exp":17,"gp":20,"hp":50},{"exp":15,"i":110,"ns":["daemon","devil"],"ar":3,"t":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,22,25,26,27,30,31,33,35],"ac":[[9,10],[8,9],[10,7]],"dmg":23,"gp":25,"ch":0.25,"hp":50},{"exp":4,"i":92,"ch":0,"th":1,"n":"mimic","gp":12,"t":[17,22],"mva":0},{"fi":1,"i":124,"ar":5,"t":[17,22],"mva":0,"exp":5,"n":"reaper","gp":8,"ch":0,"hp":30}]')
 -- give our base objects ns for convenience & efficiency.
-creature,shiptype=basetypes[1],basetypes[5]
+shiptype=basetypes[5]
 
 -- set our base objects base values. the latter portion is
 -- our bestiary. it holds all the different monster types that can
@@ -142,7 +143,7 @@ for basetypenum=1,#basetypes do
   if basetypenum<10 then
     basetype=anyobj
   elseif basetypenum<14 then
-    basetype=creature
+    basetype=basetypes[1]
   elseif basetypenum<23 then
     basetype=basetypes[10]
   elseif basetypenum<28 then
@@ -158,7 +159,7 @@ for basetypenum=1,#basetypes do
   elseif basetypenum<48 then
     basetype=basetypes[13]
   else
-    basetype=creature
+    basetype=basetypes[1]
   end
   objecttype.id=basetypenum
   makemetaobj(objecttype,basetype)
@@ -268,7 +269,7 @@ shop={
       end,
       function()
         hero.gp-=5
-        rumors=json_parse('["faxon has many guards.","faxon is scary powerful.","fountains respect injury.","dungeon fountains rule.","faxon fears a magic sword.","watch for secret doors.","fighters can bust doors.","good mages can zap doors."]')
+        rumors=json_parse('["faxon has many guards.","faxon is very powerful.","fountains respect injury.","dungeon fountains rule.","faxon fears a magic sword.","watch for secret doors.","fighters can bust doors.","good mages can zap doors."]')
         update_lines{"while socializing, you hear:"}
         return '"'..rumors[flr(rnd(8)+1)]..'"'
       end
@@ -316,12 +317,12 @@ weaponnames=makenameforamount(weapons)
 spells=json_parse('{"a":{"n":"attack","c":3,"a":1},"x":{"n":"medic","c":5,"a":1,"p":8},"c":{"n":"cure","c":7,"p":10},"w":{"n":"wound","c":11,"a":5},"e":{"n":"exit","c":13},"s":{"n":"savior","c":17,"a":6,"p":25}}')
 
 -- tool definitions
-tools=json_parse('{"west":{"n":"5 torches","attr":"ts","p":12,"q":1},"east":{"n":"a key","attr":"keys","p":23,"q":1}}')
+tools=json_parse('{"west":{"n":"5 torches","attr":"ts","p":12,"q":5},"east":{"n":"a key","attr":"keys","p":23,"q":1}}')
 
 function setmap()
   local songstrt=curmap.ss
   curmap=maps[mapnum]
-  contents=curmap.contents
+  contents=curmap.con
   if(songstrt and curmap.ss)music(curmap.ss)
   hero.hd=0
 end
@@ -346,20 +347,20 @@ function initobjs()
       makemetaobj(curmap,maptype)
     end
     curmap.w,curmap.h=curmap.mxx-curmap.mnx,curmap.mxy-curmap.mny
-    creatures[mapnum],curmap.contents={},{}
+    creatures[mapnum],curmap.con={},{}
     for num=curmap.mnx-1,curmap.mxx+1 do
-      curmap.contents[num]={}
+      curmap.con[num]={}
       for inner=curmap.mny-1,curmap.mxy+1 do
-        curmap.contents[num][inner]={}
+        curmap.con[num][inner]={}
       end
     end
     for item in all(curmap.i) do
       item.ot,xcoord,ycoord,zcoord=basetypes[item.id],item.x,item.y,item.z or 0
-      curmap.contents[xcoord][ycoord][zcoord]=makemetaobj(item)
+      curmap.con[xcoord][ycoord][zcoord]=makemetaobj(item)
       -- automatically make a corresponding ladder down for every ladder up
       if item.ot.n=='ladder up' and curmap.dg then
         zcoord-=1
-        curmap.contents[xcoord][ycoord][zcoord]=makemetaobj{ot=basetypes[9]}
+        curmap.con[xcoord][ycoord][zcoord]=makemetaobj{ot=basetypes[9]}
       end
     end
     for creature in all(curmap.c) do
@@ -499,7 +500,7 @@ function checkspell(cmd,extra)
 end
 
 function exitdungeon(targx,targy,targmapnum)
-  hero.x,hero.y,hero.z,hero.f,mapnum=targx or curmap.ex,targy or curmap.ey,0,0,targmapnum or curmap.mn
+  hero.x,hero.y,hero.z,hero.f,hero.lit,mapnum=targx or curmap.ex,targy or curmap.ey,0,0,0,targmapnum or curmap.mn
   setmap()
   _draw=world_draw
 end
@@ -589,7 +590,7 @@ function inputprocessor(cmd)
       elseif cmd=='w' or cmd=='a' then
         -- cast offensive spell
         if checkspell(cmd,'dir:') then
-          local spelldamage=ceil(rnd(spells[cmd].a*hero.int))
+          local spelldamage=rnd(spells[cmd].a*hero.int)
           if not getdirection(spots,attack_results,spelldamage) then
             update_lines{'nothing to target.'}
           end
@@ -758,8 +759,8 @@ function definemonster(monster)
   local objtype,xcoord,ycoord,zcoord=monster.ot,monster.x,monster.y,monster.z or 0
   monster.ot=objtype
   makemetaobj(monster)
-  if objtype.pn then
-    monster.n=objtype.pn
+  if monster.pn then
+    monster.n=monster.pn
   elseif objtype.ns then
     monster.n=objtype.ns[flr(rnd(#objtype.ns)+1)]
   end
@@ -768,7 +769,7 @@ function definemonster(monster)
   monster.iseq=flr(rnd(30))
   monster.ia=false
   add(creatures[monster.mn],monster)
-  maps[monster.mn].contents[xcoord][ycoord][zcoord]=monster
+  maps[monster.mn].con[xcoord][ycoord][zcoord]=monster
   return monster
 end
 
@@ -783,7 +784,7 @@ function create_monster()
   if monsterx then
     local monsterspot=mget(monsterx,monstery)
     if curmap.dg then
-      monsterspot=getdungeonblock(monsterx,monstery,monsterz,1)
+      monsterspot=getdungeonblk(monsterx,monstery,monsterz,1)
     end
     for objtype in all(terrainmonsters[monsterspot]) do
       if rnd(200)<objtype.ch then
@@ -795,7 +796,7 @@ function create_monster()
 end
 
 function deducthp(damage)
-  hero.hp-=damage
+  hero.hp-=ceil(damage)
   if hero.hp<=0 then
     msg=losemsg
     -- draw_state=_draw
@@ -826,14 +827,6 @@ function increasexp(amount)
   end
 end
 
-function increasegold(amount)
-  hero.gp=not_over_32767(hero.gp+amount)
-end
-
-function increasemp(amount)
-  hero.mp=not_over_32767(min(hero.mp+amount,hero.int*(hero.lvl+1)))
-end
-
 function increasehp(amount)
   hero.hp=not_over_32767(min(hero.hp+amount,hero.str*(hero.lvl+3)))
 end
@@ -848,19 +841,19 @@ function checkdungeonmove(direction)
   local iscreature=false
   if hero.f==1 then
     newy-=direction
-    result=getdungeonblock(xcoord,newy,zcoord)
+    result=getdungeonblk(xcoord,newy,zcoord)
     item=contents[xcoord][newy][zcoord]
   elseif hero.f==2 then
     newx+=direction
-    result=getdungeonblock(newx,ycoord,zcoord)
+    result=getdungeonblk(newx,ycoord,zcoord)
     item=contents[newx][ycoord][zcoord]
   elseif hero.f==3 then
     newy+=direction
-    result=getdungeonblock(xcoord,newy,zcoord)
+    result=getdungeonblk(xcoord,newy,zcoord)
     item=contents[xcoord][newy][zcoord]
   else
     newx-=direction
-    result=getdungeonblock(newx,ycoord,zcoord)
+    result=getdungeonblk(newx,ycoord,zcoord)
     item=contents[newx][ycoord][zcoord]
   end
   if item and item.hp then
@@ -914,7 +907,7 @@ function checkmove(xcoord,ycoord,cmd)
     elseif content then
       if content.n=='maelstrom' then
         update_lines{cmd,"maelstrom! yikes!"}
-        deducthp(ceil(rnd(25)))
+        deducthp(rnd(25))
       else
         movesuccess=blocked(cmd)
       end
@@ -995,7 +988,7 @@ function look_results(ldir,xcoord,ycoord)
   elseif content then
     update_lines{cmd,content.n}
   elseif curmap.dg then
-    update_lines{cmd,getdungeonblock(xcoord,ycoord,hero.z)==20 and 'passage' or 'wall',1}
+    update_lines{cmd,getdungeonblk(xcoord,ycoord,hero.z)==20 and 'passage' or 'wall',1}
   else
     update_lines{cmd,terrains[mget(xcoord,ycoord)]}
   end
@@ -1039,9 +1032,8 @@ function attack_results(adir,xcoord,ycoord,magic)
     if magic or rnd(hero.dex+hero.lvl*8)>rnd(creature.dex+creature.ar) then
       damage-=rnd(creature.ar)
       if magic then
-        creature.hc=json_parse('[[9,6],[8,13],[10,12]]')
-      elseif hero.i>0 then
-        creature.hc=json_parse('[[9,8],[8,9],[10,1]]')
+        --creature.hc=json_parse('[[9,6],[8,13],[10,12]]')
+        creature.hc={{9,6},{8,13},{10,12}}
       else
         creature.hc=nil
       end
@@ -1049,7 +1041,7 @@ function attack_results(adir,xcoord,ycoord,magic)
       sfx(1)
       creature.hp-=damage
       if creature.hp<=0 then
-        increasegold(creature.gp)
+        hero.gp=not_over_32767(hero.gp+creature.gp)
         increasexp(creature.exp)
         if creature.n=='pirate' then
           contents[xcoord][ycoord][zcoord]=makemetaobj{
@@ -1088,7 +1080,7 @@ function attack_results(adir,xcoord,ycoord,magic)
       update_lines{cmd,'you break open the door!'}
       mset(xcoord,ycoord,30)
     else
-      update_lines{cmd,'the door still holds.'}
+      update_lines{cmd,'the door holds.'}
     end
   else
     update_lines{cmd,'nothing to attack.'}
@@ -1176,7 +1168,7 @@ function movecreatures()
         end
         local newloc=mget(desiredx,desiredy)
         if curmap.dg then
-          newloc=getdungeonblock(desiredx,desiredy,desiredz,1)
+          newloc=getdungeonblk(desiredx,desiredy,desiredz,1)
         end
         local canmove=false
         for terrain in all(creature.t) do
@@ -1212,7 +1204,7 @@ function movecreatures()
           elseif rnd(creature.dex*64)>rnd(hero_dodge+hero.ar) then
             hero.gothit=true
             sfx(1)
-            local damage=max(ceil(rnd(creature.dmg)-rnd(hero.ar)),0)
+            local damage=max(rnd(creature.dmg)-rnd(hero.ar),0)
             deducthp(damage)
             update_lines{creature_msg.." hits!"}
             --logit('hit by creature '..(creature.n or 'nil')..' '..creature.x..','..creature.y..','..creature.z)
@@ -1257,7 +1249,7 @@ function world_update()
       deductfood(1)
     end
     if turn%10==0 then
-      increasemp(1)
+      hero.mp=not_over_32767(min(hero.mp+1,hero.int*(hero.lvl+1)))
     end
     if turn%5==0 and band(hero.st,1)==1 then
       deducthp(1)
@@ -1300,7 +1292,7 @@ function draw_stats()
   print("cond",linestart,0,5)
   print(band(hero.st,1)==1 and 'p' or 'g',125,0,6)
   print("lvl",linestart,8,5)
-  print(hero.lvl,125,8,6)
+  print(hero.lvl,longlinestart,8,6)
   print("hp",linestart,16,5)
   print(hero.hp,linestart+8,16,6)
   print("mp",linestart,24,5)
@@ -1376,16 +1368,16 @@ function draw_map(x,y,scrtx,scrty,width,height)
   end
 end
 
-function getdungeonblock(mapx,mapy,mapz,asterrain)
-  local block=0
+function getdungeonblk(mapx,mapy,mapz,asterrain)
+  local blk=0
   if mapx>=curmap.mxx or mapx<curmap.mnx or mapy>=curmap.mxy or mapy<curmap.mny then
-    block=3
+    blk=3
   else
     local row=curmap.l[mapz][mapy]
     row=flr(shr(row,(curmap.w-mapx)*2))
-    block=band(row,3)
+    blk=band(row,3)
   end
-  return asterrain and (block>1 and 20 or 22) or block
+  return asterrain and (blk>1 and 20 or 22) or blk
 end
 
 function triplereverse(triple)
@@ -1394,55 +1386,55 @@ function triplereverse(triple)
   triple[3]=tmp
 end
 
-function getdungeonblocks(mapx,mapy,mapz,facing)
-  local blocks={}
+function getdungeonblks(mapx,mapy,mapz,facing)
+  local blks={}
   if facing%2==0 then
     -- we're looking for a column
     for viewy=mapy-1,mapy+1 do
-      add(blocks,{
-        block=getdungeonblock(mapx,viewy,mapz),
+      add(blks,{
+        blk=getdungeonblk(mapx,viewy,mapz),
         x=mapx,
         y=viewy
       })
     end
     if facing==4 then
-      triplereverse(blocks)
+      triplereverse(blks)
     end
   else
     -- we're looking for a row
     for viewx=mapx-1,mapx+1 do
-      add(blocks,{
-        block=getdungeonblock(viewx,mapy,mapz),
+      add(blks,{
+        blk=getdungeonblk(viewx,mapy,mapz),
         x=viewx,
         y=mapy
       })
     end
     if facing==3 then
-      triplereverse(blocks)
+      triplereverse(blks)
     end
   end
-  return blocks
+  return blks
 end
 
 function getdungeonview(mapx,mapy,mapz,facing)
-  local blocks={}
+  local blks={}
   local viewx,viewy=mapx,mapy
   if facing%2==0 then
     for viewx=mapx+4-facing,mapx+2-facing,-1 do
-      add(blocks,getdungeonblocks(viewx,viewy,mapz,facing))
+      add(blks,getdungeonblks(viewx,viewy,mapz,facing))
     end
     if facing==4 then
-       triplereverse(blocks)
+       triplereverse(blks)
     end
   else
     for viewy=mapy-3+facing,mapy-1+facing do
-      add(blocks,getdungeonblocks(viewx,viewy,mapz,facing))
+      add(blks,getdungeonblks(viewx,viewy,mapz,facing))
     end
     if facing==3 then
-      triplereverse(blocks)
+      triplereverse(blks)
     end
   end
-  return blocks
+  return blks
 end
 
 function dungeon_draw()
@@ -1453,14 +1445,14 @@ function dungeon_draw()
       local depthin,depthout=(depthindex-1)*10,depthindex*10
       local topouter,topinner,bottomouter,bottominner=30-depthout,30-depthin,52+depthout,52+depthin
       local lowextreme,highextreme,middle,lowerase,higherase=30-depthout*2,52+depthout*2,42,31-depthin,51+depthin
-      if row[1].block==3 then
+      if row[1].blk==3 then
         rectfill(topouter,topouter,topinner,bottomouter,0)
         line(lowextreme,topouter,topouter,topouter,5)
         line(topouter,topouter,topinner,topinner)
         line(topouter,bottomouter,topinner,bottominner)
         line(lowextreme,bottomouter,topouter,bottomouter)
       end
-      if row[3].block==3 then
+      if row[3].blk==3 then
         rectfill(bottominner,topinner,bottomouter,bottomouter,0)
         line(bottomouter,topouter,highextreme,topouter,5)
         line(bottominner,topinner,bottomouter,topouter)
@@ -1468,30 +1460,30 @@ function dungeon_draw()
         line(bottomouter,bottomouter,highextreme,bottomouter)
       end
       if depthindex>1 then
-        local leftoneback,centeroneback,rightoneback=view[depthindex-1][1].block,view[depthindex-1][2].block,view[depthindex-1][3].block
-        if (row[1].block==centeroneback and row[1].block==3) or
-          (row[1].block~=leftoneback) then
+        local leftoneback,centeroneback,rightoneback=view[depthindex-1][1].blk,view[depthindex-1][2].blk,view[depthindex-1][3].blk
+        if (row[1].blk==centeroneback and row[1].blk==3) or
+          (row[1].blk~=leftoneback) then
           line(topinner,topinner,topinner,bottominner,5)
         end
-        if (row[3].block==centeroneback and row[3].block==3) or
-          (row[3].block~=rightoneback) then
+        if (row[3].blk==centeroneback and row[3].blk==3) or
+          (row[3].blk~=rightoneback) then
           line(bottominner,topinner,bottominner,bottominner,5)
         end
-        if centeroneback==3 and leftoneback==3 and row[1].block~=3 then
+        if centeroneback==3 and leftoneback==3 and row[1].blk~=3 then
           line(topinner,lowerase,topinner,higherase,0)
         end
-        if centeroneback==3 and rightoneback==3 and row[3].block~=3 then
+        if centeroneback==3 and rightoneback==3 and row[3].blk~=3 then
           line(bottominner,lowerase,bottominner,higherase,0)
         end
       end
-      if row[2].block==3 then
+      if row[2].blk==3 then
         rectfill(topouter,topouter,bottomouter,bottomouter,0)
         line(topouter,topouter,bottomouter,topouter,5)
         line(topouter,bottomouter,bottomouter,bottomouter)
-        if row[1].block<3 then
+        if row[1].blk<3 then
           line(topouter,topouter,topouter,bottomouter)
         end
-        if row[3].block<3 then
+        if row[3].blk<3 then
           line(bottomouter,topouter,bottomouter,bottomouter)
         end
       end
