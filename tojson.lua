@@ -68,14 +68,16 @@ basetypes={
     i=92,
     ia=92,
     n="chest",
-    szm=12,
+    shm=-2,
+    szm=11,
     p=1
   },{
     i=39,
     fi=1,
     iseq=12,
     n="fountain",
-    szm=15,
+    shm=-2,
+    szm=14,
     p=1
   },{
     i=27,
