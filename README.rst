@@ -18,7 +18,8 @@ it is a fully playable (and winnable) game with its own backstory, plot, setting
 characters.
 
 You can play it online on the `Minima at Lexaloffle page`_ or play it directly through
-any PICO-8 environment by using the `splore` utility.
+any PICO-8 environment by using the `splore` utility. You can also grab binaries for
+Linux, macOS, and MS-Windows through the release link or via the `Minima Itch.io page`_.
 
 .. image:: MinimaWorld.png
   :alt: Minima world view
@@ -80,7 +81,7 @@ homage to all the old 8-bit Ultima games, but especially numbers II through V.
 Status
 ------
 
-This project is at version 1.1. It should be completely playable from beginning to end.
+This project is at version 1.1. It is completely playable from beginning to end.
 
 Many features of the Ultima series as played on the C128 work. You can move around
 and explore the world map and enter towns and dungeons. Town views and dungeon views
@@ -90,8 +91,9 @@ works in both world and dungeon views. Dialog with townies works.
 Purchasing in towns works. Spells work. Capturing pirate ships works, and with one
 it's possible to explore the waters of the world map. Leveling up works. Sound effects
 are in place. The in-game help screen works. Saving and loading games works, although
-it has some unavoidable limitations. Background music works. Increasing attributes
-works. Fountains work. It's winnable.
+it has some unavoidable limitations (most notably only the ship that your character
+is on will be saved). Background music works. Increasing attributes works. Fountains
+work. It's winnable.
 
 Compared to the earlier version 1.0, version 1.1 features improved creature movement,
 guild shops with working keys and torches, more townies with more clues, openable
@@ -99,8 +101,9 @@ treasure chests, more challenging dungeons, a tower puzzle, enterable shrines, a
 many minor bugfixes.
 
 Due largely to the existence of chests and additional dungeon levels, this version
-requires less grinding; due largely to the existence of more characters, this version
-has a bit more story. It is much closer to what I had set out originally to build.
+requires less grinding than version 1.0; due largely to the existence of more
+characters, this version has a bit more story. It is much closer to what I had set
+out originally to build.
 
 Supported Platforms
 -------------------
@@ -125,7 +128,7 @@ Challenges
 
 The constraints of building something within the PICO-8 environment make a project like
 this fairly tough. This game pretty much maxes out PICO-8 capacity; there's not a
-lot of space left and I'll likely have to trim out some already-started features to
+lot of space left and I'd likely have to trim out some already-present features to
 shoehorn in anything else. All the PICO-8 graphic space (both for sprites and maps) are
 fully used. All but a couple of the sound effects slots are used. The final version here
 is a careful balance between maxing out the token count and the compressed size. The raw
@@ -147,6 +150,16 @@ Commodore versions of the Ultima games but does a better job of making the most 
 is available within the PICO-8 environment. It's in the `alt_music.p8` file. To use it,
 just copy over the existing `__sfx__` and `__music__` sections in `minima.p8` with the
 corresponding versions found in `alt_music.p8`.
+
+Design Notes
+------------
+
+Minima is mostly data-driven. It uses a JSON data structure to define the people,
+creatures, and objects, and another JSON data structure to define all the maps and
+dungeons. Command sequencing uses coroutines in order to avoid overly-complicated
+state machines. The "Minima Engine" could be reused for another game without having
+to modify too much code; if the target game is in a similar world to Miskatonia, not
+much more than the victory conditions would need to be changed on the code side.
 
 Other Notes
 -----------
@@ -180,6 +193,7 @@ a dungeon map and turn it into something the game can use.
 
 
 .. _Minima at Lexaloffle page: https://www.lexaloffle.com/bbs/?tid=31831
+.. _Minima Itch.io page: https://feneric.itch.io/minima
 .. _Ultima games: https://en.wikipedia.org/wiki/Ultima_(series)
 .. _Ultima I: https://en.wikipedia.org/wiki/Ultima_I:_The_First_Age_of_Darkness
 .. _Ultima II: https://en.wikipedia.org/wiki/Ultima_II:_The_Revenge_of_the_Enchantress
