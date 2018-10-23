@@ -5,9 +5,9 @@ __lua__
 -- by feneric
 
 -- a function for logging to an output log file.
-function logit(entry)
-  printh(entry,'minima.out')
-end
+-- function logit(entry)
+--   printh(entry,'minima.out')
+-- end
 
 -- register json context here
 _tok={
@@ -176,12 +176,14 @@ function checkpurchase(prompt,checkfunc,purchasefunc)
   update_lines(prompt)
   cmd=yield()
   desireditem=checkfunc(cmd)
-  if desireditem then
-    return purchasefunc(desireditem)
-  elseif desireditem==false then
-    return "you cannot afford that."
+  return desireditem and purchasefunc(desireditem) or desireditem==false and "you cannot afford that." or "no sale."
+end
+
+function purchasedetail(desireditem)
+  if desireditem and desireditem.p then
+    return hero.gp>=desireditem.p and desireditem
   else
-    return "no sale."
+    return nil
   end
 end
 
@@ -189,12 +191,7 @@ end
 function purchase(prompt,itemtype,attribute)
   return checkpurchase(prompt,
     function(cmd)
-      desireditem=itemtype[cmd]
-      if desireditem then
-        return hero.gp>=desireditem.p and desireditem
-      else
-        return nil
-      end
+      return purchasedetail(itemtype[cmd])
     end,
     function(desireditem)
       if hero[attribute]>=desireditem.a then
@@ -238,11 +235,7 @@ shop={
     return checkpurchase({"choose m\69\68\73\67 ($8), c\85\82\69 ($10),","or s\65\86\73\79\82 ($25): "},
       function(cmd)
         desiredspell=spells[cmd]
-        if desiredspell and desiredspell.p then
-          return hero.gp>=desiredspell.p and desiredspell
-        else
-          return nil
-        end
+        return purchasedetail(desiredspell)
       end,
       function(desiredspell)
         sfx(3)
@@ -278,7 +271,8 @@ shop={
   guild=function()
     return checkpurchase({"5 \139torches $12 or a \145key $23: "},
       function(cmd)
-        return hero.gp>=tools[cmd].p and tools[cmd] or nil
+        local desiredtool=tools[cmd]
+        return purchasedetail(desiredtool)
       end,
       function(desireditem)
         hero.gp-=desireditem.p
@@ -288,12 +282,6 @@ shop={
     )
   end
 }
-
--- the maps structure holds information about all of the regular
--- places in the game, dungeons as well as towns.
-maps=json_parse('[{"sy":23,"mxx":105,"ex":13,"sx":92,"n":"saugus","signs":[{"x":92,"msg":"welcome to saugus!","y":19}],"mxy":24,"c":[{"x":89,"id":15,"y":21},{"x":84,"id":26,"y":9},{"x":95,"id":24,"y":3},{"x":97,"id":23,"y":13},{"x":82,"id":14,"y":21},{"x":101,"id":21,"y":5},{"x":84,"d":["the secret room is key.","the way must be clear."],"id":20,"y":5},{"x":103,"d":["faxon is in a tower.","volcanoes mark it."],"id":21,"y":18},{"x":85,"d":["poynter has a ship.","poynter is in lynn."],"id":17,"y":16},{"x":95,"id":15,"y":21}],"i":[{"x":84,"id":4,"y":4}],"ey":4},{"sy":23,"ex":17,"sx":116,"n":"lynn","signs":[{"x":125,"msg":"marina for members only.","y":9}],"mxy":24,"c":[{"x":118,"id":15,"y":22},{"x":106,"id":25,"y":1},{"x":118,"id":28,"y":2},{"x":107,"id":23,"y":9},{"x":106,"id":19,"y":16},{"x":122,"id":26,"y":12},{"x":105,"d":["i\'ve seen faxon\'s tower.","south of the eastern shrine."],"id":14,"y":4},{"x":106,"d":["griswold knows dungeons.","griswold is in salem."],"id":17,"y":7},{"x":119,"d":["i\'m rich! i have a yacht!","ho ho! i\'m the best!"],"id":16,"y":6},{"x":114,"id":15,"y":22}],"i":[{"x":125,"id":5,"y":5}],"mnx":104,"ey":4},{"sy":54,"mxx":112,"ex":45,"sx":96,"n":"boston","mxy":56,"c":[{"x":94,"id":15,"y":49},{"x":103,"id":25,"y":39},{"x":92,"id":24,"y":30},{"x":88,"id":23,"y":38},{"x":100,"id":26,"y":30},{"x":96,"id":19,"y":44},{"x":83,"d":["zanders has good tools.","be prepared!"],"id":14,"y":27},{"x":81,"id":16,"y":44},{"x":104,"d":["each shrine has a caretaker.","seek their wisdom."],"id":20,"y":26},{"x":110,"d":["i\'ve seen the magic sword.","search south of the shrine."],"id":16,"y":40},{"x":105,"mva":1,"id":15,"y":35},{"x":98,"id":15,"y":49}],"i":[{"x":96,"id":7,"y":40}],"mny":24,"ey":19},{"sy":62,"ex":7,"sx":119,"n":"salem","i":[{"x":116,"id":4,"y":53}],"c":[{"x":118,"id":15,"y":63},{"x":125,"id":27,"y":44},{"x":114,"id":28,"y":44},{"x":122,"id":23,"y":51},{"x":118,"id":17,"y":58},{"x":113,"d":["faxon is a blight.","daemons serve faxon."],"id":21,"y":50},{"x":123,"d":["increase stats in dungeons!","only severe injuries work."],"id":14,"y":57},{"x":120,"id":15,"y":63}],"mny":43,"mnx":112,"ey":36},{"c":[{"x":93,"id":23,"y":57},{"x":100,"id":28,"y":57},{"x":91,"d":["even faxon has fears.","lalla knows who to see."],"id":14,"y":60},{"x":82,"id":18,"y":57},{"x":102,"d":["gilly is in boston.","gilly knows of the sword."],"id":18,"y":63}],"sy":59,"mxx":103,"ex":27,"mny":56,"sx":82,"n":"great misery","ey":35},{"sy":62,"mxx":112,"ex":1,"sx":107,"n":"western shrine","c":[{"x":107,"d":["magic serves good or evil.","swords cut both ways."],"id":20,"y":59}],"mny":56,"mnx":103,"ey":28},{"sy":62,"mxx":112,"ex":49,"sx":107,"n":"eastern shrine","c":[{"x":107,"d":["some fountains have secrets.","know when to be humble."],"id":18,"y":59}],"mny":56,"mnx":103,"ey":6},{"sy":41,"newm":35,"ex":56,"sx":120,"n":"the dark tower","c":[{"x":119,"id":53,"y":41},{"x":126,"id":53,"y":40},{"x":123,"id":53,"y":38},{"x":113,"id":53,"y":40},{"x":121,"id":52,"y":37},{"x":119,"id":52,"y":38},{"x":120,"id":45,"y":34},{"x":118,"id":45,"y":35},{"ar":25,"dmg":50,"hp":255,"y":30,"x":118,"i":126,"id":50,"pn":"faxon"}],"i":[{"tm":12,"ty":8,"y":41,"x":117,"tz":3,"id":8,"tx":3},{"x":119,"id":6,"y":37},{"x":119,"id":6,"y":39},{"x":120,"id":6,"y":37},{"x":120,"id":6,"y":38},{"x":120,"id":6,"y":39},{"x":121,"id":6,"y":38},{"x":121,"id":6,"y":39}],"ss":17,"mxm":23,"mxy":43,"fri":false,"mny":24,"mnx":112,"ey":44},{"l":[[0,16382,768,12336,16380,13056,13308,192],[0,-13107,816,12336,15612,768,16332,704],[-32768,-3316,1020,12300,13116,13056,-3076,448],[29488,13116,0,-3073,0,-3124,780,13116]],"sy":8,"c":[{"x":8,"z":4,"id":50,"y":5},{"x":3,"z":4,"id":52,"y":1},{"x":1,"z":4,"id":52,"y":5},{"x":5,"z":4,"id":52,"y":1},{"x":3,"z":4,"id":53,"y":3}],"ex":4,"attr":"int","i":[{"x":1,"z":1,"id":8,"y":8},{"x":8,"z":2,"id":8,"y":2},{"x":4,"z":3,"id":8,"y":8},{"x":1,"z":4,"id":8,"y":1},{"x":1,"z":4,"id":6,"y":8},{"x":7,"z":4,"id":6,"y":1},{"x":3,"z":4,"id":6,"y":8},{"x":5,"z":4,"id":6,"y":8},{"x":8,"z":4,"id":6,"y":8},{"x":6,"z":3,"id":7,"y":8}],"n":"nibiru","ey":11},{"l":[[824,16188,768,13296,-4036,13056,13308,768],[13060,13116,12,16332,12540,15360,15311,768],[768,13116,-20432,-196,48,16140,14140,816],[0,-13108,19468,-13108,192,-13108,3084,-13108]],"c":[{"x":3,"z":4,"id":50,"y":5},{"x":1,"z":4,"id":52,"y":5},{"x":7,"z":4,"id":52,"y":5},{"x":5,"z":4,"id":53,"y":3},{"x":5,"z":4,"id":53,"y":7}],"ex":32,"attr":"str","i":[{"x":1,"z":1,"id":8,"y":1},{"x":7,"z":2,"id":8,"y":1},{"x":3,"z":3,"id":8,"y":7},{"x":1,"z":4,"id":8,"y":3},{"x":1,"z":4,"id":6,"y":1},{"x":1,"z":4,"id":6,"y":8},{"x":1,"z":4,"id":6,"y":7},{"x":2,"z":4,"id":6,"y":8},{"x":8,"z":4,"id":6,"y":8},{"x":7,"z":3,"id":7,"y":5}],"n":"purgatory","ey":5},{"l":[[768,16304,1020,13056,13299,12288,-4,0],[768,13180,12303,16382,252,15360,13263,12288],[768,13116,12348,13105,13119,13068,13116,512],[0,16188,12300,13260,12300,12300,16380,256]],"c":[{"x":3,"z":4,"id":50,"y":1},{"x":4,"z":4,"id":52,"y":5},{"x":5,"z":4,"id":52,"y":2},{"x":3,"z":4,"id":53,"y":4},{"x":6,"z":4,"id":53,"y":4}],"ex":33,"attr":"dex","i":[{"x":1,"z":1,"id":8,"y":1},{"x":5,"z":2,"id":8,"y":2},{"x":8,"z":3,"id":8,"y":4},{"x":4,"z":4,"id":8,"y":8},{"x":5,"z":4,"id":6,"y":5},{"x":3,"z":4,"id":6,"y":6},{"x":4,"z":4,"id":6,"y":6},{"x":5,"z":4,"id":6,"y":6},{"x":6,"z":4,"id":6,"y":6},{"x":6,"z":3,"id":7,"y":6}],"n":"sheol","ey":58},{"sz":3,"c":[{"x":4,"z":1,"id":51,"y":6},{"x":4,"z":2,"id":51,"y":7},{"x":1,"z":3,"id":51,"y":7},{"x":6,"z":3,"id":53,"y":8},{"x":8,"z":3,"id":53,"y":4},{"x":3,"z":3,"id":53,"y":1},{"x":6,"z":2,"id":53,"y":6},{"x":6,"z":1,"id":53,"y":8}],"ex":124,"sx":8,"n":"the upper levels","l":[[192,-17202,-817,204,16332,3276,204,3072],[192,31949,16323,14576,15555,3276,15566,192],[192,-13105,3264,13564,16320,207,13261,15104]],"mn":8,"i":[{"x":8,"z":3,"id":9,"y":1},{"tz":0,"tm":8,"z":3,"y":8,"x":3,"ty":41,"id":9,"tx":117},{"x":8,"z":3,"id":8,"y":7},{"x":3,"z":3,"id":8,"y":4},{"x":1,"z":2,"id":8,"y":2},{"x":8,"z":2,"id":8,"y":2}],"ey":26}]')
--- map 0 is special; it's the world map, the overview map.
-maps[0]=json_parse('{"n":"world","mnx":0,"mny":0,"mxx":80,"mxy":64,"wrap":1,"newm":10,"mxm":12,"fri":false,"ss":0}')
 
 -- add numerical references to names by amounts
 function makenameforamount(itemtype)
@@ -328,6 +316,12 @@ function setmap()
 end
 
 function initobjs()
+  -- the maps structure holds information about all of the regular
+  -- places in the game, dungeons as well as towns.
+  maps=json_parse('[{"sy":23,"mxx":105,"ex":13,"sx":92,"n":"saugus","signs":[{"x":92,"msg":"welcome to saugus!","y":19}],"mxy":24,"c":[{"x":89,"id":15,"y":21},{"x":84,"id":26,"y":9},{"x":95,"id":24,"y":3},{"x":97,"id":23,"y":13},{"x":82,"id":14,"y":21},{"x":101,"id":21,"y":5},{"x":84,"d":["the secret room is key.","the way must be clear."],"id":20,"y":5},{"x":103,"d":["faxon is in a tower.","volcanoes mark it."],"id":21,"y":18},{"x":85,"d":["poynter has a ship.","poynter is in lynn."],"id":17,"y":16},{"x":95,"id":15,"y":21}],"i":[{"x":84,"id":4,"y":4}],"ey":4},{"sy":23,"ex":17,"sx":116,"n":"lynn","signs":[{"x":125,"msg":"marina for members only.","y":9}],"mxy":24,"c":[{"x":118,"id":15,"y":22},{"x":106,"id":25,"y":1},{"x":118,"id":28,"y":2},{"x":107,"id":23,"y":9},{"x":106,"id":19,"y":16},{"x":122,"id":26,"y":12},{"x":105,"d":["i\'ve seen faxon\'s tower.","south of the eastern shrine."],"id":14,"y":4},{"x":106,"d":["griswold knows dungeons.","griswold is in salem."],"id":17,"y":7},{"x":119,"d":["i\'m rich! i have a yacht!","ho ho! i\'m the best!"],"id":16,"y":6},{"x":114,"id":15,"y":22}],"i":[{"x":125,"id":5,"y":5}],"mnx":104,"ey":4},{"sy":54,"mxx":112,"ex":45,"sx":96,"n":"boston","mxy":56,"c":[{"x":94,"id":15,"y":49},{"x":103,"id":25,"y":39},{"x":92,"id":24,"y":30},{"x":88,"id":23,"y":38},{"x":100,"id":26,"y":30},{"x":96,"id":19,"y":44},{"x":83,"d":["zanders has good tools.","be prepared!"],"id":14,"y":27},{"x":81,"id":16,"y":44},{"x":104,"d":["each shrine has a caretaker.","seek their wisdom."],"id":20,"y":26},{"x":110,"d":["i\'ve seen the magic sword.","search south of the shrine."],"id":16,"y":40},{"x":105,"mva":1,"id":15,"y":35},{"x":98,"id":15,"y":49}],"i":[{"x":96,"id":7,"y":40}],"mny":24,"ey":19},{"sy":62,"ex":7,"sx":119,"n":"salem","i":[{"x":116,"id":4,"y":53}],"c":[{"x":118,"id":15,"y":63},{"x":125,"id":27,"y":44},{"x":114,"id":28,"y":44},{"x":122,"id":23,"y":51},{"x":118,"id":17,"y":58},{"x":113,"d":["faxon is a blight.","daemons serve faxon."],"id":21,"y":50},{"x":123,"d":["increase stats in dungeons!","only severe injuries work."],"id":14,"y":57},{"x":120,"id":15,"y":63}],"mny":43,"mnx":112,"ey":36},{"c":[{"x":93,"id":23,"y":57},{"x":100,"id":28,"y":57},{"x":91,"d":["even faxon has fears.","lalla knows who to see."],"id":14,"y":60},{"x":82,"id":18,"y":57},{"x":102,"d":["gilly is in boston.","gilly knows of the sword."],"id":18,"y":63}],"sy":59,"mxx":103,"ex":27,"mny":56,"sx":82,"n":"great misery","ey":35},{"sy":62,"mxx":112,"ex":1,"sx":107,"n":"western shrine","c":[{"x":107,"d":["magic serves good or evil.","swords cut both ways."],"id":20,"y":59}],"mny":56,"mnx":103,"ey":28},{"sy":62,"mxx":112,"ex":49,"sx":107,"n":"eastern shrine","c":[{"x":107,"d":["some fountains have secrets.","know when to be humble."],"id":18,"y":59}],"mny":56,"mnx":103,"ey":6},{"sy":41,"newm":35,"ex":56,"sx":120,"n":"the dark tower","c":[{"x":119,"id":53,"y":41},{"x":126,"id":53,"y":40},{"x":123,"id":53,"y":38},{"x":113,"id":53,"y":40},{"x":121,"id":52,"y":37},{"x":119,"id":52,"y":38},{"x":120,"id":45,"y":34},{"x":118,"id":45,"y":35},{"ar":25,"dmg":50,"hp":255,"y":30,"x":118,"i":126,"id":50,"pn":"faxon"}],"i":[{"tm":12,"ty":8,"y":41,"x":117,"tz":3,"id":8,"tx":3},{"x":119,"id":6,"y":37},{"x":119,"id":6,"y":39},{"x":120,"id":6,"y":37},{"x":120,"id":6,"y":38},{"x":120,"id":6,"y":39},{"x":121,"id":6,"y":38},{"x":121,"id":6,"y":39}],"ss":17,"mxm":23,"mxy":43,"fri":false,"mny":24,"mnx":112,"ey":44},{"l":[[0,16382,768,12336,16380,13056,13308,192],[0,-13107,816,12336,15612,768,16332,704],[-32768,-3316,1020,12300,13116,13056,-3076,448],[29488,13116,0,-3073,0,-3124,780,13116]],"sy":8,"c":[{"x":8,"z":4,"id":50,"y":5},{"x":3,"z":4,"id":52,"y":1},{"x":1,"z":4,"id":52,"y":5},{"x":5,"z":4,"id":52,"y":1},{"x":3,"z":4,"id":53,"y":3}],"ex":4,"attr":"int","i":[{"x":1,"z":1,"id":8,"y":8},{"x":8,"z":2,"id":8,"y":2},{"x":4,"z":3,"id":8,"y":8},{"x":1,"z":4,"id":8,"y":1},{"x":1,"z":4,"id":6,"y":8},{"x":7,"z":4,"id":6,"y":1},{"x":3,"z":4,"id":6,"y":8},{"x":5,"z":4,"id":6,"y":8},{"x":8,"z":4,"id":6,"y":8},{"x":6,"z":3,"id":7,"y":8}],"n":"nibiru","ey":11},{"l":[[824,16188,768,13296,-4036,13056,13308,768],[13060,13116,12,16332,12540,15360,15311,768],[768,13116,-20432,-196,48,16140,14140,816],[0,-13108,19468,-13108,192,-13108,3084,-13108]],"c":[{"x":3,"z":4,"id":50,"y":5},{"x":1,"z":4,"id":52,"y":5},{"x":7,"z":4,"id":52,"y":5},{"x":5,"z":4,"id":53,"y":3},{"x":5,"z":4,"id":53,"y":7}],"ex":32,"attr":"str","i":[{"x":1,"z":1,"id":8,"y":1},{"x":7,"z":2,"id":8,"y":1},{"x":3,"z":3,"id":8,"y":7},{"x":1,"z":4,"id":8,"y":3},{"x":1,"z":4,"id":6,"y":1},{"x":1,"z":4,"id":6,"y":8},{"x":1,"z":4,"id":6,"y":7},{"x":2,"z":4,"id":6,"y":8},{"x":8,"z":4,"id":6,"y":8},{"x":7,"z":3,"id":7,"y":5}],"n":"purgatory","ey":5},{"l":[[768,16304,1020,13056,13299,12288,-4,0],[768,13180,12303,16382,252,15360,13263,12288],[768,13116,12348,13105,13119,13068,13116,512],[0,16188,12300,13260,12300,12300,16380,256]],"c":[{"x":3,"z":4,"id":50,"y":1},{"x":4,"z":4,"id":52,"y":5},{"x":5,"z":4,"id":52,"y":2},{"x":3,"z":4,"id":53,"y":4},{"x":6,"z":4,"id":53,"y":4}],"ex":33,"attr":"dex","i":[{"x":1,"z":1,"id":8,"y":1},{"x":5,"z":2,"id":8,"y":2},{"x":8,"z":3,"id":8,"y":4},{"x":4,"z":4,"id":8,"y":8},{"x":5,"z":4,"id":6,"y":5},{"x":3,"z":4,"id":6,"y":6},{"x":4,"z":4,"id":6,"y":6},{"x":5,"z":4,"id":6,"y":6},{"x":6,"z":4,"id":6,"y":6},{"x":6,"z":3,"id":7,"y":6}],"n":"sheol","ey":58},{"sz":3,"c":[{"x":4,"z":1,"id":51,"y":6},{"x":4,"z":2,"id":51,"y":7},{"x":1,"z":3,"id":51,"y":7},{"x":6,"z":3,"id":53,"y":8},{"x":8,"z":3,"id":53,"y":4},{"x":3,"z":3,"id":53,"y":1},{"x":6,"z":2,"id":53,"y":6},{"x":6,"z":1,"id":53,"y":8}],"ex":124,"sx":8,"n":"the upper levels","l":[[192,-17202,-817,204,16332,3276,204,3072],[192,31949,16323,14576,15555,3276,15566,192],[192,-13105,3264,13564,16320,207,13261,15104]],"mn":8,"i":[{"x":8,"z":3,"id":9,"y":1},{"tz":0,"tm":8,"z":3,"y":8,"x":3,"ty":41,"id":9,"tx":117},{"x":8,"z":3,"id":8,"y":7},{"x":3,"z":3,"id":8,"y":4},{"x":1,"z":2,"id":8,"y":2},{"x":8,"z":2,"id":8,"y":2}],"ey":26}]')
+  -- map 0 is special; it's the world map, the overview map.
+  maps[0]=json_parse('{"n":"world","mnx":0,"mny":0,"mxx":80,"mxy":64,"wrap":1,"newm":10,"mxm":12,"fri":false,"ss":0}')
+
   -- the creatures structure holds the live copy saying which
   -- creatures (both human and monster) are where in the world.
   -- individually they are instances of bestiary objects or
@@ -460,11 +454,11 @@ function loadgame()
     hero[heroattr]=dget(storagenum)
     storagenum+=1
   end
-  for creaturenum=1,10 do
-    creaturenum=dget(storagenum)
-    if creaturenum~=0 then
+  for creaturenum=1,12 do
+    creatureid=dget(storagenum)
+    if creatureid~=0 then
       creaturex,creaturey=separatevalues(dget(storagenum+1))
-      definemonster{ot=basetypes[creaturenum],x=creaturex,y=creaturey,mn=0}
+      definemonster{ot=basetypes[creatureid],x=creaturex,y=creaturey,mn=0}
       storagenum+=2
     else
       break
