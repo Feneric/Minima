@@ -157,9 +157,10 @@ Design Notes
 Minima is mostly data-driven. It uses a JSON data structure to define the people,
 creatures, and objects, and another JSON data structure to define all the maps and
 dungeons. Command sequencing uses coroutines in order to avoid overly-complicated
-state machines. The "Minima Engine" could be reused for another game without having
+state machines. The "Minima Engine" can be reused for another game without having
 to modify too much code; if the target game is in a similar world to Miskatonia, not
-much more than the victory conditions would need to be changed on the code side.
+much more than the victory conditions would need to be changed on the code side. As
+of this writing, at least one other game makes use of the Minima Engine.
 
 Other Notes
 -----------

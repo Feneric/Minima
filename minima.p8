@@ -601,7 +601,7 @@ function inputprocessor(cmd)
           signcontents=check_sign(xcoord,ycoord)
           if signcontents then
             response={"read sign",signcontents}
-          elseif xcoord==1 and ycoord==38 and hero.dmg<50 then
+          elseif xcoord==1 and ycoord==38 and hero.dmg<40 then
             -- search response
             response[2]="you find the magic sword!"
             hero.dmg=40
@@ -982,7 +982,7 @@ function look_results(ldir,xcoord,ycoord)
   elseif content then
     update_lines{cmd,content.n}
   elseif curmap.dg then
-    update_lines{cmd,getdungeonblk(xcoord,ycoord,hero.z)==20 and 'passage' or 'wall',1}
+    update_lines{cmd,getdungeonblk(xcoord,ycoord,hero.z)<1 and 'passage' or 'wall'}
   else
     update_lines{cmd,terrains[mget(xcoord,ycoord)]}
   end
